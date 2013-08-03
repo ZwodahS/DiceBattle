@@ -1,0 +1,76 @@
+==GamePlay==
+
+The game will be played with 6 dice.,
+Each die will have 6 faces, 
+# Sword
+# Shield
+# Heal
+# Fire
+# Ice 
+# Shock
+
+When a player rolls the dies, they can choose to use an [Ability].
+Each [Ability] will have a cost, like a physical attack will have a cost of 1 [sword],
+or a Flamethrower with a cost of [Fire][Fire][Fire]
+
+Each ability also have [AbilityEffect]s. 
+There are currently 7 Ability Effects.
+# Physical Damage
+    deals damage to opponent. Blockable by shield.
+# Magical Damage
+    deals damage to opponent. Not blockable by shield.
+# Heal 
+    heals hp.
+# Shield
+    gain shield counter, which blocks physical damage.
+# Burn
+    add to the burn counter.
+    each time the player takes a turn, the player will take damage equals to the burn counter 
+    and then decrease the counter by 1.
+# Shock
+    gives a chance to remove a dice from the opponent.
+# Freeze
+    make dice un-re-rollable.
+
++ If at any time the player do not have any ability to use, he will lose 10hp and the turns ends.
++ After using an ability, he/she can choose to either re-roll the remaining dices or just done and pass the turn.
++ If the player has clear all dice, he can choose to re-roll 6 new dice or just done.
+
+
+==Ability Combination==
+
++ Pure Ability +
+Sword -
+    Swords deals damage equals to X^2. 
+    1 Sword = 1 damage
+    2 Sword = 4 damage
+    3 Sword = 9 damage
+    4 Sword = 16 damage
+    5 Sword = 25 damage
+    6 Sword = 36 damage
+Shield - 
+    Gain Shield equals to 3X
+    1 Shield = 3 Shield
+    2 Shield = 6 Shield
+    3 Shield = 9 Shield
+...
+Heal - 
+    3 Heal = Gain 10 Hp
+    4 Heal = Gain 20 Hp
+    5 Heal = Gain 30 Hp
+    6 Heal = Gain 40 Hp
+Fire -
+    3 Fire - 3 Burning Counter
+    4 Fire - 4 Burning Counter
+    5 Fire - 5 Burning Counter
+    6 Fire - 6 Burning Counter
+Shock -
+    3 Shock - 20% Shock, 3 Magical Damage
+    4 Shock - 40% Shock, 6 Magical Damage
+    5 Shock - 40% Shock, 20% Shock, 9 Magical Damage
+    6 Shock - 40% Shock, 40% Shock, 12 Magical Damage
+Ice -
+    3 Freeze - 1 Die, 5 Magical Damage
+    4 Freeze - 2 Die, 10 Magical Damage
+    5 Freeze - 3 Die, 15 Magical Damage
+    6 Freeze - 4 Die, 20 Magical Damage

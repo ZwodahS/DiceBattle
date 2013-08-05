@@ -28,9 +28,13 @@ There are currently 7 Ability Effects.
     each time the player takes a turn, the player will take damage equals to the burn counter 
     and then decrease the counter by 1.
 # Shock
-    gives a chance to remove a dice from the opponent.
+    add to shock counter. 
+    The player lose one dice for each shock counter on it.
+    Shock counter is only removed at the end of every turn.
 # Freeze
+    add to freeze counter.
     make dice un-re-rollable.
+    Freeze counter is removed the moment the dice are first rolled.
 
 + If at any time the player do not have any ability to use, he will lose 10hp and the turns ends.
 + After using an ability, he/she can choose to either re-roll the remaining dices or just done and pass the turn.
@@ -65,10 +69,10 @@ Fire -
     5 Fire - 5 Burning Counter
     6 Fire - 6 Burning Counter
 Shock -
-    3 Shock - 20% Shock, 3 Magical Damage
-    4 Shock - 40% Shock, 6 Magical Damage
-    5 Shock - 40% Shock, 20% Shock, 9 Magical Damage
-    6 Shock - 40% Shock, 40% Shock, 12 Magical Damage
+    3 Shock - 1 Shock counter
+    4 Shock - 2 Shock counter
+    5 Shock - 3 Shock counter
+    6 Shock - 4 Shock counter
 Ice -
     3 Freeze - 1 Die, 5 Magical Damage
     4 Freeze - 2 Die, 10 Magical Damage

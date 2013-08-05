@@ -1,0 +1,77 @@
+==Design==
+
+
+==Flow/Activty==
+    .1 Game Initialization
+        [Game Start Message]
+    .2 Randomly Choose Starting Player as Current player
+        [Turn Message]
+    .3 Start turn.
+        .1 if(burn counter > 0) Current player take damage equals to burn counter and decrease burn counter by 1.
+            + If the player hp become less than 0, then go to [.5]
+            + Client will automatically update the burn counter and deal damage to the player.
+        .2 Check the number of dices rollable by player, modified by number of shock.
+        .3 Tell player number of dices they are rolling as well as the number of frozen dice.
+            +Client automatically knows which dices are frozen and shocked
+        .4 Ask the player to click "roll" or "done" [Waiting for Roll or Done]
+            + Player can click done if they feel that they might miss (say he got 4 shock counter).
+            [Ask For Action Message]
+        .5 Upon roll, roll the dice and send the dices to all the viewers.
+            [Send Roll Command]
+            [Dice Roll Result Message]
+            + This include which dice are frozen.
+            .1 If there are no legal moves with the current set of dices, send damage taken and go to [.4]
+        .6 Wait for the player to select the dice and which ability they want to use.
+            [Use Ability Message]
+            + The player explicitly choose which dice they want to use as part of the ability.
+            + However, an "auto" will also be provided. 
+        .7 Upon effect choosen,
+            .1 Check if the move is legal, if it is not legal, do nothing. 
+                + A proper client should not even send a illegal message.
+            .2 If the move is legal, remove the used dices from the dice pool, and perform the ability.
+                .1 Send the ability used to the client, as well as the effect. - Also state which dices are being thrown away.(dice id)
+            [Ability Used Message]
+        .8 The player can choose one of the following action after that.
+            .1 Choose an action to do with the remaining dices. 
+                .1 After ability choosen as well as the dices to use, go to [.3.7]
+                [Use Ability Message]
+            .2 Choose any number of dices ( that are not frozen ) to reroll.
+                .1 After reroll , go to [.3.5]
+                [Send Roll Command]
+            .3 Done
+                .1 go to [.4]
+                [Send Done Message]
+    .4 End Turn
+        [End Turn Message]
+        .1 Remove all shock counter from current player.
+        .2 Change turn. goto [.3]
+        [Turn Message]
+    .5 End Game
+        [End Game Message]
+        .1 Send message to all viewer.
+        .2 Clean up.
+
+
+==List of messages==
+    ==Server to Client==
+    # Game Start Message 
+        .1 Send to each viewer telling them their role. (Player1 , Player2 , Observer)
+    # Active Turn Message 
+        .1 Send to the viewer the current player turn, or turn change.
+    # Ask for Action Message
+        .1 Only send to the active player.
+    # Dice Roll Result Message 
+        .1 Send all the dices that are rolled. 
+        + If there is no legal moves, it will be sent here as well.
+    # Ability used Message
+        .1 The ability used and the dice used.
+    # End Turn Message
+    # End Game Message
+        .1 Who won.
+    ==Client to Server==
+    # Send Roll Command 
+        .1 The id of the dice to roll.
+        + if this is the first roll then all 6 dices will be rolled, but no id required.
+    # Send Use Ability COmmand
+        .1 The list of dice to use and the ability to use.
+    # Send Done command

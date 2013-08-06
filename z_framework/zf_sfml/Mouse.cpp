@@ -25,7 +25,7 @@
 
 zf::Mouse::Mouse()
 {
-    _wheelDelta = 0;
+    wheelDelta = 0;
 }
 
 zf::Mouse::~Mouse()
@@ -37,11 +37,11 @@ void zf::Mouse::update(sf::Time delta)
     update(delta,0);
 }
 
-void zf::Mouse::update(sf::Time delta, int wheelDelta)
+void zf::Mouse::update(sf::Time delta, sf::Int32 wheelDelta)
 {
-    zf::Input::processKey(_left, sf::Mouse::isButtonPressed(sf::Mouse::Left));
-    zf::Input::processKey(_right, sf::Mouse::isButtonPressed(sf::Mouse::Right));
-    zf::Input::processKey(_middle, sf::Mouse::isButtonPressed(sf::Mouse::Middle));
+    zf::Input::processKey(left, sf::Mouse::isButtonPressed(sf::Mouse::Left));
+    zf::Input::processKey(right, sf::Mouse::isButtonPressed(sf::Mouse::Right));
+    zf::Input::processKey(middle, sf::Mouse::isButtonPressed(sf::Mouse::Middle));
 }
 
 sf::Vector2i zf::Mouse::getPosition()

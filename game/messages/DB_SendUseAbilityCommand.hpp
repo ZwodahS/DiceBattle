@@ -5,9 +5,10 @@
 struct DB_SendUseAbilityCommand : public Message
 {
     DB_SendUseAbilityCommand();
-    DB_SendUseAbilityCommand(PlayerRole::ePlayerRole user, Ability abilityUsed);
+    DB_SendUseAbilityCommand(PlayerRole::ePlayerRole user, Ability abilityUsed, std::vector<sf::Int32> diceUsed);
     PlayerRole::ePlayerRole user;
     Ability abilityUsed;
+    std::vector<sf::Int32> diceUsed;
 };
 
 sf::Packet& operator << (sf::Packet& packet, const DB_SendUseAbilityCommand& message);

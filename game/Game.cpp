@@ -43,7 +43,7 @@ void Game::run()
             }
             else if(event.type == sf::Event::MouseWheelMoved)
             {
-                mouse._wheelDelta = event.mouseWheel.delta;
+                mouse.wheelDelta = event.mouseWheel.delta;
             }
         }
         // if not quit , update then draw.

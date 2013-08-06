@@ -1,20 +1,37 @@
 #include "Battle.hpp"
-Battle::Battle(Unit u1, Unit u2)
+#include "GameViewer.hpp"
+#include "GameUpdater.hpp"
+
+Battle::Battle(BattleServer& battleServer)
+    :_server(&battleServer), isServer(false), currentPlayer(_currentPlayer)
 {
-    units[PlayerRole::PlayerOne] = u1;
-    units[PlayerRole::PlayerTwo] = u2;
+
+}
+
+Battle::Battle()
+    :_server(0), isServer(true), currentPlayer(_currentPlayer)
+{
 }
 
 Battle::~Battle()
 {
 }
 
-const Unit& Battle::getUnit(PlayerRole::ePlayerRole p)
+Unit& Battle::getUnit(PlayerRole::ePlayerRole p)
 {
-    return units[p];
+    if(p != PlayerRole::PlayerOne && p != PlayerRole::PlayerTwo)
+    {
+        return _units[PlayerRole::PlayerOne];
+    }
+    return _units[p];
 }
 
 void Battle::addGameViewer(GameViewer* viewer)
 {
-    this->viewers.push_back(viewer);
+    this->_viewers.push_back(viewer);
+}
+
+void Battle::addGameUpdater(GameUpdater* updater)
+{
+    this->_updaters.push_back(updater);
 }

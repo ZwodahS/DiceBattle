@@ -13,6 +13,20 @@ namespace PlayerRole
             case PlayerOne : return PlayerOne;
             case PlayerTwo : return PlayerTwo;
             case Observer : return Observer;
+            case Both : return Both;
+            default : return None;
+        }
+    }
+    ePlayerRole randomPlayer()
+    {
+        return toPlayerRole(rand() % 2);
+    }
+    ePlayerRole opponentOf(ePlayerRole player)
+    {
+        switch(player)
+        {
+            case PlayerOne : return PlayerTwo;
+            case PlayerTwo : return PlayerOne;
             default : return None;
         }
     }
@@ -20,9 +34,12 @@ namespace PlayerRole
 
 sf::Packet& operator << (sf::Packet& packet, const PlayerRole::ePlayerRole& message)
 {
-    return packet;
+    return packet << toInt(message);
 }
 sf::Packet& operator >> (sf::Packet& packet, PlayerRole::ePlayerRole& message)
 {
+    sf::Int32 tmp;
+    packet >> tmp;
+    message = PlayerRole::toPlayerRole(tmp);
     return packet;
 }

@@ -5,8 +5,11 @@
 struct DB_ActiveTurnMessage : public Message
 {
     DB_ActiveTurnMessage();
-    DB_ActiveTurnMessage(PlayerRole::ePlayerRole r);
+    DB_ActiveTurnMessage(PlayerRole::ePlayerRole r, sf::Int32 burn, sf::Int32 availableDice, sf::Int32 frozenDice);
     PlayerRole::ePlayerRole currentPlayer;
+    sf::Int32 burnDamage;
+    sf::Int32 availableDice;
+    sf::Int32 frozenDice;
 };
 
 sf::Packet& operator << (sf::Packet& packet, const DB_ActiveTurnMessage& message);

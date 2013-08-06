@@ -5,7 +5,6 @@
     .1 Game Initialization
         [Game Start Message]
     .2 Randomly Choose Starting Player as Current player
-        [Turn Message]
     .3 Start turn.
         .1 if(burn counter > 0) Current player take damage equals to burn counter and decrease burn counter by 1.
             + If the player hp become less than 0, then go to [.5]
@@ -13,6 +12,7 @@
         .2 Check the number of dices rollable by player, modified by number of shock.
         .3 Tell player number of dices they are rolling as well as the number of frozen dice.
             +Client automatically knows which dices are frozen and shocked
+        [Turn Message] - Include information for .3.1 .3.2 .3.3
         .4 Ask the player to click "roll" or "done" [Waiting for Roll or Done]
             + Player can click done if they feel that they might miss (say he got 4 shock counter).
             [Ask For Action Message]
@@ -58,7 +58,8 @@
         .1 Send to each viewer telling them their role. (Player1 , Player2 , Observer)
     # Active Turn Message 
         .1 Send to the viewer the current player turn, or turn change.
-    # Ask for Action Message
+    # Ask for Action Message 
+        [Might be able to remove]
         .1 Only send to the active player.
     # Dice Roll Result Message 
         .1 Send all the dices that are rolled. 

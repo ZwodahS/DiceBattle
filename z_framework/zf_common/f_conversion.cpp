@@ -54,4 +54,15 @@ namespace zf
         }
         return str1;
     }
+    std::vector<std::string> tokenize(std::string str)
+    {
+        std::vector<std::string> strings;
+        std::stringstream ss(str);
+        std::string token;
+        while(ss >> token)
+        {
+            strings.push_back(token);
+        }
+        return strings;
+    }
 }

@@ -24,6 +24,7 @@
 #define _ZF_COMMON_F_CONVERSION_H_
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include <string>
 namespace zf
 {
@@ -33,5 +34,7 @@ namespace zf
     std::string toString(int i);
     // convert int to string with sign (automatically comes with a + or a -)
     std::string toStringSigned(int i);
+
+    std::vector<std::string> tokenize(std::string);
 }
 #endif

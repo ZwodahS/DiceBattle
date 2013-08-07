@@ -17,8 +17,10 @@ public:
     sf::Int32 getStartingHp() const;
     const std::vector<Die>& getDice() const;
     const std::vector<Ability>& getAbilities() const;
-
+    
+    bool loadFromFile(std::string filename);
     bool isLoaded();
+    void print();
 private:
     sf::Int32 _startingHp;
     std::vector<Ability> _abilities;

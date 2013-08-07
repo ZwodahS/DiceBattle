@@ -5,14 +5,14 @@ namespace AbilityType
 {
     enum eAbilityType
     {
-        None,
-        PhysicalDamage,
-        MagicalDamage,
-        Shield,
-        Heal,
-        Burn,
-        Freeze,
-        Shock,
+        None = 0,
+        PhysicalDamage = 1,
+        MagicalDamage = 2,
+        Shield = 3,
+        Heal = 4,
+        Burn = 5,
+        Freeze = 6,
+        Shock = 7,
     };
     sf::Int32 toInt(eAbilityType type);
     eAbilityType toAbilityType(sf::Int32 intValue);

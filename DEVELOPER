@@ -1,0 +1,52 @@
+C++ Coding Style
+
+. All Struct/Classes should be defined in their respective .hpp and .cpp. These should be capitialized.
+. Function files should also be defined in their own .hpp and .cpp , but should use the format f_functions.hpp to denote that they contains only functions.
+. However, if a class is used internally by another class, it can be defined in the same file. Do so only if NO other class uses that internal class.
+. If a class has a operator overloading, define them in their own .hpp and .cpp
+. Grouping headings can be done and their header files should be name g_groupname.hpp. This can be used for easy includes.
+. Pointers are use a little as possible. References should be used instead.
+     . Pointer should only be used when
+        1) Storing object that is created in the heap. (This allow me to know where to free them).
+        2) Reference is needed and null is a valid value.
+. Class and struct is the same thing in c++. But I would prefer to have struct and class have different meaning.
+     . Class are for object that have methods.
+     . Structs are for PODS that just store values.
+. Private property will have a _ prefix. (if i remember )
+. enums are usually defined within a namespace or a class, to prevent conflict.
+   example :
+   namespace FruitType
+   {
+       enum eFruitType
+       {
+           APPLE,
+           ORANGE,
+       };
+   }
+   This is to prevent conflict of variable, and also provide a clarity to what it is.
+. Constructors variables should NEVER have the same name as the property of the class.
+    The main problem with this is the following.
+    Consider the following class
+    struct foo
+    {
+        foo(int x)
+            :x(x)
+        {
+        }
+        int x;
+    };
+    If we want to make x private and provide a public const reference to it
+    struct foo
+    {
+        const int& xRef;
+        foo(int x)
+            :x(x), xRef(x)
+        {
+        }
+        private:
+            int x;
+    };
+
+    In the second case, the xRef will point to the input variable. !!! Not intended but easy to make a mistake.
+       
+I try to stick to the convention as much as possible, as much as I remember to. 

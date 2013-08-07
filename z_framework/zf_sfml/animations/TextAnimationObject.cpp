@@ -52,3 +52,8 @@ void TextAnimationObject::movePosition(sf::Vector2f move)
     sf::Vector2f position = this->_text.getPosition();
     this->_text.setPosition(position+move);
 }
+
+void TextAnimationObject::setColor(sf::Color color)
+{
+    this->_text.setColor(color);
+}

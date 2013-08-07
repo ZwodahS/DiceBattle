@@ -27,6 +27,7 @@ CompositeInstruction::CompositeInstruction(bool ordered)
     this->_instructions = std::vector<AnimationInstruction*>(0);
     this->_done = false;
     this->_ordered = ordered;
+    this->currIn = 0;
 }
 
 CompositeInstruction::~CompositeInstruction()
@@ -60,7 +61,7 @@ bool CompositeInstruction::update(sf::RenderWindow* window, sf::Time delta, Anim
             _done = true;
             for(int i = 0 ; i < _instructions.size() ; i++)
             {
-                if(!_instructions[i]->update(window,delta,object))
+                if(!_instructions[i]->isDone(object) && !_instructions[i]->update(window,delta,object))
                 {
                     _done = false;
                 }
@@ -68,16 +69,22 @@ bool CompositeInstruction::update(sf::RenderWindow* window, sf::Time delta, Anim
         }
         else
         {
-            _done = true;
-            for(int i = 0 ; i < _instructions.size() ; i++)
+            if(currIn == _instructions.size())
             {
-                if(!_instructions[i]->isDone(object))
+                _done = true; // just in case
+            }
+            else
+            {
+                if(!_instructions[currIn]->isDone(object))
                 {
-                    if(!_instructions[i]->update(window,delta,object) || i != _instructions.size() - 1)
+                    if(_instructions[currIn]->update(window,delta,object))
                     {
-                        _done = false;
-                        break;
+                        currIn++;
                     }
+                }
+                else
+                {
+                    currIn ++; // shouldn't even get here.
                 }
             }
         }
@@ -108,5 +115,11 @@ CompositeInstruction* CompositeInstruction::move(sf::Vector2f moveVec, float dur
 {
     MoveInstruction* mi = new MoveInstruction(moveVec,duration);
     this->_instructions.push_back(mi);
+    return this;
+}
+
+CompositeInstruction* CompositeInstruction::wait(float waitTime)
+{
+    this->_instructions.push_back(new WaitInstruction(waitTime));
     return this;
 }

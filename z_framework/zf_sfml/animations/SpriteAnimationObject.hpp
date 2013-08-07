@@ -36,7 +36,7 @@ class SpriteAnimationObject : public AnimationObject
         void setPosition(sf::Vector2f position);
         void movePosition(sf::Vector2f position);
         void draw(sf::RenderWindow* window, sf::Time delta);
-
+        void setColor(sf::Color color);
 };
 
 #endif

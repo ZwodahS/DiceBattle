@@ -1,5 +1,9 @@
 #include "Game.hpp"
+#include "screens/GameScreen.hpp"
 #include "screens/Screen.hpp"
+#include "screens/GameScreenViewer.hpp"
+#include "logic/GeneralUpdater.hpp"
+#include "logic/Battle.hpp"
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #define CLEAR_COLOR sf::Color(20,20,20,255)
@@ -11,6 +15,8 @@ Game::Game()
     :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE),
     window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0)
 {
+    window.setFramerateLimit(50);
+    loadAssets();
 }
 
 Game::~Game()
@@ -23,6 +29,10 @@ Game::~Game()
 
 void Game::run()
 {
+    GameScreenViewer viewer(PlayerRole::Both);
+    GeneralUpdater updater(PlayerRole::Both);
+    Battle _currentBattle;
+    _currentScreen = new GameScreen(*this, _currentBattle, PlayerRole::Both, viewer,updater);
     // set up the clock for delta
     sf::Clock clock; 
     bool quit = false;

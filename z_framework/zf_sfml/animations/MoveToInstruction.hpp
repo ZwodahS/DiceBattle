@@ -36,6 +36,8 @@ class MoveToInstruction : public AnimationInstruction
         sf::Vector2f _position;
         sf::Vector2f _move;
         sf::Vector2f _target;
+        float _runtime ; // to determine how long it has run.
+        float _totalTime;
         bool _done;
 
         bool overShootDestination();

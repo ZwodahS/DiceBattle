@@ -20,21 +20,25 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. 
  */
-#ifndef _ZF_SFML_ANIMATIONS_TEXTANIMATION_H_
-#define _ZF_SFML_ANIMATIONS_TEXTANIMATION_H_
+#ifndef _ZF_SFML_ANIMATIONS_SPRITEANIMATIONOBJECTREFERENCE_H_
+#define _ZF_SFML_ANIMATIONS_SPRITEANIMATIONOBJECTREFERENCE_H_
+
 #include "AnimationObject.hpp"
 
 #include <SFML/Graphics.hpp>
-class TextAnimationObject : public AnimationObject
+
+class SpriteReferenceAnimationObject : public AnimationObject
 {
     public:
-        TextAnimationObject(sf::Text text);
-        ~TextAnimationObject();
-        sf::Text _text;
-        void draw(sf::RenderWindow* window, sf::Time delta);
+        SpriteReferenceAnimationObject(sf::Sprite &sprite);
+        ~SpriteReferenceAnimationObject();
+        sf::Sprite &_sprite;
+
         void setAlpha(float alpha);
-        void setPosition(sf::Vector2f position);
-        void movePosition(sf::Vector2f move);
         void setColor(sf::Color color);
+        void setPosition(sf::Vector2f position);
+        void movePosition(sf::Vector2f position);
+        void draw(sf::RenderWindow* window, sf::Time delta);
 };
+
 #endif

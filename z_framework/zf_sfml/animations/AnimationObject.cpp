@@ -23,6 +23,7 @@
 #include "AnimationObject.hpp"
 #include "AnimationInstruction.hpp"
 AnimationObject::AnimationObject()
+    :_done(0)
 {
     this->_instruction = 0;
 }
@@ -41,8 +42,12 @@ bool AnimationObject::update(sf::RenderWindow* window, sf::Time delta)
     {
         return true;
     }
-    
-    return _instruction->update(window,delta,this);
+    bool doneness = _instruction->update(window,delta,this);
+    if(_done != 0)
+    {
+        *_done = doneness;
+    }
+    return doneness;
 }
 
 void AnimationObject::setInstruction(AnimationInstruction* instruction)
@@ -52,8 +57,16 @@ void AnimationObject::setInstruction(AnimationInstruction* instruction)
         delete _instruction;
     }
     this->_instruction = instruction;
+    if(_done != 0)
+    {
+        *_done = done();
+    }
 }
 
+void AnimationObject::setDoneVariable(bool* d)
+{
+    this->_done = d;
+}
 bool AnimationObject::done()
 {
     return _instruction == 0 ? true : _instruction->isDone(this);

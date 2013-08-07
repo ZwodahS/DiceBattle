@@ -20,21 +20,18 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. 
  */
-#ifndef _ZF_SFML_ANIMATIONS_TEXTANIMATION_H_
-#define _ZF_SFML_ANIMATIONS_TEXTANIMATION_H_
-#include "AnimationObject.hpp"
-
-#include <SFML/Graphics.hpp>
-class TextAnimationObject : public AnimationObject
+#ifndef _ZF_SFML_ANIMATIONS_WAITINSTRUCTION_H_
+#define _ZF_SFML_ANIMATIONS_WAITINSTRUCTION_H_
+#include "AnimationInstruction.hpp"
+class WaitInstruction : public AnimationInstruction
 {
     public:
-        TextAnimationObject(sf::Text text);
-        ~TextAnimationObject();
-        sf::Text _text;
-        void draw(sf::RenderWindow* window, sf::Time delta);
-        void setAlpha(float alpha);
-        void setPosition(sf::Vector2f position);
-        void movePosition(sf::Vector2f move);
-        void setColor(sf::Color color);
+        WaitInstruction(float waitTime);
+        ~WaitInstruction();
+
+        bool update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object);
+        bool isDone(AnimationObject* object);
+    private:
+        float waitTimeLeft;
 };
 #endif

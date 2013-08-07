@@ -26,6 +26,7 @@
 #include "FadeInstruction.hpp"
 #include "MoveToInstruction.hpp"
 #include "MoveInstruction.hpp"
+#include "WaitInstruction.hpp"
 #include <vector>
 class AnimationObject;
 class CompositeInstruction : public AnimationInstruction
@@ -48,10 +49,13 @@ class CompositeInstruction : public AnimationInstruction
 
         CompositeInstruction* moveTo(sf::Vector2f source, sf::Vector2f target, float delta);
         CompositeInstruction* move(sf::Vector2f moveVec, float duration);
+
+        CompositeInstruction* wait(float waitTime);
     private:
         std::vector<AnimationInstruction*> _instructions;
         bool _ordered;
         bool _done;
+        int currIn;
 };
 
 #endif

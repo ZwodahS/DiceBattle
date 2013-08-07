@@ -20,21 +20,33 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. 
  */
-#ifndef _ZF_SFML_ANIMATIONS_TEXTANIMATION_H_
-#define _ZF_SFML_ANIMATIONS_TEXTANIMATION_H_
-#include "AnimationObject.hpp"
+#include "iAnimatable.hpp"
 
-#include <SFML/Graphics.hpp>
-class TextAnimationObject : public AnimationObject
+void iAnimatable::draw(sf::RenderWindow& window, const sf::Time& delta)
 {
-    public:
-        TextAnimationObject(sf::Text text);
-        ~TextAnimationObject();
-        sf::Text _text;
-        void draw(sf::RenderWindow* window, sf::Time delta);
-        void setAlpha(float alpha);
-        void setPosition(sf::Vector2f position);
-        void movePosition(sf::Vector2f move);
-        void setColor(sf::Color color);
-};
-#endif
+}
+
+void iAnimatable::setPosition(sf::Vector2f position)
+{
+
+}
+
+void iAnimatable::setAlpha(float alpha)
+{
+
+}
+
+void iAnimatable::move(sf::Vector2f move)
+{
+
+}
+
+void iAnimatable::setColor(sf::Color color)
+{
+
+}
+
+sf::Vector2f iAnimatable::getPosition()
+{
+
+}

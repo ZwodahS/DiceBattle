@@ -4,17 +4,17 @@
 
 void Battle::gamelogic_startGame(const Unit& player1, const Unit& player2)
 {
+    viewer_sendStartGameMessages(player1, player2);
     _units[PlayerRole::PlayerOne] = player1;
     _units[PlayerRole::PlayerTwo] = player2;
-    viewer_sendStartGameMessages(player1, player2);
 }
 
 void Battle::gamelogic_setActiveTurn(const PlayerRole::ePlayerRole& cp, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen)
 {
+    viewer_sendActiveTurnMessages(cp, burn, available, frozen);
     _currentPlayer = cp;
     _units[_currentPlayer].currentHp -= burn;
     _units[_currentPlayer].burnCounter = _units[_currentPlayer].burnCounter > 0 ? _units[_currentPlayer].burnCounter - 1 : 0;
-    viewer_sendActiveTurnMessages(cp, burn, available, frozen);
 }
 
 void Battle::gamelogic_setDiceRolled(Die& die)
@@ -32,11 +32,11 @@ void Battle::gamelogic_setDiceRolled(Die& die)
 
 void Battle::gamelogic_setDiceRolled(std::vector<Die> dice)
 {
+    viewer_sendDiceRolledMessages(dice);
     for(std::vector<Die>::iterator it = dice.begin() ; it != dice.end() ; ++it)
     {
         gamelogic_setDiceRolled(*it);    
     }
-    viewer_sendDiceRolledMessages(dice);
 }
 
 void Battle::gamelogic_removeDice(std::vector<sf::Int32> dices)
@@ -57,6 +57,7 @@ void Battle::gamelogic_removeDice(std::vector<sf::Int32> dices)
 
 void Battle::gamelogic_abilityUsed(const PlayerRole::ePlayerRole& user, const Ability& abilityUsed, std::vector<sf::Int32> diceUsed)
 {
+    viewer_sendAbilityUsedMessages(user,abilityUsed,diceUsed);
     gamelogic_removeDice(diceUsed);
     Unit& userUnit = getUnit(user);
     Unit& opponentUnit = getUnit(PlayerRole::opponentOf(user));
@@ -98,15 +99,14 @@ void Battle::gamelogic_abilityUsed(const PlayerRole::ePlayerRole& user, const Ab
                 break;
         }
     }
-    viewer_sendAbilityUsedMessages(user,abilityUsed,diceUsed);
 }
 
 void Battle::gamelogic_endTurn()
 {
+    viewer_sendEndTurnMessages();
     Unit& currentUnit = getUnit(_currentPlayer);
     currentUnit.shockCounter = 0;
     currentUnit.freezeCounter = 0;
-    viewer_sendEndTurnMessages();
 }
 
 void Battle::gamelogic_endGame(PlayerRole::ePlayerRole winner)

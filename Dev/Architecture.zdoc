@@ -1,0 +1,69 @@
+==Battle==
+Each Battle object is either a "Server" or a "Client"
+If the battle object is a server, then it is the place where all the logic takes place.
+If the battle object is a client, then it will have a ServerUpdater as one of the updater. Furthermore, all "command" message will be sent to the server object instead of processing internally.
+    In the case the client is disconnected from the server, all views is also notified.
+    
+
+There is 2 part to the battle object. 
+    .1 GameViewer
+    .2 GameUpdater
+
+    ==GameViewer==
+    GameViewer provides the methods for the battle object to call when something is changed in the battle object. The GameViewer implmentation will decide what to do with the message.
+    For example, in the case if the viewer is a local UI, the message can be translated to an animation or be queued to be processed later.
+    in the case that the viewer is an "AI", it can update its internal state and decide if the message requires a response.
+    In the case that the viewer is a connection over the the net, then the message can be send across the net.
+
+    ==GameUpdater== 
+    GameUpdater will provide a message that can be read by the Battle object. The GameUpdater can be a local UI, AI. 
+    This allow Battle object to do things without caring the implementation on who is updating the battle object.
+
+The following example will show how the battle object will be like ideally.
+
+Consider the case that we have 2 Player, one hosting for the other.
+
+In the case of the host, the battle object will have the following viewers
+    .1 UIViewer(1)
+    .2 ClientViewer
+and the following updaters
+    .1 UIUpdater(1)
+    .2 ClientUpdater(1)
+
+For the second player, the battle object will have the following viewer
+    .1 UIViewer(2)
+and the following updaters
+    .1 UIUpdater(2)
+
+In the second player case, all message received by UIUpdater will be sent to the server.
+
+The following illustrates some typical case.
+
+So say that player one want to use an ability, it will be put a message in the UIUpdater(1). The battle object will read from it as process it internally, since it is the server.
+upon processing, it will produce a AbilityUsedMessage, assuming that it is a legal move, and send that message to both the UIViewer and a ClientViewer.
+
+On the side of player two, the battle object will receive the message from the BattleServer object, and update itself internally. After updating, it will forward the message to UIViewer(2)
+
+When player two use an ability, it will put the message in UIUpdater(2). In this case, when the battle object reads the message, it will realized that it cannot process the message, since it is the client.
+It will check internally if the player can perform the action. If it is a legal move, then the message is forward to the Server.
+
+On the side of player one, the battle object will receive the message from ClientUpdater(1), which will process it normally as though it come from a UIUpdater.
+
+Note that only the following messages that are "legal"
+
+Updaters - ClientUpdater|UIUpdater|AIUpdater
+.1 SendDoneCommand
+.2 SendRollCommand
+.3 SendUseAbilityCommand
+
+Viewers - ClientViewer|UIViewer|AIViewer
+.1 GameStartMessage
+.2 ActiveTurnMessage
+.3 AskForActionMessage
+.4 DiceRolledResultMessage
+.5 AbilityUsedMessage
+.6 EndTurnMessage
+.7 EndGameMessage
+
+
+In general, you can treat GameViewer as the place that update messages are sent to to notify the changes in a battle object. GameUpdater is then where the actions that a player can take are received from.

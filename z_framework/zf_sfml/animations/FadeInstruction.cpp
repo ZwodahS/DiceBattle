@@ -22,12 +22,11 @@
  */
 #include "FadeInstruction.hpp"
 #include "AnimationObject.hpp"
+#include <iostream>
 FadeInstruction::FadeInstruction(int startingAlpha, int endingAlpha, float time)
+    :_done(false), _currentAlpha(startingAlpha), _targetAlpha(endingAlpha), 
+    _changeAlpha((endingAlpha - startingAlpha)/ time), _direction( endingAlpha > startingAlpha ? 1 : -1)
 {
-    this->_done = false;
-    this->_currentAlpha = startingAlpha;
-    this->_targetAlpha = endingAlpha;
-    this->_changeAlpha = (endingAlpha - startingAlpha)/time;
 }
 FadeInstruction::FadeInstruction(const FadeInstruction &fi)
 {
@@ -35,21 +34,33 @@ FadeInstruction::FadeInstruction(const FadeInstruction &fi)
     this->_currentAlpha = fi._currentAlpha;
     this->_targetAlpha = fi._targetAlpha;
     this->_changeAlpha = fi._changeAlpha;
+    this->_direction = fi._direction;
 }
 FadeInstruction::~FadeInstruction()
 {
 }
-// fade assume that the target alpha is always less than current alpha.
 bool FadeInstruction::update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object)
 {
     if(!_done)
     {
         _currentAlpha += _changeAlpha * delta.asSeconds();
-        object->setAlpha(_currentAlpha);
-        if(_currentAlpha <= _targetAlpha)
+        if(_direction > 0) // increasing alpha
         {
-            _done = true;
+            if(_currentAlpha >= _targetAlpha) 
+            {
+                _done = true; 
+                _currentAlpha = _targetAlpha;
+            }
         }
+        else
+        {
+            if(_currentAlpha <= _targetAlpha)
+            {
+                _done = true;
+                _currentAlpha = _targetAlpha;
+            }
+        }
+        object->setAlpha(_currentAlpha);
     }
     return _done;
 }

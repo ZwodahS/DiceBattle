@@ -1,3 +1,5 @@
+#ifndef _Z_FRAMEWORK_ZFSFML_ANIMATIONS_ANIMATABLE_H_
+#define _Z_FRAMEWORK_ZFSFML_ANIMATIONS_ANIMATABLE_H_
 /*
  *           DO WHAT THE **** YOU WANT TO PUBLIC LICENSE
  *                   Version 2, December 2004
@@ -20,21 +22,20 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. 
  */
-#ifndef _ZF_SFML_ANIMATIONS_TEXTANIMATION_H_
-#define _ZF_SFML_ANIMATIONS_TEXTANIMATION_H_
-#include "AnimationObject.hpp"
-
+/**
+ * The idea behind iAnimatable is to provide a way to move things that are not part of sfml.
+ * When using iAnimatable, Simple Animator will not draw it.
+ *
+ */
 #include <SFML/Graphics.hpp>
-class TextAnimationObject : public AnimationObject
+class iAnimatable
 {
     public:
-        TextAnimationObject(sf::Text text);
-        ~TextAnimationObject();
-        sf::Text _text;
-        void draw(sf::RenderWindow* window, sf::Time delta);
-        void setAlpha(float alpha);
-        void setPosition(sf::Vector2f position);
-        void movePosition(sf::Vector2f move);
-        void setColor(sf::Color color);
+        virtual void setPosition(sf::Vector2f position);
+        virtual void setAlpha(float alpha);
+        virtual void move(sf::Vector2f move);
+        virtual void setColor(sf::Color color);
+        virtual sf::Vector2f getPosition();
+        virtual void draw(sf::RenderWindow& window, const sf::Time& delta);
 };
 #endif

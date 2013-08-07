@@ -23,13 +23,11 @@
 #include "MoveToInstruction.hpp"
 #include "AnimationObject.hpp"
 MoveToInstruction::MoveToInstruction(sf::Vector2f source, sf::Vector2f target, float delta)
+    :_done(false) , _position(source), _target(target), _move( (target - source)/ delta), _runtime(0), _totalTime(delta)
 {
-    this->_done = false;
-    this->_position = source;
-    this->_target = target;
-    this->_move = (_target - _position) / delta;
 }
 MoveToInstruction::MoveToInstruction(const MoveToInstruction &mi)
+    :_done(false), _position(mi._position), _move(mi._move), _target(mi._target), _runtime(mi._runtime), _totalTime(mi._totalTime)
 {
     this->_done = false;
     this->_position = mi._position;
@@ -46,9 +44,13 @@ bool MoveToInstruction::update(sf::RenderWindow* window, sf::Time delta, Animati
     if(!_done)
     {
         this->_position += _move * delta.asSeconds();
-        if(overShootDestination())
+        _runtime += delta.asSeconds();
+        // runtime is needed because if we have 2 moveto instruction you might screw up the timing and position
+        // and there may not be a terminating condition
+        if(overShootDestination() || _runtime >= _totalTime)
         {
             _done = true;
+            _position = _target;
         }
         object->setPosition(_position);
     }

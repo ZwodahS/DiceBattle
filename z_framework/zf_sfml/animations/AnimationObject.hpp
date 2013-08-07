@@ -36,11 +36,20 @@ class AnimationObject
         // return done().
         bool update(sf::RenderWindow* window, sf::Time delta);
         void setInstruction(AnimationInstruction* _instruction);
+        /**
+         * Use this to pass a boolean pointer to check if this animation is complete.
+         * This is probably the worst way to do it, but I have to stop working on framework and focus on the actual product for now.
+         * I will find another better method for this in the future.
+         * TODO
+         */
+        void setDoneVariable(bool* done);
         virtual void draw(sf::RenderWindow* window, sf::Time delta) = 0;
         virtual void setAlpha(float alpha) = 0;
         virtual void setPosition(sf::Vector2f position) = 0;
         virtual void movePosition(sf::Vector2f move) = 0;
+        virtual void setColor(sf::Color color) = 0;
     private:
+        bool* _done;
         AnimationInstruction* _instruction;
 };
 #endif

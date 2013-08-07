@@ -20,6 +20,21 @@ namespace DieFace
             default : return Sword;
         }
     }
+    eDieFace randomFace()
+    {
+        sf::Int32 intValue = rand() % 6; 
+        return toDieFace(intValue);
+    }
+    eDieFace randomFace(eDieFace f)
+    {
+        eDieFace finalFace = f;
+        while(finalFace == f)
+        {
+            sf::Int32 intValue = rand() % 6;
+            finalFace = toDieFace(intValue);
+        }
+        return finalFace;
+    }
 }
 
 sf::Packet& operator << (sf::Packet& packet, const DieFace::eDieFace& message)

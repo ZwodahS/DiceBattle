@@ -35,6 +35,7 @@ class FadeInstruction : public AnimationInstruction
         float _targetAlpha;
         float _changeAlpha; // per seconds
         float _currentAlpha;
+        float _direction;
         bool _done;
 };       
 #endif

@@ -6,15 +6,15 @@
 class Game;
 class Screen
 {
-    public:
-        Screen(Game& game);
-        ~Screen();
-        
-        virtual void draw(sf::RenderWindow& window, const sf::Time& delta) = 0;
-        virtual void update(sf::RenderWindow& window, const sf::Time& delta) = 0;
-    protected:
-        
-        Game& _game;
+public:
+    Screen(Game& game);
+    ~Screen();
+    
+    virtual void draw(sf::RenderWindow& window, const sf::Time& delta) = 0;
+    virtual void update(sf::RenderWindow& window, const sf::Time& delta) = 0;
+protected:
+    
+    Game& _game;
         
 
 };

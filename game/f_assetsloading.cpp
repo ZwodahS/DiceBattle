@@ -9,7 +9,7 @@ void Game::loadAssets()
     assets.placeholderTexture.create(1200,1200);
     
     sf::Image image;
-    //assets.scoreFont.loadFromFile("assets/fonts/sofachrome.ttf");
+    assets.gameScreenAssets.abilityFont.loadFromFile("data/fonts/upheavtt.ttf");
     
     //create the placeholder spritesheet
     assets.placeHolder.spriteSheet.create(&assets.placeholderTexture,sf::IntRect(0,0,1000,1000));
@@ -32,7 +32,7 @@ void Game::loadAssets()
     assets.placeHolder.sq150 = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,150));
 
 
-    assets.icons.spriteSheet = assets.masterS1.createSubSheet(sf::Vector2i(0,0), sf::IntRect(0,0,48,48), 20, 0);
+    assets.icons.spriteSheet = assets.masterS1.createSubSheet(sf::Vector2i(0,0), sf::IntRect(0,0,48,48), 0, 20);
     
     image.loadFromFile("data/graphics/icons/sword.png");
     assets.icons.sword = assets.icons.spriteSheet.createRegion(image);

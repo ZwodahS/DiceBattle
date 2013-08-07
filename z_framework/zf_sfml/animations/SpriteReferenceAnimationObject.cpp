@@ -20,40 +20,41 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. 
  */
-#include "SpriteAnimationObject.hpp"
-SpriteAnimationObject::SpriteAnimationObject(sf::Sprite sprite)
+#include "SpriteReferenceAnimationObject.hpp"
+#include <iostream>
+SpriteReferenceAnimationObject::SpriteReferenceAnimationObject(sf::Sprite &sprite)
     :_sprite(sprite)
 {
 }
 
-SpriteAnimationObject::~SpriteAnimationObject()
+SpriteReferenceAnimationObject::~SpriteReferenceAnimationObject()
 {
 }
 
-void SpriteAnimationObject::setAlpha(float alpha)
+void SpriteReferenceAnimationObject::setAlpha(float alpha)
 {
     sf::Color color = this->_sprite.getColor();
     color.a = alpha;
     this->_sprite.setColor(color);
 }
 
-void SpriteAnimationObject::setPosition(sf::Vector2f position)
+void SpriteReferenceAnimationObject::setPosition(sf::Vector2f position)
 {
     this->_sprite.setPosition(position);
 }
 
-void SpriteAnimationObject::movePosition(sf::Vector2f moves)
+void SpriteReferenceAnimationObject::movePosition(sf::Vector2f moves)
 {
     sf::Vector2f position = this->_sprite.getPosition();
     this->_sprite.setPosition(position + moves);
 }
 
-void SpriteAnimationObject::draw(sf::RenderWindow* window, sf::Time delta)
+void SpriteReferenceAnimationObject::draw(sf::RenderWindow* window, sf::Time delta)
 {
-    window->draw(this->_sprite);
+    // For Reference object, do not draw. 
 }
 
-void SpriteAnimationObject::setColor(sf::Color color)
+void SpriteReferenceAnimationObject::setColor(sf::Color color)
 {
-    this->_sprite.setColor(color);
+    _sprite.setColor(color);
 }

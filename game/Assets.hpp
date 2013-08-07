@@ -2,7 +2,8 @@
 #define _GAME_ASSETS_
 #include "../z_framework/zf_sfml/SpriteSheet.hpp"
 #include "../z_framework/zf_sfml/TextureRegion.hpp"
-
+#include "constants/DieFace.hpp"
+#include "constants/AbilityType.hpp"
 
 struct IconAssets
 {
@@ -24,7 +25,7 @@ struct IconAssets
 
     TextureRegion heart;
     TextureRegion heal;
-
+    
     TextureRegion die;
     SpriteSheet spriteSheet;
 };
@@ -36,6 +37,7 @@ struct GameScreenAssets
     //480 x 40
     TextureRegion abilityStrip;
 
+    sf::Font abilityFont;
     SpriteSheet spriteSheet;
 };
 
@@ -61,5 +63,7 @@ struct Assets
     sf::Texture master1;
     SpriteSheet masterS1;
     sf::Texture placeholderTexture;
+    sf::Sprite getSprite(DieFace::eDieFace);
+    sf::Sprite getSprite(AbilityType::eAbilityType);
 };
 #endif

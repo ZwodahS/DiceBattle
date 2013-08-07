@@ -4,6 +4,41 @@
 #include "../z_framework/zf_sfml/TextureRegion.hpp"
 
 
+struct IconAssets
+{
+    TextureRegion sword;
+    TextureRegion magical;
+    TextureRegion physical; 
+    
+    TextureRegion armor;
+    TextureRegion shield;
+
+    TextureRegion burnt;
+    TextureRegion fire;
+
+    TextureRegion frozen;
+    TextureRegion ice;
+
+    TextureRegion stunned;
+    TextureRegion shock;
+
+    TextureRegion heart;
+    TextureRegion heal;
+
+    TextureRegion die;
+    SpriteSheet spriteSheet;
+};
+
+struct GameScreenAssets
+{
+    //270 x 100
+    TextureRegion characterSheet;
+    //480 x 40
+    TextureRegion abilityStrip;
+
+    SpriteSheet spriteSheet;
+};
+
 // Some placeholder assets that can be use to get started
 struct PlaceHolderAssets
 {
@@ -21,6 +56,8 @@ struct PlaceHolderAssets
 struct Assets
 {
     PlaceHolderAssets placeHolder;
+    IconAssets icons;
+    GameScreenAssets gameScreenAssets;
     sf::Texture master1;
     SpriteSheet masterS1;
     sf::Texture placeholderTexture;

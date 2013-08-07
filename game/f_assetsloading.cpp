@@ -30,4 +30,41 @@ void Game::loadAssets()
     assets.placeHolder.sq48 = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,48,48));
     assets.placeHolder.sq38 = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,38,38));
     assets.placeHolder.sq150 = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,150));
+
+
+    assets.icons.spriteSheet = assets.masterS1.createSubSheet(sf::Vector2i(0,0), sf::IntRect(0,0,48,48), 20, 0);
+    
+    image.loadFromFile("data/graphics/icons/sword.png");
+    assets.icons.sword = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/magical.png");
+    assets.icons.magical = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/physical.png");
+    assets.icons.physical = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/armor.png");
+    assets.icons.armor = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/shield.png");
+    assets.icons.shield = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/burnt.png");
+    assets.icons.burnt = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/fire.png");
+    assets.icons.fire = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/frozen.png");
+    assets.icons.frozen = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/ice.png");
+    assets.icons.ice = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/stunned.png");
+    assets.icons.stunned = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/shock.png");
+    assets.icons.shock = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/heart.png");
+    assets.icons.heart = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/icons/heal.png");
+    assets.icons.heal = assets.icons.spriteSheet.createRegion(image);
+    image.loadFromFile("data/graphics/die.png");
+    assets.icons.die = assets.icons.spriteSheet.createRegion(image);
+
+    image.loadFromFile("data/graphics/abilityStrip.png");
+    assets.gameScreenAssets.abilityStrip = assets.masterS1.createRegion(image, 0, 50);
+    image.loadFromFile("data/graphics/charactersheet.png");
+    assets.gameScreenAssets.characterSheet = assets.masterS1.createRegion(image,0, 100);
 }

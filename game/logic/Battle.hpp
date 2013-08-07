@@ -3,6 +3,7 @@
 #include "Unit.hpp"
 #include "Ability.hpp"
 #include "../constants.hpp"
+#include "../messages/Message.hpp"
 class GameViewer;
 class GameUpdater;
 class BattleServer;
@@ -26,7 +27,22 @@ public:
     const bool isServer;
     const PlayerRole::ePlayerRole& currentPlayer;
 
+    /**
+     * Check for all updater for message.
+     */
+    void update();
+
 private:
+    /**
+     * process message from server, if this is a client
+     */
+    void processServerMessage(Message* message);
+    /** 
+     * process message from any input.
+     * only allow command type message.
+     */
+    void processClientMessage(PlayerRole::ePlayerRole actor, Message* message);
+
     Unit& getUnit(PlayerRole::ePlayerRole player);
     /**
      * If this is not a server, then this will store the server that this battle object 
@@ -92,5 +108,11 @@ private:
      * End the game.
      */
     void gamelogic_endGame(PlayerRole::ePlayerRole winner);
+
+    //// The following are for receiving commands from gameupdater ////
+
+    void gamelogic_receivedDoneCommand();
+    void gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId);
+    void gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, const std::vector<sf::Int32>& diceUsed);
 };
 #endif

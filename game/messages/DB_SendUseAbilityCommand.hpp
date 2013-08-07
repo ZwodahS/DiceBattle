@@ -5,8 +5,7 @@
 struct DB_SendUseAbilityCommand : public Message
 {
     DB_SendUseAbilityCommand();
-    DB_SendUseAbilityCommand(PlayerRole::ePlayerRole user, Ability abilityUsed, std::vector<sf::Int32> diceUsed);
-    PlayerRole::ePlayerRole user;
+    DB_SendUseAbilityCommand(Ability abilityUsed, std::vector<sf::Int32> diceUsed);
     Ability abilityUsed;
     std::vector<sf::Int32> diceUsed;
 };

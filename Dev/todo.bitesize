@@ -1,0 +1,29 @@
+
+Steps:
+    $ Finish the local 2 player game first. This will test the game logic and make sure it works.
+        $ Finish the game logic.
+        $ Finish the input handling code.
+            + make it generic so that if the game is a lobby game or peer to peer game, there is no effect.
+    $ Allow for hosting and peer to peer playing. (no observer)
+    $ Create code for lobby connection
+        + This should be create as part of z_framework as zf_lobby
+    $ Start a game in lobby mode.
+    $ Allow for observer to join in the middle of the game.
+        + This means that the lobby code should have some support for this.
+
+Task at hand:
+    $ Need a Rule class to store all the ability in the game.
+        + the rule object is created locally. It is used for local game.
+        + However, in the case of a network game, the rule will be received from the server upon connecting.
+        + In the case of a lobby style game, the rule will be saved when the client connects to the server.
+    $ Need Input handling for GameScreen
+
+Other Screens:
+    $ Starting Screen
+        buttons for the respective game.
+        # new game + choose AI
+        # connect to peer
+        # host
+        # connect to lobby
+        # help manual
+        # exit

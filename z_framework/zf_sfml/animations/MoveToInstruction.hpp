@@ -29,8 +29,8 @@ class MoveToInstruction : public AnimationInstruction
         MoveToInstruction(sf::Vector2f source, sf::Vector2f target, float delta);
         MoveToInstruction(const MoveToInstruction &mi);
         ~MoveToInstruction();
-        bool update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object);
-        bool isDone(AnimationObject* object);
+        bool update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object);
+        bool isDone(AnimationObject& object);
     
     private:
         sf::Vector2f _position;

@@ -4,6 +4,7 @@
 #include "screens/GameScreenViewer.hpp"
 #include "logic/GeneralUpdater.hpp"
 #include "logic/Battle.hpp"
+#include "../z_framework/zf_common/debugging.hpp"
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #define CLEAR_COLOR sf::Color(20,20,20,255)
@@ -17,6 +18,8 @@ Game::Game()
 {
     window.setFramerateLimit(50);
     loadAssets();
+    rules.loadFromFile("data/default.rule");
+    rules.sortAbilities();
 }
 
 Game::~Game()
@@ -31,8 +34,12 @@ void Game::run()
 {
     GameScreenViewer viewer(PlayerRole::Both);
     GeneralUpdater updater(PlayerRole::Both);
-    Battle _currentBattle;
-    _currentScreen = new GameScreen(*this, _currentBattle, PlayerRole::Both, viewer,updater);
+    _currentBattle = new Battle();
+    _currentScreen = new GameScreen(*this, *_currentBattle, PlayerRole::Both, viewer,updater);
+    viewer.setGameScreen((GameScreen*)_currentScreen);
+    _currentBattle->addGameViewer(&viewer);
+    _currentBattle->addGameUpdater(&updater);
+    _currentBattle->startGame(this->rules, "PlayerOne", "PlayerTwo");
     // set up the clock for delta
     sf::Clock clock; 
     bool quit = false;
@@ -67,6 +74,10 @@ void Game::run()
 
 void Game::update(sf::Time& delta)
 {
+    if(_currentBattle != 0)
+    {
+        _currentBattle->update();
+    }
     if(_currentScreen != 0)
     {
         _currentScreen->update(window, delta);

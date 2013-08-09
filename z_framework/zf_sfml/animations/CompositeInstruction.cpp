@@ -52,7 +52,7 @@ CompositeInstruction* CompositeInstruction::addInstruction(MoveToInstruction mi)
     return this;
 }
 
-bool CompositeInstruction::update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object)
+bool CompositeInstruction::update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object)
 {
     if(!_done)
     {
@@ -92,7 +92,7 @@ bool CompositeInstruction::update(sf::RenderWindow* window, sf::Time delta, Anim
     return _done;
 }
 
-bool CompositeInstruction::isDone(AnimationObject* object)
+bool CompositeInstruction::isDone(AnimationObject& object)
 {
     return _done;
 }

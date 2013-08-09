@@ -2,12 +2,13 @@
 #define _GAME_GAME_H_
 
 #include "Assets.hpp"
+#include "logic/Rules.hpp"
 #include "../z_framework/zf_sfml/Mouse.hpp"
 #include <SFML/Graphics.hpp>
-
 #include <string>
 #include <iostream>
 class Screen;
+class Battle;
 class Game
 {
     public:
@@ -24,12 +25,14 @@ class Game
         sf::RenderWindow window; 
         zf::Mouse mouse;
         Assets assets;
+        Rules rules;
         void loadAssets();
     private:
         void update(sf::Time& delta);
         void draw(sf::Time& delta);
         
         Screen* _currentScreen;        
+        Battle* _currentBattle;
 };
 
 

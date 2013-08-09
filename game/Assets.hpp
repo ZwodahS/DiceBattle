@@ -26,7 +26,6 @@ struct IconAssets
     TextureRegion heart;
     TextureRegion heal;
     
-    TextureRegion die;
     SpriteSheet spriteSheet;
 };
 
@@ -36,7 +35,11 @@ struct GameScreenAssets
     TextureRegion characterSheet;
     //480 x 40
     TextureRegion abilityStrip;
-
+    TextureRegion die;
+    TextureRegion rollButton;
+    TextureRegion rollButtonSelected;
+    TextureRegion doneButton;
+    TextureRegion doneButtonSelected;
     sf::Font abilityFont;
     SpriteSheet spriteSheet;
 };

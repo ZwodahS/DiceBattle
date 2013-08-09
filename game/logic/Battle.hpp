@@ -2,6 +2,7 @@
 #define _GAME_LOGIC_BATTLE_H_
 #include "Unit.hpp"
 #include "Ability.hpp"
+#include "Rules.hpp"
 #include "../constants.hpp"
 #include "../messages/Message.hpp"
 class GameViewer;
@@ -21,6 +22,14 @@ public:
      */
     Battle();
     ~Battle();
+    enum BattleState
+    {
+        PreGame, // Before "startGame" is called.
+        PreRoll, // When a player's turn has been set and he has not roll any dice yet.
+        DiceRolled, // Dice has been rolled. Cannot reroll. Must choose use ability.
+        DiceRolledAbilityUsed, // Dice has been rolled and at least one ability has been used. Either choose reroll / done / use ability
+        GameEnded,
+    };
     void addGameViewer(GameViewer* viewer);
     void addGameUpdater(GameUpdater* updater);
 
@@ -31,7 +40,13 @@ public:
      * Check for all updater for message.
      */
     void update();
-
+    void startGame(Rules& rule, std::string p1, std::string p2);
+    /**
+     * Returns a list of dice matching the id. This will return as many as possible.
+     */
+    std::vector<Die> findDice(std::vector<sf::Int32> ids);
+    Die findDie(sf::Int32 dieId);
+    Unit& getUnit(PlayerRole::ePlayerRole player);
 private:
     /**
      * process message from server, if this is a client
@@ -43,7 +58,8 @@ private:
      */
     void processClientMessage(PlayerRole::ePlayerRole actor, Message* message);
 
-    Unit& getUnit(PlayerRole::ePlayerRole player);
+    Rules* _rules;
+    BattleState _battleState;
     /**
      * If this is not a server, then this will store the server that this battle object 
      * can get the updates from.
@@ -72,8 +88,8 @@ private:
     std::vector<GameUpdater*> _updaters;
 
     ///// Message Sending to viewers /////
-    void viewer_sendStartGameMessages(const Unit& player1, const Unit& player2);
-    void viewer_sendActiveTurnMessages(const PlayerRole::ePlayerRole& currentPlayer, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen);
+    void viewer_sendStartGameMessages(const Rules& rules, const Unit& player1, const Unit& player2);
+    void viewer_sendActiveTurnMessages(const PlayerRole::ePlayerRole& currentPlayer, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen, std::vector<Die> dice);
     void viewer_sendDiceRolledMessages(std::vector<Die> dice);
     void viewer_sendAbilityUsedMessages(const PlayerRole::ePlayerRole& user, const Ability& abilityUsed, std::vector<sf::Int32> diceUsed);
     void viewer_sendEndTurnMessages();
@@ -84,11 +100,11 @@ private:
     /**
      * Initialize the game.
      */
-    void gamelogic_startGame(const Unit& player1, const Unit& player2);
+    void gamelogic_startGame(Rules& rules, const Unit& player1, const Unit& player2);
     /**
      * Set the active player turn
      */
-    void gamelogic_setActiveTurn(const PlayerRole::ePlayerRole& currentPlayer, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen);
+    void gamelogic_setActiveTurn(const PlayerRole::ePlayerRole& currentPlayer, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen, std::vector<Die> dice);
     /**
      * Set the dice rolled
      */
@@ -111,8 +127,8 @@ private:
 
     //// The following are for receiving commands from gameupdater ////
 
-    void gamelogic_receivedDoneCommand();
-    void gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId);
-    void gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, const std::vector<sf::Int32>& diceUsed);
+    bool gamelogic_receivedDoneCommand();
+    bool gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId);
+    bool gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, const std::vector<sf::Int32>& diceUsed);
 };
 #endif

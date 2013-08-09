@@ -36,7 +36,7 @@ class AnimatableObject : public AnimationObject
         void setPosition(sf::Vector2f position);
         void movePosition(sf::Vector2f position);
         void setColor(sf::Color color);
-        void draw(sf::RenderWindow* window, sf::Time delta);
+        void draw(sf::RenderWindow& window, sf::Time delta);
     private:
         iAnimatable& _animatable;
         bool _isPtr;

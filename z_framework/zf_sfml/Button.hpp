@@ -35,16 +35,13 @@ namespace zf
             sf::Sprite selectedSprite;
             sf::Sprite unselectedSprite;
             void setPosition(sf::Vector2f position);
-
-            void setSelected(bool selection);
             void updateSelection(sf::Vector2f mousePos);
             Button(const Button &button);
             Button(sf::Sprite selectedSprite, sf::Sprite unselectedSprite, sf::FloatRect size);
             Button();
             ~Button();
 
-
-            void draw(sf::RenderWindow *window, sf::Time delta);
+            void draw(sf::RenderWindow& window, sf::Time delta);
             const sf::FloatRect &clickBound;
             const bool& selected;
 
@@ -52,6 +49,7 @@ namespace zf
         private:
             sf::FloatRect _clickBound;
             bool _selected;
+            void setSelected(bool selection);
     };
 }
 #endif

@@ -30,8 +30,8 @@ class AnimationInstruction
     public:
         AnimationInstruction();
         ~AnimationInstruction();
-        virtual bool update(sf::RenderWindow* window, sf::Time delta,AnimationObject* object) = 0;
-        virtual bool isDone(AnimationObject* object) = 0;
+        virtual bool update(sf::RenderWindow& window, sf::Time delta,AnimationObject& object) = 0;
+        virtual bool isDone(AnimationObject& object) = 0;
 };
 #endif
 

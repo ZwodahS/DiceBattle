@@ -39,8 +39,8 @@ namespace zf
             void update(sf::Time delta);
             void update(sf::Time delta, sf::Int32 wheelDelta);
             sf::Vector2i getPosition();
-            sf::Vector2i getPosition(sf::Window &window);
-            sf::Vector2f getWorldPosition(sf::RenderWindow &window);
+            sf::Vector2i getPosition(sf::Window& window);
+            sf::Vector2f getWorldPosition(sf::RenderWindow& window);
             Mouse();
             ~Mouse();
     };

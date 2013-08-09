@@ -2,25 +2,25 @@
 #include "GameViewer.hpp"
 #include "GameUpdater.hpp"
 #include "../messages/g_messages.hpp"
-
-void Battle::viewer_sendStartGameMessages(const Unit& player1, const Unit& player2)
+#include "../../z_framework/zf_common/debugging.hpp"
+void Battle::viewer_sendStartGameMessages(const Rules& rules, const Unit& player1, const Unit& player2)
 {
     for(std::vector<GameViewer*>::iterator it = _viewers.begin() ; it != _viewers.end() ; ++it)
     {
         if((**it).isConnected())
         {
-            DB_GameStartMessage message(player1, player2);
+            DB_GameStartMessage message(rules,player1, player2);
             (**it).sendMessage(message);
         }
     }
 }
-void Battle::viewer_sendActiveTurnMessages(const PlayerRole::ePlayerRole& currentPlayer, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen)
+void Battle::viewer_sendActiveTurnMessages(const PlayerRole::ePlayerRole& currentPlayer, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen, std::vector<Die> dice)
 {
     for(std::vector<GameViewer*>::iterator it = _viewers.begin() ; it != _viewers.end() ; ++it)
     {
         if((**it).isConnected())
         {
-            DB_ActiveTurnMessage message(currentPlayer, burn, available, frozen);
+            DB_ActiveTurnMessage message(currentPlayer, burn, available, frozen,dice);
             (**it).sendMessage(message);
         }
     }

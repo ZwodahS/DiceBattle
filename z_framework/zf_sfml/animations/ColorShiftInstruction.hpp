@@ -29,8 +29,8 @@ public:
     ColorShiftInstruction(sf::Color& startingColor, sf::Color& endingColor, float time);
     ~ColorShiftInstruction();
 
-    bool update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object);
-    bool isDone(AnimationObject* object);
+    bool update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object);
+    bool isDone(AnimationObject& object);
 
     // the current value 
     float _red;

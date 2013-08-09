@@ -31,7 +31,7 @@ class TextAnimationObject : public AnimationObject
         TextAnimationObject(sf::Text text);
         ~TextAnimationObject();
         sf::Text _text;
-        void draw(sf::RenderWindow* window, sf::Time delta);
+        void draw(sf::RenderWindow& window, sf::Time delta);
         void setAlpha(float alpha);
         void setPosition(sf::Vector2f position);
         void movePosition(sf::Vector2f move);

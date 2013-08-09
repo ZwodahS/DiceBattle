@@ -48,9 +48,9 @@ void SpriteAnimationObject::movePosition(sf::Vector2f moves)
     this->_sprite.setPosition(position + moves);
 }
 
-void SpriteAnimationObject::draw(sf::RenderWindow* window, sf::Time delta)
+void SpriteAnimationObject::draw(sf::RenderWindow& window, sf::Time delta)
 {
-    window->draw(this->_sprite);
+    window.draw(this->_sprite);
 }
 
 void SpriteAnimationObject::setColor(sf::Color color)

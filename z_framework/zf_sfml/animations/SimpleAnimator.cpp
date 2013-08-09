@@ -38,7 +38,7 @@ SimpleAnimator::~SimpleAnimator()
     }
 }
 
-void SimpleAnimator::draw(sf::RenderWindow* window, sf::Time delta)
+void SimpleAnimator::draw(sf::RenderWindow& window, sf::Time delta)
 {
     for(int i = 0 ; i < objects.size() ; i++)
     {
@@ -46,7 +46,7 @@ void SimpleAnimator::draw(sf::RenderWindow* window, sf::Time delta)
     }
 }
 
-void SimpleAnimator::update(sf::RenderWindow* window, sf::Time delta)
+void SimpleAnimator::update(sf::RenderWindow& window, sf::Time delta)
 {
     for(int i = objects.size() - 1 ; i >= 0 ; i--)
     {

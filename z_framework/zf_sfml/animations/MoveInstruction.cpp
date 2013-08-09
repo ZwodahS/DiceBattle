@@ -42,7 +42,7 @@ MoveInstruction::~MoveInstruction()
 {
 }
 
-bool MoveInstruction::update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object)
+bool MoveInstruction::update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object)
 {
     if(!_done)
     {
@@ -53,12 +53,12 @@ bool MoveInstruction::update(sf::RenderWindow* window, sf::Time delta, Animation
             moveTime -= (_timeCurrent - _timeMax);
             _done = true;
         }
-        object->movePosition(moveTime * _moveVector);
+        object.movePosition(moveTime * _moveVector);
     }
     return _done;
 }
 
-bool MoveInstruction::isDone(AnimationObject* object)
+bool MoveInstruction::isDone(AnimationObject& object)
 {
     return _done;
 }

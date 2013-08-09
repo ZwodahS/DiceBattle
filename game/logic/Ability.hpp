@@ -32,4 +32,8 @@ public:
 
 sf::Packet& operator << (sf::Packet& packet, const Ability& message);
 sf::Packet& operator >> (sf::Packet& packet, Ability& message);
+
+bool operator==(const Ability& lhs, const Ability& rhs);
+bool operator!=(const Ability& lhs, const Ability& rhs);
+
 #endif

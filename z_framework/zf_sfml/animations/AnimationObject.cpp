@@ -36,13 +36,13 @@ AnimationObject::~AnimationObject()
     }
 }
 
-bool AnimationObject::update(sf::RenderWindow* window, sf::Time delta)
+bool AnimationObject::update(sf::RenderWindow& window, sf::Time delta)
 {
     if(done())
     {
         return true;
     }
-    bool doneness = _instruction->update(window,delta,this);
+    bool doneness = _instruction->update(window,delta,*this);
     if(_done != 0)
     {
         *_done = doneness;
@@ -69,5 +69,5 @@ void AnimationObject::setDoneVariable(bool* d)
 }
 bool AnimationObject::done()
 {
-    return _instruction == 0 ? true : _instruction->isDone(this);
+    return _instruction == 0 ? true : _instruction->isDone(*this);
 }

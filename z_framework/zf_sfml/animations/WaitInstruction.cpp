@@ -4,7 +4,7 @@ WaitInstruction::WaitInstruction(float waitTime)
 {
 }
 
-bool WaitInstruction::update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object)
+bool WaitInstruction::update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object)
 {
     if(waitTimeLeft < 0)
     {
@@ -14,7 +14,7 @@ bool WaitInstruction::update(sf::RenderWindow* window, sf::Time delta, Animation
     return false;
 }
 
-bool WaitInstruction::isDone(AnimationObject* object)
+bool WaitInstruction::isDone(AnimationObject& object)
 {
     return waitTimeLeft < 0;
 }

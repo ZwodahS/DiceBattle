@@ -25,4 +25,8 @@ struct AbilityEffect
 
 sf::Packet& operator << (sf::Packet& packet, const AbilityEffect& message);
 sf::Packet& operator >> (sf::Packet& packet, AbilityEffect& message);
+
+bool operator==(const AbilityEffect& lhs, const AbilityEffect& rhs);
+bool operator!=(const AbilityEffect& lhs, const AbilityEffect& rhs);
+
 #endif

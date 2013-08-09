@@ -38,9 +38,9 @@ class SimpleAnimator
         SimpleAnimator();
         ~SimpleAnimator();
         // update the simple animator. All managed objects will be updated.    
-        void update(sf::RenderWindow* window, sf::Time delta);
+        void update(sf::RenderWindow& window, sf::Time delta);
         // draw all the objects managed by this animators.
-        void draw(sf::RenderWindow* window, sf::Time delta);
+        void draw(sf::RenderWindow& window, sf::Time delta);
         // fade a sprite
         void fade(sf::Sprite sprite,int targetAlpha,float time);
         void fadeReference(sf::Sprite& sprite, int targetAlpha, float time);

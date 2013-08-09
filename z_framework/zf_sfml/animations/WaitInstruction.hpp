@@ -29,8 +29,8 @@ class WaitInstruction : public AnimationInstruction
         WaitInstruction(float waitTime);
         ~WaitInstruction();
 
-        bool update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object);
-        bool isDone(AnimationObject* object);
+        bool update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object);
+        bool isDone(AnimationObject& object);
     private:
         float waitTimeLeft;
 };

@@ -15,12 +15,14 @@ public:
     Rules(std::vector<Ability> abilities, sf::Int32 unitHp, std::vector<Die> dice);
     void overwrite(std::vector<Ability> abilities, sf::Int32 unitHp, std::vector<Die> dice);
     sf::Int32 getStartingHp() const;
+
+    bool containsAbility(const Ability& ability) const;
     const std::vector<Die>& getDice() const;
     const std::vector<Ability>& getAbilities() const;
     
     bool loadFromFile(std::string filename);
     bool isLoaded();
-    void print();
+    void sortAbilities();
 private:
     sf::Int32 _startingHp;
     std::vector<Ability> _abilities;

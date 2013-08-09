@@ -11,6 +11,8 @@ public:
     ~Die();
     // store the position of the die.
     sf::Int32 id;
+    bool rolled;
+    bool frozen;
     DieFace::eDieFace currentFace;
     std::vector<DieFace::eDieFace> faces;
 

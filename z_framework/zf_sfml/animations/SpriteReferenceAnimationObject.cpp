@@ -49,7 +49,7 @@ void SpriteReferenceAnimationObject::movePosition(sf::Vector2f moves)
     this->_sprite.setPosition(position + moves);
 }
 
-void SpriteReferenceAnimationObject::draw(sf::RenderWindow* window, sf::Time delta)
+void SpriteReferenceAnimationObject::draw(sf::RenderWindow& window, sf::Time delta)
 {
     // For Reference object, do not draw. 
 }

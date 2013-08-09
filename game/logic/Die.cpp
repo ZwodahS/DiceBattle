@@ -1,13 +1,13 @@
 #include "Die.hpp"
 
 Die::Die()
-    :id(0), currentFace(DieFace::Sword)
+    :id(-1), currentFace(DieFace::Sword), frozen(false), rolled(false)
 {
 
 }
 
 Die::Die(sf::Int32 i, std::vector<DieFace::eDieFace> f)
-    :id(i), faces(f), currentFace(f.size () > 0 ? f[0] : DieFace::Sword)
+    :id(i), faces(f), currentFace(f.size () > 0 ? f[0] : DieFace::Sword), frozen(false), rolled(false)
 {
 }
 
@@ -25,13 +25,17 @@ void Die::setCurrentFace(sf::Int32 faceIndex)
 
 void Die::roll()
 {
-    sf::Int32 r = rand() % faces.size(); 
-    currentFace = faces[r];
+    if(!frozen)
+    {
+        sf::Int32 r = rand() % faces.size(); 
+        currentFace = faces[r];
+        rolled = true;
+    }
 }
 
 sf::Packet& operator << (sf::Packet& packet, const Die& message)
 {
-    packet << message.id << message.currentFace;
+    packet << message.id << message.currentFace << message.frozen << message.rolled;
     sf::Int32 size = message.faces.size();
     packet << size;
     for(std::vector<DieFace::eDieFace>::const_iterator it = message.faces.begin() ; it != message.faces.end() ; ++it)
@@ -42,7 +46,7 @@ sf::Packet& operator << (sf::Packet& packet, const Die& message)
 }
 sf::Packet& operator >> (sf::Packet& packet, Die& message)
 {
-    packet >> message.id >> message.currentFace;;
+    packet >> message.id >> message.currentFace >> message.frozen >> message.rolled;
     sf::Int32 size;
     packet >> size;
     message.faces.clear();

@@ -2,7 +2,7 @@
 #include "GameScreen.hpp"
 
 GameScreenViewer::GameScreenViewer(PlayerRole::ePlayerRole r)
-    :GameViewer(r)
+    :GameViewer(r), gameScreen(0)
 {
 }
 
@@ -13,7 +13,7 @@ void GameScreenViewer::setGameScreen(GameScreen* gameScreen)
 
 bool GameScreenViewer::isConnected()
 {
-    return true;
+    return this->gameScreen != 0 ;
 }
 
 void GameScreenViewer::sendMessage(DB_GameStartMessage message)

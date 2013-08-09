@@ -30,9 +30,9 @@ TextAnimationObject::~TextAnimationObject()
 {
 }
 
-void TextAnimationObject::draw(sf::RenderWindow* window, sf::Time delta)
+void TextAnimationObject::draw(sf::RenderWindow& window, sf::Time delta)
 {
-    window->draw(this->_text);
+    window.draw(this->_text);
 }
 
 void TextAnimationObject::setAlpha(float alpha)

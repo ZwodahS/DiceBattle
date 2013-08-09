@@ -32,7 +32,7 @@ void Game::loadAssets()
     assets.placeHolder.sq150 = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,150));
 
 
-    assets.icons.spriteSheet = assets.masterS1.createSubSheet(sf::Vector2i(0,0), sf::IntRect(0,0,48,48), 0, 20);
+    assets.icons.spriteSheet = assets.masterS1.createSubSheet(sf::Vector2i(0,0), sf::IntRect(0,0,34,34), 0, 20);
     
     image.loadFromFile("data/graphics/icons/sword.png");
     assets.icons.sword = assets.icons.spriteSheet.createRegion(image);
@@ -61,10 +61,16 @@ void Game::loadAssets()
     image.loadFromFile("data/graphics/icons/heal.png");
     assets.icons.heal = assets.icons.spriteSheet.createRegion(image);
     image.loadFromFile("data/graphics/die.png");
-    assets.icons.die = assets.icons.spriteSheet.createRegion(image);
+    assets.gameScreenAssets.die = assets.masterS1.createRegion(image,0,600);
 
-    image.loadFromFile("data/graphics/abilityStrip.png");
-    assets.gameScreenAssets.abilityStrip = assets.masterS1.createRegion(image, 0, 50);
+    assets.gameScreenAssets.abilityStrip = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,540,40));
+    assets.gameScreenAssets.rollButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,75,25));
+    assets.gameScreenAssets.rollButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,75,25));
+    assets.gameScreenAssets.rollButtonSelected.defaultColor = sf::Color(80,80,180,255);
+    assets.gameScreenAssets.doneButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,75,25));
+    assets.gameScreenAssets.doneButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,75,25));
+    assets.gameScreenAssets.doneButtonSelected.defaultColor = sf::Color(80,80,180,255);
+
     image.loadFromFile("data/graphics/charactersheet.png");
     assets.gameScreenAssets.characterSheet = assets.masterS1.createRegion(image,0, 100);
 }

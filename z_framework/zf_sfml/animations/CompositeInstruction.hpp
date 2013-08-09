@@ -36,8 +36,8 @@ class CompositeInstruction : public AnimationInstruction
         // if not ordered , the instruction is executed all at the same time.
         CompositeInstruction(bool ordered = false);
         ~CompositeInstruction();
-        bool update(sf::RenderWindow* window, sf::Time delta,AnimationObject* object);
-        bool isDone(AnimationObject* object);
+        bool update(sf::RenderWindow& window, sf::Time delta,AnimationObject& object);
+        bool isDone(AnimationObject& object);
         
         // all functions here return the pointer to itself to allow for chaining.
         // add a fade instruction , copying the information from another fade instruction.

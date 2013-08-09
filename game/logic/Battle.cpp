@@ -2,14 +2,14 @@
 #include "GameViewer.hpp"
 #include "GameUpdater.hpp"
 #include "BattleServer.hpp"
+#include "../../z_framework/zf_common/debugging.hpp"
 Battle::Battle(BattleServer& battleServer)
-    :_server(&battleServer), isServer(false), currentPlayer(_currentPlayer)
+    :_server(&battleServer), isServer(false), currentPlayer(_currentPlayer), _rules(0), _battleState(PreGame)
 {
-
 }
 
 Battle::Battle()
-    :_server(0), isServer(true), currentPlayer(_currentPlayer)
+    :_server(0), isServer(true), currentPlayer(_currentPlayer), _rules(0), _battleState(PreGame)
 {
 }
 
@@ -42,12 +42,12 @@ void Battle::processServerMessage(Message* message)
     if(message->type == Message::GameStartMessage)
     {
         DB_GameStartMessage* m = (DB_GameStartMessage*)message;
-        gamelogic_startGame(m->player1, m->player2);
+        gamelogic_startGame(m->rules, m->player1, m->player2);
     }
     else if(message->type == Message::ActiveTurnMessage)
     {
         DB_ActiveTurnMessage* m = (DB_ActiveTurnMessage*)message;
-        gamelogic_setActiveTurn(m->currentPlayer, m->burnDamage, m->availableDice, m->frozenDice);
+        gamelogic_setActiveTurn(m->currentPlayer, m->burnDamage, m->availableDice, m->frozenDice, m->rollableDice);
     }
     else if(message->type == Message::AskForActionMessage)
     {
@@ -128,4 +128,50 @@ void Battle::update()
     }
 }
 
+void Battle::startGame(Rules& rules, std::string player1Name, std::string player2Name)
+{
+    // make sure the state is correct
+    if(_battleState != PreGame)
+    {
+        return;
+    }
+    // set the rule value
+    sf::Int32 startingHp = rules.getStartingHp();
+    std::vector<Die> dice = rules.getDice();
+    std::vector<Ability> abilities = rules.getAbilities();
+    Unit u1(player1Name, startingHp, dice.size());
+    Unit u2(player2Name, startingHp, dice.size());
+    gamelogic_startGame(rules,u1,u2);
+    
+    // randomly get the active player.
+    PlayerRole::ePlayerRole activePlayer = PlayerRole::randomPlayer();
+    Unit& unit = _units[activePlayer]; 
+    gamelogic_setActiveTurn(activePlayer, unit.burnCounter, unit.diceCounter, unit.freezeCounter, dice);
+}
 
+Die Battle::findDie(sf::Int32 id)
+{
+    for(std::vector<Die>::iterator it = _currentDice.begin() ; it != _currentDice.end() ; ++it)
+    {
+        if((*it).id == id)
+        {
+            return *it;
+        } 
+    }
+    return Die();
+}
+
+std::vector<Die> Battle::findDice(std::vector<sf::Int32> ids)
+{
+    std::vector<Die> dice;
+    for(std::vector<sf::Int32>::iterator it = ids.begin() ; it != ids.end() ; ++it)
+    {
+        Die d = findDie(*it);
+        // make sure that the id is the same.
+        if(d.id == *it)
+        {
+            dice.push_back(d);
+        }
+    }
+    return dice;
+}

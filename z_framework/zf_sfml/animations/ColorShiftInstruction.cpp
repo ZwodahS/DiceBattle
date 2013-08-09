@@ -34,14 +34,14 @@ ColorShiftInstruction::ColorShiftInstruction(sf::Color& startingColor, sf::Color
 }
 
 
-bool ColorShiftInstruction::update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object)
+bool ColorShiftInstruction::update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object)
 {
     if(!_done)
     {
         if(_time >= _totalTime)
         {
             _done = true;
-            object->setColor(_endingColor);
+            object.setColor(_endingColor);
         }
         else
         {
@@ -51,14 +51,14 @@ bool ColorShiftInstruction::update(sf::RenderWindow* window, sf::Time delta, Ani
             _green += _changeGreen * deltaFloat;
             _alpha += _changeAlpha * deltaFloat;
 
-            object->setColor(sf::Color(_red,_green,_blue,_alpha));
+            object.setColor(sf::Color(_red,_green,_blue,_alpha));
             _time += delta.asSeconds();
         }
     }
     return isDone(object);
 }
 
-bool ColorShiftInstruction::isDone(AnimationObject* object)
+bool ColorShiftInstruction::isDone(AnimationObject& object)
 {
     return _done;
 }

@@ -17,3 +17,17 @@ sf::Packet& operator >> (sf::Packet& packet, AbilityEffect& message)
 {
     return packet >> message.type >> message.value;
 }
+
+bool operator==(const AbilityEffect& lhs, const AbilityEffect& rhs)
+{
+    if(lhs.type != rhs.type || lhs.value != rhs.value)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool operator!=(const AbilityEffect& lhs, const AbilityEffect& rhs)
+{
+    return !(lhs == rhs);
+}

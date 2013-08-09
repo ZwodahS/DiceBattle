@@ -33,6 +33,9 @@ AnimatableObject::AnimatableObject(iAnimatable* a)
 
 AnimatableObject::~AnimatableObject()
 {
+    // Potential memory leak.
+    // Need to make iAnimatable deconstructor virtual
+    //
     if(_isPtr)
     {
         delete &_animatable;
@@ -59,10 +62,10 @@ void AnimatableObject::movePosition(sf::Vector2f move)
     _animatable.move(move);
 }
 
-void AnimatableObject::draw(sf::RenderWindow* window , sf::Time delta)
+void AnimatableObject::draw(sf::RenderWindow& window , sf::Time delta)
 {
     if(_isPtr)
     {
-        _animatable.draw(*window, delta); 
+        _animatable.draw(window, delta); 
     }
 }

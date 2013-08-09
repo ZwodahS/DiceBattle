@@ -5,17 +5,17 @@
 const int UnitSprite_NameX = 10;
 const int UnitSprite_NameY = 0;
 const int UnitSprite_HeartX = 5;
-const int UnitSprite_HeartY = 10;
+const int UnitSprite_HeartY = 17;
 const int UnitSprite_HeartTextX = 50;
-const int UnitSprite_HeartTextY = 10;
+const int UnitSprite_HeartTextY = 17;
 const int UnitSprite_ArmorX = 130;
-const int UnitSprite_ArmorY = 10;
+const int UnitSprite_ArmorY = 17;
 const int UnitSprite_ArmorTextX = 175;
-const int UnitSprite_ArmorTextY = 10;
+const int UnitSprite_ArmorTextY = 17;
 const int UnitSprite_EffectsX[] = {10,70,130,190};
-const int UnitSprite_EffectsY[] = {45,45,45,45};
+const int UnitSprite_EffectsY[] = {55,55,55,55};
 const int UnitSprite_EffectsTextX[] = {50,110,170,230};
-const int UnitSprite_EffectsTextY[] = {60,60,60,60};
+const int UnitSprite_EffectsTextY[] = {55,55,55,55};
 
 GameScreen::UnitSprite::UnitSprite(Unit& u, sf::Sprite bg, sf::Sprite heart, sf::Sprite armor, sf::Sprite stunned, sf::Sprite burnt, sf::Sprite frozen, sf::Text name, sf::Text currentHp, sf::Text shield, sf::Text generic)
     :unit(&u), background(bg), heartSprite(heart), armorSprite(armor), stunnedSprite(stunned), burntSprite(burnt), frozenSprite(frozen), nameText(name), currentHpText(currentHp), shieldText(shield), genericText(generic), clickBound(0,0,270,100)
@@ -26,6 +26,7 @@ GameScreen::UnitSprite::UnitSprite(Unit& u, sf::Sprite bg, sf::Sprite heart, sf:
     effectsText.push_back(genericText);
     effects.push_back(frozenSprite);
     effectsText.push_back(genericText);
+    setActive(false);
 }
 
 void GameScreen::UnitSprite::setPosition(sf::Vector2f position)
@@ -88,4 +89,21 @@ GameScreen::UnitSprite GameScreen::makeUnitSprite(Unit& unit)
     sf::Text genericText(zf::toString(0), _game.assets.gameScreenAssets.abilityFont, 24);
     genericText.setColor(sf::Color::Red);
     return UnitSprite(unit, bg, heart, armor, stunned, burnt, frozen, nameText, currentHp, shieldText, genericText);
+}
+
+sf::Vector2f GameScreen::UnitSprite::getPosition()
+{
+    return sf::Vector2f(clickBound.left, clickBound.top);
+}
+
+void GameScreen::UnitSprite::setActive(bool active)
+{
+    if(active)
+    {
+        background.setColor(sf::Color(230,230,140));
+    }
+    else
+    {
+        background.setColor(sf::Color(140,140,85));
+    }
 }

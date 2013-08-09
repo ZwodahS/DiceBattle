@@ -84,3 +84,38 @@ sf::Packet& operator >> (sf::Packet& packet, Ability& message)
     }
     return packet;
 }
+
+bool operator==(const Ability& lhs, const Ability& rhs)
+{
+    // compare the id && name
+    if(lhs.id != rhs.id || lhs.name != rhs.name)
+    {
+        return false;
+    }
+    // check size of cost and effects
+    if(lhs.costs.size() != rhs.costs.size() || lhs.effects.size() != rhs.effects.size())
+    {
+        return false;
+    } 
+    // check every thing matches
+    for(int i = 0 ; i < lhs.costs.size() ; i++)
+    {
+        if(lhs.costs[i] != rhs.costs[i])
+        {
+            return false;
+        }
+    }
+    for(int i = 0 ; i < lhs.effects.size() ; i++)
+    {
+        if(lhs.effects[i] != rhs.effects[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool operator!=(const Ability& lhs, const Ability& rhs)
+{
+    return !(lhs == rhs);
+}

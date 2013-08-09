@@ -39,7 +39,7 @@ MoveToInstruction::~MoveToInstruction()
 {
 }
 
-bool MoveToInstruction::update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object)
+bool MoveToInstruction::update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object)
 {
     if(!_done)
     {
@@ -52,12 +52,12 @@ bool MoveToInstruction::update(sf::RenderWindow* window, sf::Time delta, Animati
             _done = true;
             _position = _target;
         }
-        object->setPosition(_position);
+        object.setPosition(_position);
     }
     return _done;
 }
 
-bool MoveToInstruction::isDone(AnimationObject* object)
+bool MoveToInstruction::isDone(AnimationObject& object)
 {
     return _done;
 }

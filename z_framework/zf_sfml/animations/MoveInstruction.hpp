@@ -30,8 +30,8 @@ class MoveInstruction : public AnimationInstruction
         MoveInstruction(const MoveInstruction &mi);
         ~MoveInstruction();
 
-        bool update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object);
-        bool isDone(AnimationObject* object);
+        bool update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object);
+        bool isDone(AnimationObject& object);
 
     private:
         sf::Vector2f _moveVector;

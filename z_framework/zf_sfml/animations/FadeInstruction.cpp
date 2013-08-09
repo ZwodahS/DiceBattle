@@ -39,7 +39,7 @@ FadeInstruction::FadeInstruction(const FadeInstruction &fi)
 FadeInstruction::~FadeInstruction()
 {
 }
-bool FadeInstruction::update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object)
+bool FadeInstruction::update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object)
 {
     if(!_done)
     {
@@ -60,12 +60,12 @@ bool FadeInstruction::update(sf::RenderWindow* window, sf::Time delta, Animation
                 _currentAlpha = _targetAlpha;
             }
         }
-        object->setAlpha(_currentAlpha);
+        object.setAlpha(_currentAlpha);
     }
     return _done;
 }
 
-bool FadeInstruction::isDone(AnimationObject* object)
+bool FadeInstruction::isDone(AnimationObject& object)
 {
     return _done;
 }

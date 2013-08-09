@@ -1,6 +1,7 @@
 #include "Rules.hpp"
 #include <fstream>
 #include "../../z_framework/zf_common/f_conversion.hpp"
+#include <algorithm>
 Rules::Rules()
     :_loaded(false)
 {
@@ -242,9 +243,25 @@ bool Rules::loadFromFile(std::string filename)
     return _loaded;
 }
 
-void Rules::print()
+bool ability_compare(const Ability& ability1, const Ability& ability2)
 {
-    std::cout << "Loaded : " << _loaded << std::endl;
-    std::cout << "Die size : " << _dice.size() << std::endl;
-    std::cout << "Abilities Size : " << _abilities.size() << std::endl;
+    return ability1.costs.size() > ability2.costs.size();
+}
+
+void Rules::sortAbilities()
+{
+    std::stable_sort(_abilities.begin(), _abilities.end(), ability_compare);
+    for(sf::Int32 i = 0 ; i < _abilities.size() ; i++)
+    {
+        _abilities[i].id = i;
+    }
+}
+
+bool Rules::containsAbility(const Ability& ability) const
+{
+    if(ability.id < 0 || ability.id >= _abilities.size())
+    {
+        return false;
+    }
+    return _abilities[ability.id] == ability;
 }

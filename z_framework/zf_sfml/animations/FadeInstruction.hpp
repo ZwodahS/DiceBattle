@@ -29,8 +29,8 @@ class FadeInstruction : public AnimationInstruction
         FadeInstruction(int startingAlpha, int endingAlpha , float time);
         FadeInstruction(const FadeInstruction &fi);
         ~FadeInstruction();
-        bool update(sf::RenderWindow* window, sf::Time delta, AnimationObject* object);
-        bool isDone(AnimationObject* object);
+        bool update(sf::RenderWindow& window, sf::Time delta, AnimationObject& object);
+        bool isDone(AnimationObject& object);
         
         float _targetAlpha;
         float _changeAlpha; // per seconds

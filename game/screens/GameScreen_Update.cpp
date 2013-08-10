@@ -224,8 +224,30 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
 {
     if(_role == _battle.currentPlayer || _role == PlayerRole::Both)
     {
+        zf::Mouse& mouse = _game.mouse;
+        sf::Vector2i mousePos = mouse.getPosition(window);
+        sf::Vector2f mousePosF(mousePos.x,mousePos.y);
         // find out if the player select any dice
-        
+        if(mouse.left.thisReleased)
+        {
+            bool hit = false;
+            for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+            {
+                if((*it).clickBound.contains(mousePosF))
+                {
+                    (*it).toggleSelection();
+                    hit = true;
+                    break;
+                }
+            }        
+            if(hit)
+            {
+                std::vector<Die> rolledDice = _battle.getDice();
+                std::vector<Die> selectedDice = getSelectedDice();
+                std::vector<Ability> matchedAbilities = _battle.rules.matchAbilities(rolledDice, selectedDice, AbilityDisplayed);
+                setMatchedAbilities(matchedAbilities);
+            }
+        }
     }
 }
 void GameScreen::update_animatingAbilityUsed(sf::RenderWindow& window, const sf::Time& delta)

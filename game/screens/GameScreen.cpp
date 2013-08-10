@@ -171,13 +171,69 @@ void GameScreen::setDice(std::vector<Die>& dice)
     }    
 }
 
+std::vector<Die> GameScreen::getSelectedDice()
+{
+    std::vector<sf::Int32> dieIds;
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        if((*it).selected)
+        {
+            dieIds.push_back((*it).id);
+        } 
+    }
+    return _battle.findDice(dieIds);
+}
+
 void GameScreen::setMatchedAbilities(std::vector<Ability> abilities)
 {
+    // list of ability sprite to keep
+    std::vector<AbilitySprite> keep;
+    // for every abilities in the list.
     for(int i = 0 ; i < abilities.size(); i++)
     {
-        AbilitySprite as = makeAbilitySprite(abilities[i]);
-        as.setPosition(sf::Vector2f(Ability_X, AbilityOffScreen_Y[i]));
-        as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[i]);
-        _abilitySprites.push_back(as);  
+        // check if the ability sprite already exist. 
+        // If the ability sprite already exist, then just move it to the correct position 
+        if(hasAbilitySprite(abilities[i]))
+        {
+            AbilitySprite as = getAndRemoveAbilitySprite(abilities[i]);
+            as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[i]);
+            keep.push_back(as);
+        }
+        else
+        {
+            // if the Ability sprite do not exist, then create it
+            AbilitySprite as = makeAbilitySprite(abilities[i]);
+            as.setPosition(sf::Vector2f(Ability_X, AbilityOffScreen_Y[i]));
+            as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[i]);
+            keep.push_back(as);  
+        }
     }
+    // the list now contains the list of ability sprites that do not match the new list. 
+    // Just clear them for now. In the future, I might want to fade them out.
+    _abilitySprites.clear();
+    _abilitySprites = keep;
+}
+bool GameScreen::hasAbilitySprite(Ability a)
+{
+    for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
+    {
+        if((*it).ability == a)
+        {
+            return true;
+        } 
+    }
+    return false;
+}
+GameScreen::AbilitySprite GameScreen::getAndRemoveAbilitySprite(Ability a)
+{
+    for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
+    {
+        if((*it).ability == a)
+        {
+            AbilitySprite as = *it;
+            _abilitySprites.erase(it);
+            return as;
+        } 
+    }
+    return makeAbilitySprite(a);
 }

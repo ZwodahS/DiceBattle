@@ -62,6 +62,8 @@ void Game::loadAssets()
     assets.icons.heal = assets.icons.spriteSheet.createRegion(image);
     image.loadFromFile("data/graphics/die.png");
     assets.gameScreenAssets.die = assets.masterS1.createRegion(image,0,600);
+    assets.gameScreenAssets.dieSelectionBorder = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,48,48));
+    assets.gameScreenAssets.dieSelectionBorder.defaultColor = sf::Color(230,40,50);
 
     assets.gameScreenAssets.abilityStrip = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,540,40));
     assets.gameScreenAssets.rollButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));

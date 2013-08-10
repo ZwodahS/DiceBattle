@@ -1,8 +1,8 @@
 #include "GameScreen.hpp"
 #include "../Game.hpp"
 
-GameScreen::DieSprite::DieSprite(sf::Int32 i, std::vector<sf::Sprite> f, sf::Sprite d)
-    :id(i), faces(f), dieBorder(d), currentFace(DieFace::Sword), actualFace(DieFace::Sword), random(true), empty(true)
+GameScreen::DieSprite::DieSprite(sf::Int32 i, std::vector<sf::Sprite> f, sf::Sprite d, sf::Sprite sb)
+    :id(i), faces(f), dieBorder(d), selectionBorder(sb), currentFace(DieFace::Sword), actualFace(DieFace::Sword), random(true), empty(true)
     ,visible(true), frozen(false), randomizerTimer(0), 
     clickBound(0,0,DiceSize,DiceSize)
 {
@@ -27,6 +27,10 @@ void GameScreen::DieSprite::setEmpty(bool e)
     this->empty = e;
 }
 
+void GameScreen::DieSprite::toggleSelection()
+{
+    this->selected = !this->selected;
+}
 void GameScreen::DieSprite::setFrozen(bool f)
 {
     this->frozen = f;
@@ -57,6 +61,10 @@ void GameScreen::DieSprite::draw(sf::RenderWindow& window, const sf::Time& delta
     }
     if(visible)
     {
+        if(selected)
+        {
+            window.draw(selectionBorder);
+        }
         window.draw(dieBorder);
         if(!this->empty)
         {
@@ -75,6 +83,7 @@ void GameScreen::DieSprite::draw(sf::RenderWindow& window, const sf::Time& delta
 void GameScreen::DieSprite::setPosition(sf::Vector2f position)
 {
     dieBorder.setPosition(position);
+    selectionBorder.setPosition(position);
     for(std::vector<sf::Sprite>::iterator it = faces.begin() ; it != faces.end() ; ++it)
     {
         (*it).setPosition(position + sf::Vector2f(7,7)); 
@@ -95,7 +104,7 @@ GameScreen::DieSprite GameScreen::makeDie(Die& die)
     {
         faces.push_back(_game.assets.getSprite(*it));
     }
-    DieSprite d = DieSprite(die.id,faces, _game.assets.gameScreenAssets.die.createSprite());    
+    DieSprite d = DieSprite(die.id,faces, _game.assets.gameScreenAssets.die.createSprite(), _game.assets.gameScreenAssets.dieSelectionBorder.createSprite());    
     d.setFrozen(die.frozen);
     d.setEmpty(!die.rolled);
     return d;

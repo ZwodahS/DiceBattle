@@ -82,10 +82,11 @@ private:
     class DieSprite : public iAnimatable
     {
     public:
-        DieSprite(sf::Int32 id, std::vector<sf::Sprite> faces, sf::Sprite dieBorder);
+        DieSprite(sf::Int32 id, std::vector<sf::Sprite> faces, sf::Sprite dieBorder, sf::Sprite selectionBorder);
         sf::Int32 id;
         std::vector<sf::Sprite> faces;
         sf::Sprite dieBorder;
+        sf::Sprite selectionBorder;
         DieFace::eDieFace currentFace;
         DieFace::eDieFace actualFace;
         float randomizerTimer;
@@ -94,6 +95,8 @@ private:
         bool empty;
         bool visible;
         bool frozen;
+        bool selected;
+        void toggleSelection();
         void setEmpty(bool e);
         void setRandom(bool r);
         void setVisible(bool v);
@@ -158,6 +161,11 @@ private:
     /////// End of Ability Sprite //////
 
     std::vector<AbilitySprite> _abilitySprites;
+    bool hasAbilitySprite(Ability a);
+    /**
+     * If the ability sprite do not exist, an new one will be created for it.
+     */
+    AbilitySprite getAndRemoveAbilitySprite(Ability a);
     void setMatchedAbilities(std::vector<Ability> abilities);
     Battle& _battle;
     PlayerRole::ePlayerRole _role;
@@ -166,6 +174,7 @@ private:
     std::vector<DieSprite> _diceSprites;
     void setDie(Die& die);
     void setDice(std::vector<Die>& dice);
+    std::vector<Die> getSelectedDice();
     // there should only be two unit
     std::vector<UnitSprite> _units;
     ///////// GAME STATE //////

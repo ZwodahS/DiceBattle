@@ -1,5 +1,5 @@
 #include "Ability.hpp"
-
+#include <iostream>
 Ability::Ability(sf::Int32 abilityId, std::string abilityName)
     :id(abilityId), name(abilityName) 
 {
@@ -17,25 +17,25 @@ bool Ability::canUseAbility(const std::vector<Die>& dices) const
 std::vector<sf::Int32> Ability::match(const std::vector<Die>& dices) const
 {
     std::vector<sf::Int32> outs;
-    std::vector<DieFace::eDieFace> costs = costs; // copy the cost
+    std::vector<DieFace::eDieFace> tmpCosts = this->costs; // copy the cost
     // iterate the dice given
     for(std::vector<Die>::const_iterator it = dices.begin() ; it != dices.end() ; ++it)
     {
-        for(int i = 0 ; i < costs.size() ; i++)
+        for(int i = 0 ; i < tmpCosts.size() ; i++)
         {
-            if(costs[i] == (*it).currentFace)
+            if(tmpCosts[i] == (*it).currentFace)
             {
                 outs.push_back((*it).id);
-                costs.erase(costs.begin() + i);
+                tmpCosts.erase(tmpCosts.begin() + i);
                 break;
             }
         }
-        if(costs.size() == 0)
+        if(tmpCosts.size() == 0)
         {
             break;
         }
     }
-    if(costs.size() != 0)
+    if(tmpCosts.size() != 0)
     {
         return std::vector<sf::Int32>();
     }

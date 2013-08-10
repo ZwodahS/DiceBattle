@@ -3,7 +3,7 @@
 100
 " The following is the dice information.
 " Each number corresponds to the face that is in that die.
-" Each die must have 6 face.
+" Each die must have 6 face, and must have 6 dice
 " The value of the face are
 " 0 for Sword
 " 1 for Shield

@@ -7,7 +7,7 @@ void Battle::gamelogic_startGame(Rules& rules, const Unit& player1, const Unit& 
     viewer_sendStartGameMessages(rules, player1, player2);
     _units[PlayerRole::PlayerOne] = player1;
     _units[PlayerRole::PlayerTwo] = player2;
-    this->_rules = &rules;
+    this->rules = rules;
 }
 
 void Battle::gamelogic_setActiveTurn(const PlayerRole::ePlayerRole& cp, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen, std::vector<Die> dice)
@@ -141,7 +141,7 @@ void Battle::gamelogic_abilityUsed(const PlayerRole::ePlayerRole& user, const Ab
                 break;
         }
     }
-    _battleState = DiceRolledAbilityUsed;
+    _battleState = AbilityUsed;
 }
 
 void Battle::gamelogic_endTurn()
@@ -165,13 +165,13 @@ bool Battle::gamelogic_receivedDoneCommand()
     // Done command can only be processed when battle is in the following states.
     // .1 PreRoll - If the player has been stunned too much, he might choose not to roll the die.
     // .2 DiceRolledAbilityUsed - If the player rolled and has use a ability.
-    if(_battleState != PreRoll && _battleState != DiceRolledAbilityUsed)
+    if(_battleState != PreRoll && _battleState != AbilityUsed)
     {
         return false;
     }
     gamelogic_endTurn();
     PlayerRole::ePlayerRole newActivePlayer = PlayerRole::opponentOf(_currentPlayer);
-    std::vector<Die> dice = _rules->getDice();
+    std::vector<Die> dice = rules.getDice();
     std::vector<Die> finalDice;
     Unit& unit = getUnit(newActivePlayer);
     sf::Int32 diceMax = unit.diceCounter - unit.shockCounter;
@@ -202,11 +202,11 @@ bool Battle::gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId)
     // Roll Command can only be processed when battle is in the following states.
     // .1 PreRoll - No dice id is required. The number of dice rolled will be equal to the player's diceCounter - freezeCounter.
     // .2 DiceRolledAbilityUsed - The dice represent the dice that the player choose to roll. The other dice will not be modified/rolled.
-    if(_battleState != PreRoll && _battleState != DiceRolledAbilityUsed)
+    if(_battleState != PreRoll && _battleState != AbilityUsed)
     {
         return false;
     }
-    const std::vector<Die> ruleDice = _rules->getDice();
+    const std::vector<Die> ruleDice = rules.getDice();
     std::vector<Die> dice;
     // get all the dice from the rules for all these id.
     for(sf::Int32 i = 0 ; i < diceId.size(); i++)
@@ -232,7 +232,7 @@ bool Battle::gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, con
     // Use Ability can only be processed when battle is in the following states.
     // .1 DiceRolled - Ability can be used.
     // .2 DiceRolledAbilityUsed  - Ability also can be used.
-    if(_battleState != DiceRolled && _battleState != DiceRolledAbilityUsed)
+    if(_battleState != DiceRolled)
     {
         return false;
     }
@@ -244,7 +244,7 @@ bool Battle::gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, con
         return false;
     }
     // make sure that the ability is part of the rule
-    if(!_rules->containsAbility(abilityUsed) || !abilityUsed.canUseAbility(usedDice))
+    if(!rules.containsAbility(abilityUsed) || !abilityUsed.canUseAbility(usedDice))
     {
         return false;
     }

@@ -16,7 +16,9 @@ class GameScreen : public Screen
 {
 public:
     static const int AbilityDisplayed;
-    static const int Ability_Y[8];
+    static const int Ability_X;
+    static const int Ability_Y[7];
+    static const int AbilityOffScreen_Y[7];
     static const int DieX;
     static const int DieY[7];
     static const int UnitPositionX[2];
@@ -25,7 +27,7 @@ public:
     static const sf::FloatRect DoneButtonSize;
     static const sf::Vector2f RollButtonPosition;
     static const sf::Vector2f DoneButtonPosition;
-
+    static const sf::Vector2f AbilityMoveSpeed;
     enum GameScreenState // kind of mimic the state in Battle object but include all the intermediate animation state
     {
         Empty, // The initial state of the screen.
@@ -85,6 +87,7 @@ private:
         std::vector<sf::Sprite> faces;
         sf::Sprite dieBorder;
         DieFace::eDieFace currentFace;
+        DieFace::eDieFace actualFace;
         float randomizerTimer;
         sf::FloatRect clickBound;
         bool random;
@@ -135,18 +138,19 @@ private:
     {
     public:
         AbilitySprite(const Ability& ability, std::vector<sf::Sprite> cost, std::vector<sf::Sprite> effectsSymbol, std::vector<sf::Text> effectsText, sf::Sprite background, sf::Text nameText);
-        const Ability* ability;
+        Ability ability;
         std::vector<sf::Sprite> cost; 
         std::vector<sf::Sprite> effectsSymbol;
         std::vector<sf::Text> effectsText;
         sf::Text nameText;
         sf::Sprite background;
         sf::FloatRect clickBound;
+        sf::Vector2f finalPosition;
         /**
          * Set the position of this ability sprite. It defines the top left corner of the sprite.
          */
         void setPosition(sf::Vector2f position);
-
+        sf::Vector2f getPosition();
         void draw(sf::RenderWindow& window, const sf::Time& delta);
         void update(sf::RenderWindow& window, const sf::Time& delta);
     };
@@ -154,13 +158,14 @@ private:
     /////// End of Ability Sprite //////
 
     std::vector<AbilitySprite> _abilitySprites;
-
+    void setMatchedAbilities(std::vector<Ability> abilities);
     Battle& _battle;
     PlayerRole::ePlayerRole _role;
     GameViewer& _viewer;
     GameUpdater& _updater;
-
     std::vector<DieSprite> _diceSprites;
+    void setDie(Die& die);
+    void setDice(std::vector<Die>& dice);
     // there should only be two unit
     std::vector<UnitSprite> _units;
     ///////// GAME STATE //////

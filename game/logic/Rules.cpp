@@ -265,3 +265,37 @@ bool Rules::containsAbility(const Ability& ability) const
     }
     return _abilities[ability.id] == ability;
 }
+
+std::vector<Ability> Rules::matchAbilities(std::vector<Die>& rolledDice, sf::Int32 count)
+{
+    std::vector<Die> tmp;
+    return matchAbilities(rolledDice, tmp, count);
+}
+
+std::vector<Ability> Rules::matchAbilities(std::vector<Die>& rolledDice, std::vector<Die>& selectedDice, sf::Int32 count)
+{
+    std::vector<Ability> matchedAbilities;
+    std::vector<Ability> secondaryAbilities;
+    for(std::vector<Ability>::iterator it = _abilities.begin() ; it != _abilities.end() ; ++it)
+    {
+        if((*it).canUseAbility(selectedDice))
+        {
+            matchedAbilities.push_back(*it);
+            if(matchedAbilities.size() == count)
+            {
+                break;
+            }
+        }
+        else if((*it).canUseAbility(rolledDice))
+        {
+            secondaryAbilities.push_back(*it);
+        }
+    }
+    // while there are still abilities in the secondary match and the matchAbilities is not enough.
+    while(matchedAbilities.size() != count && secondaryAbilities.size() != 0)
+    {
+        matchedAbilities.push_back(secondaryAbilities[0]);
+        secondaryAbilities.erase(secondaryAbilities.begin());
+    }
+    return matchedAbilities;
+}

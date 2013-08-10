@@ -8,7 +8,9 @@
 #include <iostream>
 
 const int GameScreen::AbilityDisplayed = 7;
-const int GameScreen::Ability_Y[] = {120,170,220,270,320,370,420,470};
+const int GameScreen::Ability_X = 100;
+const int GameScreen::Ability_Y[] = {120,170,220,270,320,370,420};
+const int GameScreen::AbilityOffScreen_Y[] = {500,550,600,650,700,750,800};
 
 const int GameScreen::DieX = 26;
 const int GameScreen::DieY[] = {30, 90, 150, 210, 270, 330, 390};
@@ -16,11 +18,13 @@ const int GameScreen::DieY[] = {30, 90, 150, 210, 270, 330, 390};
 const int GameScreen::UnitPositionX[] = {100, 370};
 const int GameScreen::UnitPositionY[] = {5, 5};
 
-const sf::FloatRect GameScreen::RollButtonSize = sf::FloatRect(0,0,75,25);
-const sf::FloatRect GameScreen::DoneButtonSize = sf::FloatRect(0,0,75,25);
+const sf::FloatRect GameScreen::RollButtonSize = sf::FloatRect(0,0,200,200);
+const sf::FloatRect GameScreen::DoneButtonSize = sf::FloatRect(0,0,200,200);
 
-const sf::Vector2f GameScreen::RollButtonPosition = sf::Vector2f(10,410);
-const sf::Vector2f GameScreen::DoneButtonPosition = sf::Vector2f(10,440);
+const sf::Vector2f GameScreen::RollButtonPosition = sf::Vector2f(135,150);
+const sf::Vector2f GameScreen::DoneButtonPosition = sf::Vector2f(405,150);
+
+const sf::Vector2f GameScreen::AbilityMoveSpeed = sf::Vector2f(0,1000);
 GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r, GameViewer& v, GameUpdater& u)
     :Screen(game), _battle(b), _role(r), _viewer(v), _updater(u), _currentState(Empty), _currentPlayer(PlayerRole::PlayerOne)
     ,rollButton(game.assets.gameScreenAssets.rollButtonSelected.createSprite(), game.assets.gameScreenAssets.rollButton.createSprite(), RollButtonSize)
@@ -48,7 +52,7 @@ void GameScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
     {
         (*it).draw(window,delta); 
     }
-    if(_currentState == DiceRolled || _currentState == AbilityUsed)
+    if(_currentState == AbilityUsed)
     {
         doneButton.draw(window, delta);
     }
@@ -111,8 +115,7 @@ void GameScreen::freeFirstMessage()
         DB_SendUseAbilityCommand* message = (DB_SendUseAbilityCommand*)m;
         delete message;
     }
-}
-
+} 
 
 /**
  * Used by GameScreenViewer
@@ -143,4 +146,38 @@ void GameScreen::sendMessage(DB_EndTurnMessage& message)
 void GameScreen::sendMessage(DB_EndGameMessage& message)
 {
     messages.push(new DB_EndGameMessage(message));
+}
+
+////// 
+
+void GameScreen::setDie(Die& die)
+{
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        if((*it).id == die.id)
+        {
+            (*it).actualFace = die.currentFace;
+            (*it).setEmpty(false);
+            break;
+        } 
+    }
+}
+
+void GameScreen::setDice(std::vector<Die>& dice)
+{
+    for(std::vector<Die>::iterator it = dice.begin() ; it != dice.end() ; ++it)
+    {
+        setDie(*it); 
+    }    
+}
+
+void GameScreen::setMatchedAbilities(std::vector<Ability> abilities)
+{
+    for(int i = 0 ; i < abilities.size(); i++)
+    {
+        AbilitySprite as = makeAbilitySprite(abilities[i]);
+        as.setPosition(sf::Vector2f(Ability_X, AbilityOffScreen_Y[i]));
+        as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[i]);
+        _abilitySprites.push_back(as);  
+    }
 }

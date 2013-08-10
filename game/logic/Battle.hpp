@@ -27,7 +27,7 @@ public:
         PreGame, // Before "startGame" is called.
         PreRoll, // When a player's turn has been set and he has not roll any dice yet.
         DiceRolled, // Dice has been rolled. Cannot reroll. Must choose use ability.
-        DiceRolledAbilityUsed, // Dice has been rolled and at least one ability has been used. Either choose reroll / done / use ability
+        AbilityUsed, // Dice has been rolled and at least one ability has been used. Either choose reroll / done / use ability
         GameEnded,
     };
     void addGameViewer(GameViewer* viewer);
@@ -36,6 +36,7 @@ public:
     const bool isServer;
     const PlayerRole::ePlayerRole& currentPlayer;
 
+    Rules rules;
     /**
      * Check for all updater for message.
      */
@@ -44,6 +45,7 @@ public:
     /**
      * Returns a list of dice matching the id. This will return as many as possible.
      */
+    std::vector<Die> getDice();
     std::vector<Die> findDice(std::vector<sf::Int32> ids);
     Die findDie(sf::Int32 dieId);
     Unit& getUnit(PlayerRole::ePlayerRole player);
@@ -58,7 +60,6 @@ private:
      */
     void processClientMessage(PlayerRole::ePlayerRole actor, Message* message);
 
-    Rules* _rules;
     BattleState _battleState;
     /**
      * If this is not a server, then this will store the server that this battle object 

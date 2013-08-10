@@ -1,8 +1,8 @@
 ToDo:
     $ Animate ability sprite to proper position when dice are rolled or when the player select dice.
-
-
-
+    $ Change battle to only allow one ability at one time.
+    $ 2 Big button for roll and done
+    $ Space out the dice.
 Steps:
     $ Finish the local 2 player game first. This will test the game logic and make sure it works.
         $ Finish the game logic.

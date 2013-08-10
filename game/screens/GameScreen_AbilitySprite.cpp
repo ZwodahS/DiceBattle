@@ -2,7 +2,7 @@
 #include "../Game.hpp"
 #include "../../z_framework/zf_common/f_conversion.hpp"
 GameScreen::AbilitySprite::AbilitySprite(const Ability& a, std::vector<sf::Sprite> c, std::vector<sf::Sprite> es, std::vector<sf::Text> et, sf::Sprite bg, sf::Text nt)
-    :ability(&a), cost(c), effectsSymbol(es), effectsText(et), nameText(nt), background(bg), clickBound(0,0,480,40)
+    :ability(a), cost(c), effectsSymbol(es), effectsText(et), nameText(nt), background(bg), clickBound(0,0,480,40)
 {
     setPosition(sf::Vector2f(0,0));
 }
@@ -58,7 +58,25 @@ void GameScreen::AbilitySprite::draw(sf::RenderWindow& window, const sf::Time& d
 
 void GameScreen::AbilitySprite::update(sf::RenderWindow& window, const sf::Time& delta)
 {
-
+    sf::Vector2f currentPosition = getPosition();
+    if(currentPosition.y > finalPosition.y)
+    {
+        currentPosition -= AbilityMoveSpeed * delta.asSeconds();
+        if(currentPosition.y <= finalPosition.y)
+        {
+            currentPosition = finalPosition;
+        }
+        setPosition(currentPosition);
+    }
+    else if(currentPosition.y < finalPosition.y)
+    {
+        currentPosition += AbilityMoveSpeed * delta.asSeconds();
+        if(currentPosition.y >= finalPosition.y)
+        {
+            currentPosition = finalPosition;
+        }
+        setPosition(currentPosition);
+    }
 }
 
 GameScreen::AbilitySprite GameScreen::makeAbilitySprite(const Ability& ability)
@@ -83,4 +101,9 @@ GameScreen::AbilitySprite GameScreen::makeAbilitySprite(const Ability& ability)
     sf::Text nameText(ability.name, _game.assets.gameScreenAssets.abilityFont, 24);
     nameText.setColor(sf::Color(0,0,0,90));
     return AbilitySprite(ability, costs, effectsSymbol, effectsText, background, nameText);
+}
+
+sf::Vector2f GameScreen::AbilitySprite::getPosition()
+{
+    return sf::Vector2f(clickBound.left, clickBound.top);
 }

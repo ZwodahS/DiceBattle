@@ -17,7 +17,7 @@ public:
      * The battle object will free the message upon consumption. 
      */
     virtual Message* popNextMessage() = 0;
-
+    virtual void pushMessage(Message* message) = 0;
     PlayerRole::ePlayerRole role;
 };
 #endif

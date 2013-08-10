@@ -64,11 +64,11 @@ void Game::loadAssets()
     assets.gameScreenAssets.die = assets.masterS1.createRegion(image,0,600);
 
     assets.gameScreenAssets.abilityStrip = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,540,40));
-    assets.gameScreenAssets.rollButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,75,25));
-    assets.gameScreenAssets.rollButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,75,25));
+    assets.gameScreenAssets.rollButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));
+    assets.gameScreenAssets.rollButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));
     assets.gameScreenAssets.rollButtonSelected.defaultColor = sf::Color(80,80,180,255);
-    assets.gameScreenAssets.doneButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,75,25));
-    assets.gameScreenAssets.doneButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,75,25));
+    assets.gameScreenAssets.doneButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));
+    assets.gameScreenAssets.doneButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));
     assets.gameScreenAssets.doneButtonSelected.defaultColor = sf::Color(80,80,180,255);
 
     image.loadFromFile("data/graphics/charactersheet.png");

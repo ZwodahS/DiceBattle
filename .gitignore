@@ -1,4 +1,5 @@
 obj/
 .DS_Store
 dicebattle
+*.swp
 

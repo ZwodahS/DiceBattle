@@ -2,7 +2,7 @@
 #include "../Game.hpp"
 
 GameScreen::DieSprite::DieSprite(sf::Int32 i, std::vector<sf::Sprite> f, sf::Sprite d)
-    :id(i), faces(f), dieBorder(d), currentFace(DieFace::Sword), random(true), empty(true)
+    :id(i), faces(f), dieBorder(d), currentFace(DieFace::Sword), actualFace(DieFace::Sword), random(true), empty(true)
     ,visible(true), frozen(false), randomizerTimer(0), 
     clickBound(0,0,DiceSize,DiceSize)
 {
@@ -60,7 +60,14 @@ void GameScreen::DieSprite::draw(sf::RenderWindow& window, const sf::Time& delta
         window.draw(dieBorder);
         if(!this->empty)
         {
-            window.draw(faces[currentFace]);
+            if(random)
+            {
+                window.draw(faces[currentFace]);
+            }
+            else
+            {
+                window.draw(faces[actualFace]);
+            }
         }
     }
 }

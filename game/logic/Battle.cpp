@@ -4,12 +4,12 @@
 #include "BattleServer.hpp"
 #include "../../z_framework/zf_common/debugging.hpp"
 Battle::Battle(BattleServer& battleServer)
-    :_server(&battleServer), isServer(false), currentPlayer(_currentPlayer), _rules(0), _battleState(PreGame)
+    :_server(&battleServer), isServer(false), currentPlayer(_currentPlayer), _battleState(PreGame)
 {
 }
 
 Battle::Battle()
-    :_server(0), isServer(true), currentPlayer(_currentPlayer), _rules(0), _battleState(PreGame)
+    :_server(0), isServer(true), currentPlayer(_currentPlayer), _battleState(PreGame)
 {
 }
 
@@ -34,6 +34,11 @@ void Battle::addGameViewer(GameViewer* viewer)
 void Battle::addGameUpdater(GameUpdater* updater)
 {
     this->_updaters.push_back(updater);
+}
+
+std::vector<Die> Battle::getDice()
+{
+    return _currentDice;
 }
 
 // This is for message from server (cannot be wrong)

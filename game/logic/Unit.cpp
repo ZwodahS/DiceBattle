@@ -16,6 +16,11 @@ Unit::~Unit()
 {
 }
 
+sf::Int32 Unit::getNoMoveDamage()
+{
+    return 10;
+}
+
 sf::Packet& operator << (sf::Packet& packet, const Unit& message)
 {
     return packet << message.currentHp << message.maxHp << message.shieldCounter << message.burnCounter << message.freezeCounter << message.shockCounter << message.diceCounter << message.name;

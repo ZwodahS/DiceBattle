@@ -193,18 +193,12 @@ void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& 
     if(messages.size() != 0)
     {
         message = (DB_DiceRolledResultMessage*)messages.front();
-        setDice(message->rolledDice);
-        for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
-        {
-            // animate rolling
-            (*it).setRandom(true); 
-        }
-        _currentState = DiceRolling;
-        _animationTimer1 = 2;
         messages.pop();
+        update_processMessage(message);
         delete message;
     }
 }
+
 void GameScreen::update_diceRolling(sf::RenderWindow& window, const sf::Time& delta)
 {
     _animationTimer1 -= delta.asSeconds();
@@ -230,31 +224,143 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
         // find out if the player select any dice
         if(mouse.left.thisReleased)
         {
-            bool hit = false;
-            for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+            DieSprite* clickedDieSprite = getDieSprite(mousePosF);
+            if(clickedDieSprite != 0)
             {
-                if((*it).clickBound.contains(mousePosF))
-                {
-                    (*it).toggleSelection();
-                    hit = true;
-                    break;
-                }
-            }        
-            if(hit)
-            {
+                clickedDieSprite->toggleSelection();
                 std::vector<Die> rolledDice = _battle.getDice();
                 std::vector<Die> selectedDice = getSelectedDice();
                 std::vector<Ability> matchedAbilities = _battle.rules.matchAbilities(rolledDice, selectedDice, AbilityDisplayed);
                 setMatchedAbilities(matchedAbilities);
             }
+            else
+            {
+                // check if any of the ability has been clicked.
+                for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
+                {
+                    if((*it).clickBound.contains(mousePosF))
+                    {
+                        //TODO ? 
+                        // Right now, I will just check a few things to decide how to send.
+                        std::vector<Die> selectedDice = getSelectedDice();
+                        Ability& ability = (*it).ability;
+                        // if the ability can be cast using the selectedDice, then send the minimum subset of selected dice
+                        if(ability.canUseAbility(selectedDice))
+                        {
+                            std::vector<Die> matchedDice = ability.matchDice(selectedDice);
+                            _updater.pushMessage(new DB_SendUseAbilityCommand(ability, matchedDice));
+                        } 
+                        else
+                        {
+                            // if cannot , try to do a match using the ability function
+                            std::vector<Die> rolledDice = _battle.getDice();
+                            std::vector<Die> matchedDice = ability.matchDice(rolledDice);
+                            if(matchedDice.size() != 0) // shouldn't need this check but put it here anyway.
+                            {
+                                _updater.pushMessage(new DB_SendUseAbilityCommand(ability, matchedDice));
+                            }
+                        }
+                    } 
+                }
+            }
         }
+    }
+
+    // wait for abiilty used message
+    DB_AbilityUsedMessage* message = 0;
+    removeMessageUntilType(Message::AbilityUsedMessage);
+    if(messages.size() != 0)
+    {
+        message = (DB_AbilityUsedMessage*)messages.front();
+        animate_abilityUsed(message->abilityUsed);
+        animate_diceUsed(message->diceUsed);
+        _currentState = AnimatingAbilityUsed;
+        _animationTimer1 = 2;
     }
 }
 void GameScreen::update_animatingAbilityUsed(sf::RenderWindow& window, const sf::Time& delta)
 {
+    _animationTimer1 -= delta.asSeconds();
+    if(_animationTimer1 <= 0)
+    {
+        DB_AbilityUsedMessage* message = (DB_AbilityUsedMessage*)messages.front();
+        _currentState = AbilityUsed;
+        _abilitySprites.clear();
+        _leavingDiceSprites.clear();
+        messages.pop();
+        delete message;
+    } 
 }
 void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& delta)
 {
+    if(_role == _battle.currentPlayer || _role == PlayerRole::Both)
+    {
+        zf::Mouse& mouse = _game.mouse;
+        sf::Vector2i position = mouse.getPosition(window);
+        if(_game.mouse.left.thisReleased)
+        {
+            // check roll button 
+            if(rollButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
+            {
+                std::vector<sf::Int32> toRoll;
+                for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+                {
+                    if((*it).selected)
+                    {
+                        toRoll.push_back((*it).id);
+                    } 
+                }
+                _updater.pushMessage(new DB_SendRollCommand(toRoll));
+            }
+            else if(doneButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
+            {
+                _updater.pushMessage(new DB_SendDoneCommand());
+            }
+        }
+    }
+    DB_DiceRolledResultMessage* rolledResultMessage = 0;
+    DB_EndTurnMessage* endTurnMessage = 0;
+    DB_EndGameMessage* endGameMessage = 0;
+    while(messages.size() > 0)
+    {
+        if(messages.front()->type == Message::EndTurnMessage)
+        {
+            endTurnMessage = (DB_EndTurnMessage*)messages.front();
+            messages.pop();
+            break;
+        }
+        else if(messages.front()->type == Message::DiceRolledResultMessage)
+        {
+            rolledResultMessage = (DB_DiceRolledResultMessage*)messages.front();
+            messages.pop();
+            break;
+        }
+        else if(messages.front()->type == Message::EndGameMessage)
+        {
+            endGameMessage = (DB_EndGameMessage*)messages.front();
+            messages.pop();
+            break;
+        }
+        else
+        {
+            freeFirstMessage();
+        }
+    }
+    if(rolledResultMessage != 0)
+    {
+        update_processMessage(rolledResultMessage);
+        delete rolledResultMessage;
+    }
+    else if(endTurnMessage != 0)
+    {
+        update_processMessage(endTurnMessage);
+        delete endTurnMessage;
+    }
+    else if(endGameMessage != 0)
+    {
+        update_processMessage(endGameMessage);
+        delete endGameMessage;
+    }
 }
 void GameScreen::update_animatingTurnEnds(sf::RenderWindow& window, const sf::Time& delta)
 {
@@ -264,4 +370,36 @@ void GameScreen::update_gameEnding(sf::RenderWindow& window, const sf::Time& del
 }
 void GameScreen::update_gameEnd(sf::RenderWindow& window, const sf::Time& delta)
 {
+}
+
+
+
+
+
+
+
+/////////// update process messages ///////////
+void GameScreen::update_processMessage(DB_DiceRolledResultMessage* message)
+{
+    setDice(message->rolledDice);
+    for(std::vector<Die>::iterator it = message->rolledDice.begin() ; it != message->rolledDice.end() ; ++it)
+    {
+        DieSprite* ds = getDieSprite((*it).id);
+        if(ds != 0)
+        {
+            ds->setRandom(true);
+        } 
+    }
+    _currentState = DiceRolling;
+    _animationTimer1 = 2;
+}
+
+void GameScreen::update_processMessage(DB_EndTurnMessage* message)
+{
+    
+}
+
+void GameScreen::update_processMessage(DB_EndGameMessage* message)
+{
+
 }

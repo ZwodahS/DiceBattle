@@ -13,7 +13,7 @@ public:
     sf::Int32 id;
     bool rolled;
     bool frozen;
-    DieFace::eDieFace currentFace;
+    sf::Int32 currentFaceId;
     std::vector<DieFace::eDieFace> faces;
 
     void setCurrentFace(sf::Int32 faceIndex);

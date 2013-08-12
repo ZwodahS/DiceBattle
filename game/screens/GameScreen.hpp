@@ -27,6 +27,7 @@ public:
     static const sf::FloatRect DoneButtonSize;
     static const sf::Vector2f RollButtonPosition;
     static const sf::Vector2f DoneButtonPosition;
+    static const float FadeSpeed;
     static const sf::Vector2f AbilityMoveSpeed;
     enum GameScreenState // kind of mimic the state in Battle object but include all the intermediate animation state
     {
@@ -64,6 +65,10 @@ public:
     void update_gameEnding(sf::RenderWindow& window, const sf::Time& delta);
     void update_gameEnd(sf::RenderWindow& window, const sf::Time& delta);
     void removeMessageUntilType(Message::MessageType type);    
+
+    void update_processMessage(DB_DiceRolledResultMessage* message);
+    void update_processMessage(DB_EndGameMessage* message);
+    void update_processMessage(DB_EndTurnMessage* message);
     std::queue<Message*> messages;
     void freeFirstMessage();
     /**
@@ -74,6 +79,7 @@ public:
     void sendMessage(DB_AskForActionMessage& message);
     void sendMessage(DB_AbilityUsedMessage& message);
     void sendMessage(DB_DiceRolledResultMessage& message);
+    void sendMessage(DB_NewDiceMessage& message);
     void sendMessage(DB_EndTurnMessage& message);
     void sendMessage(DB_EndGameMessage& message);
 private:
@@ -87,8 +93,8 @@ private:
         std::vector<sf::Sprite> faces;
         sf::Sprite dieBorder;
         sf::Sprite selectionBorder;
-        DieFace::eDieFace currentFace;
-        DieFace::eDieFace actualFace;
+        sf::Int32 currentFaceId;
+        sf::Int32 actualFaceId;
         float randomizerTimer;
         sf::FloatRect clickBound;
         bool random;
@@ -105,6 +111,8 @@ private:
         void draw(sf::RenderWindow& window, const sf::Time& delta);
         void setPosition(sf::Vector2f position);
         sf::Vector2f getPosition();
+        void move(sf::Vector2f move);
+        void setAlpha(float alpha);
     };
     DieSprite makeDie(Die& d);
     ///////// END OF DIESPRITE ////////
@@ -149,6 +157,9 @@ private:
         sf::Sprite background;
         sf::FloatRect clickBound;
         sf::Vector2f finalPosition;
+        bool fade;
+        float alpha;
+        sf::Vector2f moveSpeed;
         /**
          * Set the position of this ability sprite. It defines the top left corner of the sprite.
          */
@@ -167,19 +178,27 @@ private:
      */
     AbilitySprite getAndRemoveAbilitySprite(Ability a);
     void setMatchedAbilities(std::vector<Ability> abilities);
-    Battle& _battle;
-    PlayerRole::ePlayerRole _role;
-    GameViewer& _viewer;
-    GameUpdater& _updater;
+    void animate_abilityUsed(Ability& ability);
+    // list of die sprites
     std::vector<DieSprite> _diceSprites;
+    std::vector<DieSprite> _leavingDiceSprites;
     void setDie(Die& die);
     void setDice(std::vector<Die>& dice);
     std::vector<Die> getSelectedDice();
+    bool hasDieSprite(sf::Int32 id);
+    void animate_diceUsed(std::vector<sf::Int32> dice);
+    DieSprite getAndRemoveDieSprite(sf::Int32 id);
+    DieSprite* getDieSprite(sf::Vector2f mousePos);
+    DieSprite* getDieSprite(const sf::Int32 id);
     // there should only be two unit
     std::vector<UnitSprite> _units;
     ///////// GAME STATE //////
     GameScreenState _currentState;
     PlayerRole::ePlayerRole _currentPlayer;
+    Battle& _battle;
+    PlayerRole::ePlayerRole _role;
+    GameViewer& _viewer;
+    GameUpdater& _updater;
     /// ANIMATOR
     SimpleAnimator _animator;
     float _animationTimer1;

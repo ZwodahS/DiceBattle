@@ -1,8 +1,9 @@
 #include "GameScreen.hpp"
 #include "../Game.hpp"
 #include "../../z_framework/zf_common/f_conversion.hpp"
+#include "../../z_framework/zf_sfml/f_common.hpp"
 GameScreen::AbilitySprite::AbilitySprite(const Ability& a, std::vector<sf::Sprite> c, std::vector<sf::Sprite> es, std::vector<sf::Text> et, sf::Sprite bg, sf::Text nt)
-    :ability(a), cost(c), effectsSymbol(es), effectsText(et), nameText(nt), background(bg), clickBound(0,0,480,40)
+    :ability(a), cost(c), effectsSymbol(es), effectsText(et), nameText(nt), background(bg), clickBound(0,0,480,40), alpha(255), fade(false)
 {
     setPosition(sf::Vector2f(0,0));
 }
@@ -61,7 +62,7 @@ void GameScreen::AbilitySprite::update(sf::RenderWindow& window, const sf::Time&
     sf::Vector2f currentPosition = getPosition();
     if(currentPosition.y > finalPosition.y)
     {
-        currentPosition -= AbilityMoveSpeed * delta.asSeconds();
+        currentPosition -= moveSpeed * delta.asSeconds();
         if(currentPosition.y <= finalPosition.y)
         {
             currentPosition = finalPosition;
@@ -70,14 +71,37 @@ void GameScreen::AbilitySprite::update(sf::RenderWindow& window, const sf::Time&
     }
     else if(currentPosition.y < finalPosition.y)
     {
-        currentPosition += AbilityMoveSpeed * delta.asSeconds();
+        currentPosition += moveSpeed * delta.asSeconds();
         if(currentPosition.y >= finalPosition.y)
         {
             currentPosition = finalPosition;
         }
         setPosition(currentPosition);
     }
+    if(fade)
+    {
+        if(alpha > 0)
+        {
+            alpha -= delta.asSeconds() * GameScreen::FadeSpeed;
+            alpha = alpha < 0 ? 0 : alpha; 
+            for(std::vector<sf::Sprite>::iterator it = cost.begin() ; it != cost.end() ; ++it)
+            {
+                zf::setAlpha(*it, alpha);    
+            }
+            for(std::vector<sf::Sprite>::iterator it = effectsSymbol.begin() ; it != effectsSymbol.end() ; ++it)
+            {
+                zf::setAlpha(*it, alpha); 
+            }
+            for(std::vector<sf::Text>::iterator it = effectsText.begin() ; it != effectsText.end() ; ++it)
+            {
+                zf::setAlpha(*it, alpha); 
+            }
+            zf::setAlpha(nameText, alpha);
+            zf::setAlpha(background, alpha);
+        }
+    }
 }
+
 
 GameScreen::AbilitySprite GameScreen::makeAbilitySprite(const Ability& ability)
 {

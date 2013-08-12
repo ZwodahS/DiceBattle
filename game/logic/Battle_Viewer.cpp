@@ -48,21 +48,33 @@ void Battle::viewer_sendAbilityUsedMessages(const PlayerRole::ePlayerRole& user,
         }
     }
 }
-void Battle::viewer_sendEndTurnMessages()
+
+void Battle::viewer_sendNewDiceMessages(std::vector<Die>& dice)
 {
     for(std::vector<GameViewer*>::iterator it = _viewers.begin() ; it != _viewers.end() ; ++it)
     {
         if((**it).isConnected())
         {
-            DB_EndTurnMessage message;
+            DB_NewDiceMessage message(dice);
+            (**it).sendMessage(message);
+        } 
+    }
+}
+
+void Battle::viewer_sendEndTurnMessages(sf::Int32 damage)
+{
+    for(std::vector<GameViewer*>::iterator it = _viewers.begin() ; it != _viewers.end() ; ++it)
+    {
+        if((**it).isConnected())
+        {
+            DB_EndTurnMessage message(damage);
             (**it).sendMessage(message);
         }
     }
 }
 void Battle::viewer_sendEndGameMessages(PlayerRole::ePlayerRole winner)
 {
-    for(std::vector<GameViewer*>::iterator it = _viewers.begin() ; it != _viewers.end() ; ++it)
-    {
+    for(std::vector<GameViewer*>::iterator it = _viewers.begin() ; it != _viewers.end() ; ++it) {
         if((**it).isConnected())
         {
             DB_EndGameMessage message(winner);

@@ -17,6 +17,7 @@ public:
     void sendMessage(DB_DiceRolledResultMessage message);
     void sendMessage(DB_EndTurnMessage message);
     void sendMessage(DB_EndGameMessage message);
+    void sendMessage(DB_NewDiceMessage message);
 private:
     GameScreen* gameScreen;
 };

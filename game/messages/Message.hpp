@@ -11,6 +11,7 @@ struct Message
         AskForActionMessage,
         DiceRolledResultMessage,
         AbilityUsedMessage,
+        NewDiceMessage,
         EndTurnMessage,
         EndGameMessage,
         SendDoneCommand,

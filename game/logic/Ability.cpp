@@ -9,21 +9,61 @@ Ability::~Ability()
 {
 }
 
-bool Ability::canUseAbility(const std::vector<Die>& dices) const
+bool Ability::canUseAbility(const std::vector<Die>& dice) const
 {
-    return match(dices).size() > 0 ;
+    return match(dice).size() > 0 ;
+}
+bool Ability::canStrictlyUseAbility(const std::vector<Die>& dice) const
+{
+    std::vector<sf::Int32> matches = match(dice);
+    if(matches.size() != dice.size())
+    {
+        return false;
+    }
+    return true;
 }
 
-std::vector<sf::Int32> Ability::match(const std::vector<Die>& dices) const
+std::vector<Die> Ability::matchDice(const std::vector<Die>& dice) const
+{
+    std::vector<Die> outs;
+    std::vector<DieFace::eDieFace> tmpCosts = this->costs; // copy the cost
+    // iterate the dice given
+    for(std::vector<Die>::const_iterator it = dice.begin() ; it != dice.end() ; ++it)
+    {
+        for(int i = 0 ; i < tmpCosts.size() ; i++)
+        {
+            if(tmpCosts[i] == (*it).faces[(*it).currentFaceId])
+            {
+                outs.push_back((*it));
+                tmpCosts.erase(tmpCosts.begin() + i);
+                break;
+            }
+        }
+        if(tmpCosts.size() == 0)
+        {
+            break;
+        }
+    }
+    if(tmpCosts.size() != 0)
+    {
+        return std::vector<Die>();
+    }
+    else
+    {
+        return outs;
+    }
+}
+
+std::vector<sf::Int32> Ability::match(const std::vector<Die>& dice) const
 {
     std::vector<sf::Int32> outs;
     std::vector<DieFace::eDieFace> tmpCosts = this->costs; // copy the cost
     // iterate the dice given
-    for(std::vector<Die>::const_iterator it = dices.begin() ; it != dices.end() ; ++it)
+    for(std::vector<Die>::const_iterator it = dice.begin() ; it != dice.end() ; ++it)
     {
         for(int i = 0 ; i < tmpCosts.size() ; i++)
         {
-            if(tmpCosts[i] == (*it).currentFace)
+            if(tmpCosts[i] == (*it).faces[(*it).currentFaceId])
             {
                 outs.push_back((*it).id);
                 tmpCosts.erase(tmpCosts.begin() + i);

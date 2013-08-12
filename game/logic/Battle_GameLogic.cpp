@@ -2,6 +2,7 @@
 #include "GameViewer.hpp"
 #include "GameUpdater.hpp"
 #include "../../z_framework/zf_common/debugging.hpp"
+#include <iostream>
 void Battle::gamelogic_startGame(Rules& rules, const Unit& player1, const Unit& player2)
 {
     viewer_sendStartGameMessages(rules, player1, player2);
@@ -144,9 +145,9 @@ void Battle::gamelogic_abilityUsed(const PlayerRole::ePlayerRole& user, const Ab
     _battleState = AbilityUsed;
 }
 
-void Battle::gamelogic_endTurn()
+void Battle::gamelogic_endTurn(sf::Int32 damage)
 {
-    viewer_sendEndTurnMessages();
+    viewer_sendEndTurnMessages(damage);
     Unit& currentUnit = getUnit(_currentPlayer);
     currentUnit.shockCounter = 0;
     currentUnit.freezeCounter = 0;
@@ -157,20 +158,8 @@ void Battle::gamelogic_endGame(PlayerRole::ePlayerRole winner)
     viewer_sendEndGameMessages(winner);
 }
 
-
-////////// commands from updater ////
-
-bool Battle::gamelogic_receivedDoneCommand()
+void Battle::gamelogic_newTurn(PlayerRole::ePlayerRole newActivePlayer)
 {
-    // Done command can only be processed when battle is in the following states.
-    // .1 PreRoll - If the player has been stunned too much, he might choose not to roll the die.
-    // .2 DiceRolledAbilityUsed - If the player rolled and has use a ability.
-    if(_battleState != PreRoll && _battleState != AbilityUsed)
-    {
-        return false;
-    }
-    gamelogic_endTurn();
-    PlayerRole::ePlayerRole newActivePlayer = PlayerRole::opponentOf(_currentPlayer);
     std::vector<Die> dice = rules.getDice();
     std::vector<Die> finalDice;
     Unit& unit = getUnit(newActivePlayer);
@@ -194,6 +183,22 @@ bool Battle::gamelogic_receivedDoneCommand()
         finalDice.push_back(*it); 
     }
     gamelogic_setActiveTurn(newActivePlayer, unit.burnCounter, diceMax, unit.freezeCounter, finalDice);
+}
+
+////////// commands from updater ////
+
+
+bool Battle::gamelogic_receivedDoneCommand()
+{
+    // Done command can only be processed when battle is in the following states.
+    // .1 PreRoll - If the player has been stunned too much, he might choose not to roll the die.
+    // .2 DiceRolledAbilityUsed - If the player rolled and has use a ability.
+    if(_battleState != PreRoll && _battleState != AbilityUsed)
+    {
+        return false;
+    }
+    gamelogic_endTurn();
+    gamelogic_newTurn(PlayerRole::opponentOf(_currentPlayer));
     return true;
 }
 
@@ -223,8 +228,35 @@ bool Battle::gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId)
     {
         (*it).roll(); 
     }
+    for(std::vector<Die>::iterator it = dice.begin() ; it != dice.end() ; ++it)
+    {
+         std::cout <<" D " << (*it).id << " " << (*it).currentFaceId  << std::endl;
+    }
     gamelogic_setDiceRolled(dice);
+    // set damage taken if turn end because of no valid move.
+    bool hasMove = false;
+    for(std::vector<Ability>::const_iterator it = rules.getAbilities().begin() ; it != rules.getAbilities().end() ; ++it)
+    {
+        if((*it).canUseAbility(_currentDice))
+        {
+            hasMove = true;
+            break;
+        } 
+    }
+    if(!hasMove)
+    {
+        Unit& unit = getUnit(_currentPlayer);
+        gamelogic_endTurn(unit.getNoMoveDamage());
+        gamelogic_newTurn(PlayerRole::opponentOf(_currentPlayer));
+    }
     return true;
+}
+
+void Battle::gamelogic_newDice(std::vector<Die> dice)
+{
+    viewer_sendNewDiceMessages(dice);
+    // set the current dice
+    _currentDice = dice;
 }
 
 bool Battle::gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, const std::vector<sf::Int32>& diceUsed)
@@ -244,7 +276,11 @@ bool Battle::gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, con
         return false;
     }
     // make sure that the ability is part of the rule
-    if(!rules.containsAbility(abilityUsed) || !abilityUsed.canUseAbility(usedDice))
+    if(!rules.containsAbility(abilityUsed))
+    {
+        return false;
+    }
+    if(!abilityUsed.canUseAbility(usedDice))
     {
         return false;
     }
@@ -257,6 +293,15 @@ bool Battle::gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, con
     else if(_units[PlayerRole::PlayerTwo].currentHp <= 0)
     {
         gamelogic_endGame(PlayerRole::PlayerOne);
+    }
+    else
+    {
+        // if the game haven't ends, check if need to send new set of dice.
+        if(_currentDice.size() == 0)
+        {
+            std::vector<Die> dice = rules.getDice();
+            gamelogic_newDice(dice);
+        }
     }
     return true;
 }

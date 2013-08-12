@@ -121,6 +121,14 @@ void SimpleAnimator::move(sf::Text text, sf::Vector2f moveVec, float duration)
     objects.push_back(obj);
 }
 
+void SimpleAnimator::moveReference(iAnimatable& animatable, sf::Vector2f moveVec, float duration)
+{
+    AnimatableObject* obj = new AnimatableObject(animatable);
+    MoveInstruction* mi = new MoveInstruction(moveVec, duration);
+    obj->setInstruction(mi);
+    objects.push_back(obj);
+}
+
 void SimpleAnimator::colorshift(sf::Sprite sprite, sf::Color& sourceColor, sf::Color& targetColor , float duration)
 {
     SpriteAnimationObject* obj = new SpriteAnimationObject(sprite);

@@ -6,6 +6,7 @@ struct DB_SendUseAbilityCommand : public Message
 {
     DB_SendUseAbilityCommand();
     DB_SendUseAbilityCommand(Ability abilityUsed, std::vector<sf::Int32> diceUsed);
+    DB_SendUseAbilityCommand(Ability abilityUsed, std::vector<Die> diceUsed);
     Ability abilityUsed;
     std::vector<sf::Int32> diceUsed;
 };

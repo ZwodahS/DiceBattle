@@ -1,9 +1,9 @@
 #include "GameScreen.hpp"
 #include "../Game.hpp"
-
+#include "../../z_framework/zf_sfml/f_common.hpp"
 GameScreen::DieSprite::DieSprite(sf::Int32 i, std::vector<sf::Sprite> f, sf::Sprite d, sf::Sprite sb)
-    :id(i), faces(f), dieBorder(d), selectionBorder(sb), currentFace(DieFace::Sword), actualFace(DieFace::Sword), random(true), empty(true)
-    ,visible(true), frozen(false), randomizerTimer(0), 
+    :id(i), faces(f), dieBorder(d), selectionBorder(sb), currentFaceId(0), actualFaceId(0), random(true), empty(true)
+    ,visible(true), frozen(false), randomizerTimer(0), selected(false),
     clickBound(0,0,DiceSize,DiceSize)
 {
 }
@@ -55,7 +55,7 @@ void GameScreen::DieSprite::draw(sf::RenderWindow& window, const sf::Time& delta
         randomizerTimer+=delta.asSeconds();
         if(randomizerTimer >= GameScreen::RandomizerChangeRate)
         {
-            currentFace = DieFace::randomFace(currentFace);
+            currentFaceId = rand() % faces.size();
             randomizerTimer -= GameScreen::RandomizerChangeRate;
         }
     }
@@ -70,13 +70,23 @@ void GameScreen::DieSprite::draw(sf::RenderWindow& window, const sf::Time& delta
         {
             if(random)
             {
-                window.draw(faces[currentFace]);
+                window.draw(faces[currentFaceId]);
             }
             else
             {
-                window.draw(faces[actualFace]);
+                window.draw(faces[actualFaceId]);
             }
         }
+    }
+}
+
+void GameScreen::DieSprite::setAlpha(float alpha)
+{
+    zf::setAlpha(selectionBorder, alpha);
+    zf::setAlpha(dieBorder, alpha);
+    for(std::vector<sf::Sprite>::iterator it = faces.begin() ; it != faces.end() ; ++it)
+    {
+        zf::setAlpha((*it), alpha); 
     }
 }
 
@@ -97,6 +107,12 @@ sf::Vector2f GameScreen::DieSprite::getPosition()
     return sf::Vector2f(clickBound.left, clickBound.top);
 }
 
+void GameScreen::DieSprite::move(sf::Vector2f move)
+{
+    sf::Vector2f curr = getPosition();
+    setPosition(curr + move);
+}
+
 GameScreen::DieSprite GameScreen::makeDie(Die& die)
 {
     std::vector<sf::Sprite> faces;
@@ -104,7 +120,7 @@ GameScreen::DieSprite GameScreen::makeDie(Die& die)
     {
         faces.push_back(_game.assets.getSprite(*it));
     }
-    DieSprite d = DieSprite(die.id,faces, _game.assets.gameScreenAssets.die.createSprite(), _game.assets.gameScreenAssets.dieSelectionBorder.createSprite());    
+    DieSprite d(die.id,faces, _game.assets.gameScreenAssets.die.createSprite(), _game.assets.gameScreenAssets.dieSelectionBorder.createSprite());
     d.setFrozen(die.frozen);
     d.setEmpty(!die.rolled);
     return d;

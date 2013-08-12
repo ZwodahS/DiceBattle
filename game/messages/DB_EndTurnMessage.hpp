@@ -3,7 +3,8 @@
 #include "Message.hpp"
 struct DB_EndTurnMessage : public Message
 {
-    DB_EndTurnMessage();
+    DB_EndTurnMessage(sf::Int32 damageTaken = 0);
+    sf::Int32 damageTaken;
 };
 
 sf::Packet& operator << (sf::Packet& packet, const DB_EndTurnMessage& message);

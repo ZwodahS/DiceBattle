@@ -93,7 +93,8 @@ private:
     void viewer_sendActiveTurnMessages(const PlayerRole::ePlayerRole& currentPlayer, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen, std::vector<Die> dice);
     void viewer_sendDiceRolledMessages(std::vector<Die> dice);
     void viewer_sendAbilityUsedMessages(const PlayerRole::ePlayerRole& user, const Ability& abilityUsed, std::vector<sf::Int32> diceUsed);
-    void viewer_sendEndTurnMessages();
+    void viewer_sendNewDiceMessages(std::vector<Die>& dice);
+    void viewer_sendEndTurnMessages(sf::Int32 damage = 0);
     void viewer_sendEndGameMessages(PlayerRole::ePlayerRole winner);
 
     ///// Game Logic code, similar to receiving a update message from battle server ////
@@ -117,10 +118,16 @@ private:
     void gamelogic_abilityUsed(const PlayerRole::ePlayerRole& user, const Ability& abilityUsed, std::vector<sf::Int32> diceUsed);
     // sub-method of gamelogic_abilityUsed
     void gamelogic_removeDice(std::vector<sf::Int32> dice);
+
+    void gamelogic_newDice(std::vector<Die> dice);
     /**
      * End the turn.
      */
-    void gamelogic_endTurn();
+    void gamelogic_endTurn(sf::Int32 damage = 0);
+    /**
+     * Start a new turn
+     */
+    void gamelogic_newTurn(PlayerRole::ePlayerRole);
     /**
      * End the game.
      */

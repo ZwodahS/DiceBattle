@@ -16,6 +16,7 @@ public:
     std::string name;
     Unit();
     Unit(std::string name, sf::Int32 maxHp, sf::Int32 diceCount);
+    sf::Int32 getNoMoveDamage();
     ~Unit();
 
 };

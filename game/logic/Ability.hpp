@@ -17,11 +17,16 @@ public:
     /**
      * Check if the ability can be use given the rolled dice
      */
-    bool canUseAbility(const std::vector<Die>& dices) const;
+    bool canUseAbility(const std::vector<Die>& dice) const;
     /**
-     * Find the list of die id from a list of dices that matches the cost.
+     * Same as canUseAbility , except that is the number of dice exceed the cost size, this returns false.
+     */
+    bool canStrictlyUseAbility(const std::vector<Die>& dice) const;
+    /**
+     * Find the list of die id from a list of dice that matches the cost.
      * If the dice given is not enough to use this ability, an empty list will be return.
      */
+    std::vector<Die> matchDice(const std::vector<Die>& dice) const;
     std::vector<sf::Int32> match(const std::vector<Die>& dice) const;
     
     sf::Int32 id;

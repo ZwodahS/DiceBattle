@@ -52,6 +52,7 @@ class SimpleAnimator
         // move a sprite by a vector. The vector is defined in pixel per sec.
         void move(sf::Sprite sprite, sf::Vector2f moveVec, float duration);
         void move(sf::Text text, sf::Vector2f moveVec, float duration);
+        void moveReference(iAnimatable& animatable, sf::Vector2f moveVec, float duration);
         /**
          * Color shifting animations.
          * The object needs to have a getColor() function.

@@ -19,6 +19,7 @@ public:
     virtual void sendMessage(DB_AskForActionMessage message) = 0;
     virtual void sendMessage(DB_AbilityUsedMessage message) = 0;
     virtual void sendMessage(DB_DiceRolledResultMessage message) = 0;
+    virtual void sendMessage(DB_NewDiceMessage message) = 0;
     virtual void sendMessage(DB_EndTurnMessage message) = 0;
     virtual void sendMessage(DB_EndGameMessage message) = 0;
 

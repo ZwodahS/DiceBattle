@@ -25,6 +25,7 @@ const sf::Vector2f GameScreen::RollButtonPosition = sf::Vector2f(135,150);
 const sf::Vector2f GameScreen::DoneButtonPosition = sf::Vector2f(405,150);
 
 const sf::Vector2f GameScreen::AbilityMoveSpeed = sf::Vector2f(0,1000);
+const float GameScreen::FadeSpeed = 400;
 GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r, GameViewer& v, GameUpdater& u)
     :Screen(game), _battle(b), _role(r), _viewer(v), _updater(u), _currentState(Empty), _currentPlayer(PlayerRole::PlayerOne)
     ,rollButton(game.assets.gameScreenAssets.rollButtonSelected.createSprite(), game.assets.gameScreenAssets.rollButton.createSprite(), RollButtonSize)
@@ -40,15 +41,19 @@ GameScreen::~GameScreen()
 
 void GameScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
 {
+    for(std::vector<DieSprite>::iterator it = _leavingDiceSprites.begin() ; it != _leavingDiceSprites.end() ; ++it)
+    {
+        (*it).draw(window,delta); 
+    }
     for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
     {
         (*it).draw(window,delta);
     }
-    for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
+    for(std::vector<UnitSprite>::iterator it = _units.begin() ; it != _units.end() ; ++it)
     {
         (*it).draw(window,delta); 
     }
-    for(std::vector<UnitSprite>::iterator it = _units.begin() ; it != _units.end() ; ++it)
+    for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
     {
         (*it).draw(window,delta); 
     }
@@ -88,7 +93,7 @@ void GameScreen::freeFirstMessage()
     else if(m->type == Message::AbilityUsedMessage)
     {
         DB_AbilityUsedMessage* message = (DB_AbilityUsedMessage*)m;
-        delete message;;
+        delete message;
     }
     else if(m->type == Message::EndTurnMessage)
     {
@@ -139,6 +144,10 @@ void GameScreen::sendMessage(DB_DiceRolledResultMessage& message)
 {
     messages.push(new DB_DiceRolledResultMessage(message));
 }
+void GameScreen::sendMessage(DB_NewDiceMessage& message)
+{
+    messages.push(new DB_NewDiceMessage(message));
+}
 void GameScreen::sendMessage(DB_EndTurnMessage& message)
 {
     messages.push(new DB_EndTurnMessage(message));
@@ -156,7 +165,7 @@ void GameScreen::setDie(Die& die)
     {
         if((*it).id == die.id)
         {
-            (*it).actualFace = die.currentFace;
+            (*it).actualFaceId = die.currentFaceId;
             (*it).setEmpty(false);
             break;
         } 
@@ -197,6 +206,7 @@ void GameScreen::setMatchedAbilities(std::vector<Ability> abilities)
         {
             AbilitySprite as = getAndRemoveAbilitySprite(abilities[i]);
             as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[i]);
+            as.moveSpeed = AbilityMoveSpeed;
             keep.push_back(as);
         }
         else
@@ -205,6 +215,7 @@ void GameScreen::setMatchedAbilities(std::vector<Ability> abilities)
             AbilitySprite as = makeAbilitySprite(abilities[i]);
             as.setPosition(sf::Vector2f(Ability_X, AbilityOffScreen_Y[i]));
             as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[i]);
+            as.moveSpeed = AbilityMoveSpeed;
             keep.push_back(as);  
         }
     }
@@ -236,4 +247,112 @@ GameScreen::AbilitySprite GameScreen::getAndRemoveAbilitySprite(Ability a)
         } 
     }
     return makeAbilitySprite(a);
+}
+
+bool GameScreen::hasDieSprite(sf::Int32 i)
+{
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        if((*it).id == i)
+        {
+            return true;
+        } 
+    }
+    return false;
+}
+
+GameScreen::DieSprite GameScreen::getAndRemoveDieSprite(sf::Int32 i)
+{
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        if((*it).id == i)
+        {
+            DieSprite ds = *it;
+            _diceSprites.erase(it);
+            return ds;
+        } 
+    }
+    Die d;
+    return makeDie(d);
+}
+
+void GameScreen::animate_abilityUsed(Ability& ability)
+{
+    std::vector<AbilitySprite> tmp;
+    if(hasAbilitySprite(ability))
+    {
+        AbilitySprite as = getAndRemoveAbilitySprite(ability);
+        as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[0] - 40);
+        sf::Vector2f tmpPos = as.getPosition();
+        // the final position of this is always less than the current position relative to top left.
+        // Since the move speed needs to be positive, speed = current - final
+        as.moveSpeed = tmpPos - as.finalPosition;
+        tmp.push_back(as);
+    }
+    else
+    {
+        AbilitySprite as = makeAbilitySprite(ability);
+        as.setPosition(sf::Vector2f(Ability_X, AbilityOffScreen_Y[0]));
+        as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[0] - 40);
+        tmp.push_back(as);
+    }
+    int i = 0;
+    for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
+    {
+        (*it).finalPosition = sf::Vector2f(Ability_X, AbilityOffScreen_Y[i]); 
+        i++;
+        (*it).fade = true;
+        sf::Vector2f currentPosition = (*it).getPosition();
+        // the final position is always "more" than the current position relative to top left
+        (*it).moveSpeed = ((*it).finalPosition - currentPosition);
+    }
+    _abilitySprites.push_back(tmp[0]);
+}
+
+void GameScreen::animate_diceUsed(std::vector<sf::Int32> dice)
+{
+    for(std::vector<sf::Int32>::iterator it = dice.begin() ; it != dice.end() ; ++it)
+    {
+        std::cout << *it << "|";
+        if(hasDieSprite(*it))
+        {
+            DieSprite ds = getAndRemoveDieSprite(*it);
+            std::cout << ds.id ;
+            _leavingDiceSprites.push_back(ds);
+        } 
+        std::cout << std::endl;
+    }
+    for(std::vector<DieSprite>::iterator it = _leavingDiceSprites.begin() ; it != _leavingDiceSprites.end() ; ++it)
+    {
+        _animator.moveReference(*it, sf::Vector2f(0,200), 2);
+        _animator.fadeReference(*it, 255 , 0 , 1);
+    }
+    for(int i = 0 ; i < _diceSprites.size() ; i++)
+    {
+        _animator.moveReferenceTo(_diceSprites[i], sf::Vector2f(DieX, DieY[i]), 1);
+    }
+}
+
+GameScreen::DieSprite* GameScreen::getDieSprite(sf::Vector2f mousePosF)
+{
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        if((*it).clickBound.contains(mousePosF))
+        {
+            return &(*it);
+        }
+    }
+    return 0;    
+}
+
+GameScreen::DieSprite* GameScreen::getDieSprite(const sf::Int32 id)
+{
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        if((*it).id == id)
+        {
+            return &(*it);
+        } 
+    }
+    return 0;
 }

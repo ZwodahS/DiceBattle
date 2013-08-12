@@ -10,6 +10,15 @@ DB_SendUseAbilityCommand::DB_SendUseAbilityCommand(Ability a, std::vector<sf::In
 {
 }
 
+DB_SendUseAbilityCommand::DB_SendUseAbilityCommand(Ability a, std::vector<Die> d)
+    :Message(SendUseAbilityCommand), abilityUsed(a)
+{
+    for(std::vector<Die>::iterator it = d.begin() ; it != d.end() ; ++it)
+    {
+        diceUsed.push_back((*it).id); 
+    }
+}
+
 sf::Packet& operator << (sf::Packet& packet, const DB_SendUseAbilityCommand& message)
 {
     packet << message.type << message.abilityUsed;

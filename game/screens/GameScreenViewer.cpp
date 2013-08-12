@@ -65,3 +65,11 @@ void GameScreenViewer::sendMessage(DB_EndGameMessage message)
         gameScreen->sendMessage(message);
     }
 }
+
+void GameScreenViewer::sendMessage(DB_NewDiceMessage message)
+{
+    if(gameScreen != 0)
+    {
+        gameScreen->sendMessage(message);
+    }
+}

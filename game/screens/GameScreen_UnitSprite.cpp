@@ -110,4 +110,7 @@ void GameScreen::UnitSprite::updateData()
 {
     currentHpText.setString(zf::toString(unit->currentHp));
     shieldText.setString(zf::toString(unit->shieldCounter));
+    stunnedText.setString(zf::toString(unit->shockCounter));
+    burntText.setString(zf::toString(unit->burnCounter));
+    frozenText.setString(zf::toString(unit->freezeCounter));
 }

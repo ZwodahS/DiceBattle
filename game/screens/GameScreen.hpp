@@ -133,11 +133,12 @@ private:
         sf::Text nameText;
         sf::Text currentHpText;
         sf::Text shieldText;
-        sf::Text genericText;
-        std::vector<sf::Sprite> effects;
-        std::vector<sf::Text> effectsText;
+        sf::Text stunnedText;
+        sf::Text burntText;
+        sf::Text frozenText;
         void setPosition(sf::Vector2f position);
         sf::Vector2f getPosition();
+        void updateData();
         void draw(sf::RenderWindow& window, const sf::Time& delta);
         void update(sf::RenderWindow& window, const sf::Time& delta);
         void resetUnitStats();
@@ -173,28 +174,71 @@ private:
     AbilitySprite makeAbilitySprite(const Ability& ability);
     /////// End of Ability Sprite //////
 
+    ////////// Ability Sprites Stuffs ////////
+    /**
+     * List of ability sprites.
+     */
     std::vector<AbilitySprite> _abilitySprites;
+    /**
+     * Check if the screen has AbilitySprite for this ability.
+     */
     bool hasAbilitySprite(Ability a);
     /**
-     * If the ability sprite do not exist, an new one will be created for it.
+     * Get and remove an ability sprite for this ability. If the ability do not exist, then create a new AbilitySprite for this ability.
      */
     AbilitySprite getAndRemoveAbilitySprite(Ability a);
+    /**
+     * Set a new set of abilities. This will also animates the ability sprites.
+     */
     void setMatchedAbilities(std::vector<Ability> abilities);
+    /**
+     * Animate an ability used.
+     */
     void animate_abilityUsed(Ability& ability);
-    // list of die sprites
+    ////////// End of Ability Sprites Stuffs ///////
+    
+    ////////// Dice Sprites Stuffs ///////////    
+    /**
+     * The list of dice sprites that is current in the screen
+     */
     std::vector<DieSprite> _diceSprites;
+    /**
+     * The list of dice sprites that is leaving the screen.
+     */
     std::vector<DieSprite> _leavingDiceSprites;
+    /**
+     * Set a die
+     */
     void setDie(Die& die);
+    /**
+     * Set a list of dice
+     */
     void setDice(std::vector<Die>& dice);
+    /**
+     * Get a list of dice that is selected, subset of the list of current dice.
+     */
     std::vector<Die> getSelectedDice();
+    /**
+     * Get a list of dice that is currently in the screen.
+     */
     std::vector<Die> getCurrentDice();
+    /**
+     * Check if there is any die sprite of this im
+     */
     bool hasDieSprite(sf::Int32 id);
     void animate_diceUsed(std::vector<sf::Int32> dice);
     DieSprite getAndRemoveDieSprite(sf::Int32 id);
     DieSprite* getDieSprite(sf::Vector2f mousePos);
     DieSprite* getDieSprite(const sf::Int32 id);
+    ////////// End of Dice Sprites Stuffs /////////
+    
+
+    //////////// Unit Sprites Stuffs ///////////
     // there should only be two unit
     std::vector<UnitSprite> _units;
+    void updateUnits();
+    /////////// End Of Unit Sprites Stuffs //////////
+    
     ///////// GAME STATE //////
     GameScreenState _currentState;
     PlayerRole::ePlayerRole _currentPlayer;

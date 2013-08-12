@@ -362,3 +362,9 @@ GameScreen::DieSprite* GameScreen::getDieSprite(const sf::Int32 id)
     }
     return 0;
 }
+
+void GameScreen::updateUnits()
+{
+    _units[PlayerRole::PlayerOne].updateData();
+    _units[PlayerRole::PlayerTwo].updateData();
+}

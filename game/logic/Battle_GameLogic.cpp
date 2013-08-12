@@ -149,6 +149,7 @@ void Battle::gamelogic_endTurn(sf::Int32 damage)
 {
     viewer_sendEndTurnMessages(damage);
     Unit& currentUnit = getUnit(_currentPlayer);
+    currentUnit.currentHp -= damage;
     currentUnit.shockCounter = 0;
     currentUnit.freezeCounter = 0;
 }

@@ -262,12 +262,14 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
                 animate_diceUsed(abilityUsedMessage->diceUsed);
                 _currentState = AnimatingAbilityUsed;
                 _animationTimer1 = 2;
+                updateUnits();
                 break;
             }
             else if(messages.front()->type == Message::EndTurnMessage)
             {
                 endTurnMessage = (DB_EndTurnMessage*)messages.front();
                 update_processMessage(endTurnMessage);
+                updateUnits();
                 break;
             }
             else
@@ -487,6 +489,7 @@ void GameScreen::update_processMessage(DB_EndTurnMessage* message)
     }
     _currentState = AnimatingTurnEnds;
     _animationTimer1 = 2;
+    updateUnits();
 }
 
 void GameScreen::update_processMessage(DB_EndGameMessage* message)

@@ -18,14 +18,10 @@ const int UnitSprite_EffectsTextX[] = {50,110,170,230};
 const int UnitSprite_EffectsTextY[] = {55,55,55,55};
 
 GameScreen::UnitSprite::UnitSprite(Unit& u, sf::Sprite bg, sf::Sprite heart, sf::Sprite armor, sf::Sprite stunned, sf::Sprite burnt, sf::Sprite frozen, sf::Text name, sf::Text currentHp, sf::Text shield, sf::Text generic)
-    :unit(&u), background(bg), heartSprite(heart), armorSprite(armor), stunnedSprite(stunned), burntSprite(burnt), frozenSprite(frozen), nameText(name), currentHpText(currentHp), shieldText(shield), genericText(generic), clickBound(0,0,270,100)
+    :unit(&u), background(bg), heartSprite(heart), armorSprite(armor), stunnedSprite(stunned), burntSprite(burnt), frozenSprite(frozen)
+    , nameText(name), currentHpText(currentHp), shieldText(shield), stunnedText(generic), burntText(generic), frozenText(generic)
+    , clickBound(0,0,270,100)
 {
-    effects.push_back(stunnedSprite);
-    effectsText.push_back(genericText);
-    effects.push_back(burntSprite);
-    effectsText.push_back(genericText);
-    effects.push_back(frozenSprite);
-    effectsText.push_back(genericText);
     setActive(false);
 }
 
@@ -39,11 +35,12 @@ void GameScreen::UnitSprite::setPosition(sf::Vector2f position)
     currentHpText.setPosition(position + sf::Vector2f(UnitSprite_HeartTextX, UnitSprite_HeartTextY));
     armorSprite.setPosition(position + sf::Vector2f(UnitSprite_ArmorX, UnitSprite_ArmorY));
     shieldText.setPosition(position + sf::Vector2f(UnitSprite_ArmorTextX, UnitSprite_ArmorTextY));
-    for(int i = 0; i < effects.size() ; i++)
-    {
-        effects[i].setPosition(position + sf::Vector2f(UnitSprite_EffectsX[i], UnitSprite_EffectsY[i]));
-        effectsText[i].setPosition(position + sf::Vector2f(UnitSprite_EffectsTextX[i], UnitSprite_EffectsTextY[i]));
-    }
+    stunnedSprite.setPosition(position + sf::Vector2f(UnitSprite_EffectsX[0], UnitSprite_EffectsY[0]));
+    stunnedText.setPosition(position + sf::Vector2f(UnitSprite_EffectsTextX[0], UnitSprite_EffectsTextY[0]));
+    burntSprite.setPosition(position + sf::Vector2f(UnitSprite_EffectsX[1], UnitSprite_EffectsY[1]));
+    burntText.setPosition(position + sf::Vector2f(UnitSprite_EffectsTextX[1], UnitSprite_EffectsTextY[1]));
+    frozenSprite.setPosition(position + sf::Vector2f(UnitSprite_EffectsX[2], UnitSprite_EffectsY[2]));
+    frozenText.setPosition(position + sf::Vector2f(UnitSprite_EffectsTextX[2], UnitSprite_EffectsTextY[2]));
 }
 
 void GameScreen::UnitSprite::draw(sf::RenderWindow& window, const sf::Time& delta)
@@ -54,11 +51,12 @@ void GameScreen::UnitSprite::draw(sf::RenderWindow& window, const sf::Time& delt
     window.draw(currentHpText);
     window.draw(armorSprite);
     window.draw(shieldText);
-    for(int i = 0 ; i < effects.size(); i++)
-    {
-        window.draw(effects[i]);
-        window.draw(effectsText[i]);
-    }
+    window.draw(stunnedText);
+    window.draw(burntText);
+    window.draw(frozenText);
+    window.draw(stunnedSprite);
+    window.draw(burntSprite);
+    window.draw(frozenSprite);
 }
 
 void GameScreen::UnitSprite::update(sf::RenderWindow& window, const sf::Time& delta)
@@ -106,4 +104,10 @@ void GameScreen::UnitSprite::setActive(bool active)
     {
         background.setColor(sf::Color(140,140,85));
     }
+}
+
+void GameScreen::UnitSprite::updateData()
+{
+    currentHpText.setString(zf::toString(unit->currentHp));
+    shieldText.setString(zf::toString(unit->shieldCounter));
 }

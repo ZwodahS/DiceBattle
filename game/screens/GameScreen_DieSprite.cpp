@@ -1,10 +1,10 @@
 #include "GameScreen.hpp"
 #include "../Game.hpp"
 #include "../../z_framework/zf_sfml/f_common.hpp"
-GameScreen::DieSprite::DieSprite(sf::Int32 i, std::vector<sf::Sprite> f, sf::Sprite d, sf::Sprite sb)
-    :id(i), faces(f), dieBorder(d), selectionBorder(sb), currentFaceId(0), actualFaceId(0), random(true), empty(true)
-    ,visible(true), frozen(false), randomizerTimer(0), selected(false),
-    clickBound(0,0,DiceSize,DiceSize)
+GameScreen::DieSprite::DieSprite(Die di, std::vector<sf::Sprite> f, sf::Sprite d, sf::Sprite sb)
+    :die(di), faces(f), dieBorder(d), selectionBorder(sb), currentFaceId(0), random(true)
+    ,visible(true), randomizerTimer(0), selected(false) 
+    ,clickBound(0,0,DiceSize,DiceSize)
 {
 }
 
@@ -22,19 +22,16 @@ void GameScreen::DieSprite::setVisible(bool v)
     this->visible = v;
 }
 
-void GameScreen::DieSprite::setEmpty(bool e)
-{
-    this->empty = e;
-}
 
 void GameScreen::DieSprite::toggleSelection()
 {
     this->selected = !this->selected;
 }
-void GameScreen::DieSprite::setFrozen(bool f)
+
+void GameScreen::DieSprite::setDie(Die& d)
 {
-    this->frozen = f;
-    if(frozen)
+    this->die = d;
+    if(die.frozen)
     {
         this->dieBorder.setColor(sf::Color(160,230,230,255));
     }
@@ -42,6 +39,7 @@ void GameScreen::DieSprite::setFrozen(bool f)
     {
         this->dieBorder.setColor(sf::Color(255,255,255,255));
     }
+
 }
 
 void GameScreen::DieSprite::update(sf::RenderWindow& window, const sf::Time& delta)
@@ -66,7 +64,7 @@ void GameScreen::DieSprite::draw(sf::RenderWindow& window, const sf::Time& delta
             window.draw(selectionBorder);
         }
         window.draw(dieBorder);
-        if(!this->empty)
+        if(die.rolled)
         {
             if(random)
             {
@@ -74,7 +72,7 @@ void GameScreen::DieSprite::draw(sf::RenderWindow& window, const sf::Time& delta
             }
             else
             {
-                window.draw(faces[actualFaceId]);
+                window.draw(faces[die.currentFaceId]);
             }
         }
     }
@@ -120,8 +118,6 @@ GameScreen::DieSprite GameScreen::makeDie(Die& die)
     {
         faces.push_back(_game.assets.getSprite(*it));
     }
-    DieSprite d(die.id,faces, _game.assets.gameScreenAssets.die.createSprite(), _game.assets.gameScreenAssets.dieSelectionBorder.createSprite());
-    d.setFrozen(die.frozen);
-    d.setEmpty(!die.rolled);
+    DieSprite d(die,faces, _game.assets.gameScreenAssets.die.createSprite(), _game.assets.gameScreenAssets.dieSelectionBorder.createSprite());
     return d;
 }

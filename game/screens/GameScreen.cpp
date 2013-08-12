@@ -163,10 +163,9 @@ void GameScreen::setDie(Die& die)
 {
     for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
     {
-        if((*it).id == die.id)
+        if((*it).die.id == die.id)
         {
-            (*it).actualFaceId = die.currentFaceId;
-            (*it).setEmpty(false);
+            (*it).setDie(die);
             break;
         } 
     }
@@ -187,10 +186,20 @@ std::vector<Die> GameScreen::getSelectedDice()
     {
         if((*it).selected)
         {
-            dieIds.push_back((*it).id);
+            dieIds.push_back((*it).die.id);
         } 
     }
     return _battle.findDice(dieIds);
+}
+
+std::vector<Die> GameScreen::getCurrentDice()
+{
+    std::vector<Die> dice;
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        dice.push_back((*it).die); 
+    }
+    return dice;
 }
 
 void GameScreen::setMatchedAbilities(std::vector<Ability> abilities)
@@ -253,7 +262,7 @@ bool GameScreen::hasDieSprite(sf::Int32 i)
 {
     for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
     {
-        if((*it).id == i)
+        if((*it).die.id == i)
         {
             return true;
         } 
@@ -265,7 +274,7 @@ GameScreen::DieSprite GameScreen::getAndRemoveDieSprite(sf::Int32 i)
 {
     for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
     {
-        if((*it).id == i)
+        if((*it).die.id == i)
         {
             DieSprite ds = *it;
             _diceSprites.erase(it);
@@ -346,7 +355,7 @@ GameScreen::DieSprite* GameScreen::getDieSprite(const sf::Int32 id)
 {
     for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
     {
-        if((*it).id == id)
+        if((*it).die.id == id)
         {
             return &(*it);
         } 

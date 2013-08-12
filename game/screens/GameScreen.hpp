@@ -64,12 +64,15 @@ public:
     void update_animatingTurnEnds(sf::RenderWindow& window, const sf::Time& delta);
     void update_gameEnding(sf::RenderWindow& window, const sf::Time& delta);
     void update_gameEnd(sf::RenderWindow& window, const sf::Time& delta);
+
+    void update_setDice(std::vector<Die>& dice);
     void removeMessageUntilType(Message::MessageType type);    
 
     void update_processMessage(DB_ActiveTurnMessage* message);
     void update_processMessage(DB_DiceRolledResultMessage* message);
     void update_processMessage(DB_EndGameMessage* message);
     void update_processMessage(DB_EndTurnMessage* message);
+    void update_processMessage(DB_NewDiceMessage* message);
     std::queue<Message*> messages;
     void freeFirstMessage();
     /**
@@ -89,20 +92,18 @@ private:
     class DieSprite : public iAnimatable
     {
     public:
-        DieSprite(sf::Int32 id, std::vector<sf::Sprite> faces, sf::Sprite dieBorder, sf::Sprite selectionBorder);
-        sf::Int32 id;
+        DieSprite(Die die, std::vector<sf::Sprite> faces, sf::Sprite dieBorder, sf::Sprite selectionBorder);
+        Die die;
         std::vector<sf::Sprite> faces;
         sf::Sprite dieBorder;
         sf::Sprite selectionBorder;
         sf::Int32 currentFaceId;
-        sf::Int32 actualFaceId;
         float randomizerTimer;
         sf::FloatRect clickBound;
         bool random;
-        bool empty;
         bool visible;
-        bool frozen;
         bool selected;
+        void setDie(Die& die);
         void toggleSelection();
         void setEmpty(bool e);
         void setRandom(bool r);
@@ -186,6 +187,7 @@ private:
     void setDie(Die& die);
     void setDice(std::vector<Die>& dice);
     std::vector<Die> getSelectedDice();
+    std::vector<Die> getCurrentDice();
     bool hasDieSprite(sf::Int32 id);
     void animate_diceUsed(std::vector<sf::Int32> dice);
     DieSprite getAndRemoveDieSprite(sf::Int32 id);

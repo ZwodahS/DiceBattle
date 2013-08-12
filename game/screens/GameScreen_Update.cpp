@@ -130,30 +130,9 @@ void GameScreen::update_gameReady(sf::RenderWindow& window, const sf::Time& delt
     }
     if(message != 0)
     {
-        // set the active unit 
-        _units[_currentPlayer].setActive(false);
-        _currentPlayer = message->currentPlayer;
-        _units[_currentPlayer].setActive(true);
-
-        // animate the burn damage.
-        
-        // roll in the dice
-        _diceSprites.clear();
-        for(std::vector<Die>::iterator it = message->rollableDice.begin() ; it != message->rollableDice.end() ; ++it)
-        {
-            DieSprite d = makeDie(*it);
-            _diceSprites.push_back(d);
-        }
-        // assign the starting position of the dice and roll them in.
-        for(int i = 0 ; i < _diceSprites.size() ; i++)
-        {
-            _diceSprites[i].setPosition(sf::Vector2f(DieX, DieY[i]-400));
-            _animator.moveReferenceTo(_diceSprites[i], sf::Vector2f(DieX, DieY[i]), 0.5);
-        }
         messages.pop();
+        update_processMessage(message);
         delete message;
-        _currentState = DiceIn;
-        _animationTimer1 = 1;
     }
 }
 
@@ -187,7 +166,6 @@ void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& 
             }
         }
     }
-    // if not then wait for message 
     DB_DiceRolledResultMessage* message = 0;
     removeMessageUntilType(Message::DiceRolledResultMessage);
     if(messages.size() != 0)
@@ -221,7 +199,7 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
         zf::Mouse& mouse = _game.mouse;
         sf::Vector2i mousePos = mouse.getPosition(window);
         sf::Vector2f mousePosF(mousePos.x,mousePos.y);
-        // find out if the player select any dice
+        // find out if the player select any 
         if(mouse.left.thisReleased)
         {
             DieSprite* clickedDieSprite = getDieSprite(mousePosF);
@@ -244,7 +222,7 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
                         // Right now, I will just check a few things to decide how to send.
                         std::vector<Die> selectedDice = getSelectedDice();
                         Ability& ability = (*it).ability;
-                        // if the ability can be cast using the selectedDice, then send the minimum subset of selected dice
+                        // if the ability can be cast using the selectedDice, then send the minimum subset of selected 
                         if(ability.canUseAbility(selectedDice))
                         {
                             std::vector<Die> matchedDice = ability.matchDice(selectedDice);
@@ -266,16 +244,30 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
         }
     }
 
-    // wait for abiilty used message
-    DB_AbilityUsedMessage* message = 0;
-    removeMessageUntilType(Message::AbilityUsedMessage);
-    if(messages.size() != 0)
+    // wait for abiilty used message or end turn message 
+    DB_AbilityUsedMessage* abilityUsedMessage = 0;
+    DB_EndTurnMessage* endTurnMessage = 0;
+    while(messages.size() > 0)
     {
-        message = (DB_AbilityUsedMessage*)messages.front();
-        animate_abilityUsed(message->abilityUsed);
-        animate_diceUsed(message->diceUsed);
-        _currentState = AnimatingAbilityUsed;
-        _animationTimer1 = 2;
+        if(messages.front()->type == Message::AbilityUsedMessage)
+        {
+            abilityUsedMessage = (DB_AbilityUsedMessage*)messages.front();
+            animate_abilityUsed(abilityUsedMessage->abilityUsed);
+            animate_diceUsed(abilityUsedMessage->diceUsed);
+            _currentState = AnimatingAbilityUsed;
+            _animationTimer1 = 2;
+            break;
+        }
+        else if(messages.front()->type == Message::EndTurnMessage)
+        {
+            endTurnMessage = (DB_EndTurnMessage*)messages.front();
+            update_processMessage(endTurnMessage);
+            break;
+        }
+        else
+        {
+            freeFirstMessage();
+        }
     }
 }
 void GameScreen::update_animatingAbilityUsed(sf::RenderWindow& window, const sf::Time& delta)
@@ -315,6 +307,14 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
             else if(doneButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
             {
                 _updater.pushMessage(new DB_SendDoneCommand());
+            }
+            else
+            {
+                DieSprite* ds = getDieSprite(sf::Vector2f(position.x, position.y));
+                if(ds != 0)
+                {
+                    ds->toggleSelection();
+                }
             }
         }
     }
@@ -364,6 +364,53 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
 }
 void GameScreen::update_animatingTurnEnds(sf::RenderWindow& window, const sf::Time& delta)
 {
+    if(_animationTimer1 > 0)
+    {
+        _animationTimer1 -= delta.asSeconds();
+        if(_animationTimer1 <= 0)
+        {
+            _diceSprites.clear();
+            _abilitySprites.clear();
+        }
+    }
+    else
+    {
+        DB_ActiveTurnMessage* activeTurnMessage = 0;
+        DB_EndGameMessage* gameEndMessage = 0;
+        // clear ability
+        // clear dice
+        // check for active turn or game end.
+        while(messages.size() > 0)
+        {
+            if(messages.front()->type == Message::ActiveTurnMessage)
+            {
+                activeTurnMessage = (DB_ActiveTurnMessage*)messages.front();
+                break;
+            }
+            else if(messages.front()->type == Message::EndGameMessage)
+            {
+                gameEndMessage = (DB_EndGameMessage*)messages.front();
+                break;
+            }
+            else
+            {
+                freeFirstMessage();
+            }
+        }
+
+        if(gameEndMessage != 0)
+        {
+            update_processMessage(gameEndMessage);
+            messages.pop();
+            delete gameEndMessage;
+        }
+        else if(activeTurnMessage != 0)
+        {
+            update_processMessage(activeTurnMessage);
+            messages.pop();
+            delete activeTurnMessage;
+        }
+    }
 }
 void GameScreen::update_gameEnding(sf::RenderWindow& window, const sf::Time& delta)
 {
@@ -379,6 +426,31 @@ void GameScreen::update_gameEnd(sf::RenderWindow& window, const sf::Time& delta)
 
 
 /////////// update process messages ///////////
+void GameScreen::update_processMessage(DB_ActiveTurnMessage* message)
+{
+    // set the active unit 
+    _units[_currentPlayer].setActive(false);
+    _currentPlayer = message->currentPlayer;
+    _units[_currentPlayer].setActive(true);
+
+    // animate the burn damage.
+    
+    // roll in the dice
+    _diceSprites.clear();
+    for(std::vector<Die>::iterator it = message->rollableDice.begin() ; it != message->rollableDice.end() ; ++it)
+    {
+        DieSprite d = makeDie(*it);
+        _diceSprites.push_back(d);
+    }
+    // assign the starting position of the dice and roll them in.
+    for(int i = 0 ; i < _diceSprites.size() ; i++)
+    {
+        _diceSprites[i].setPosition(sf::Vector2f(DieX, DieY[i]-400));
+        _animator.moveReferenceTo(_diceSprites[i], sf::Vector2f(DieX, DieY[i]), 0.5);
+    }
+    _currentState = DiceIn;
+    _animationTimer1 = 1;
+}
 void GameScreen::update_processMessage(DB_DiceRolledResultMessage* message)
 {
     setDice(message->rolledDice);
@@ -391,12 +463,22 @@ void GameScreen::update_processMessage(DB_DiceRolledResultMessage* message)
         } 
     }
     _currentState = DiceRolling;
-    _animationTimer1 = 2;
+    _animationTimer1 = 1;
 }
 
 void GameScreen::update_processMessage(DB_EndTurnMessage* message)
 {
-    
+    for(int i = 0 ; i < _diceSprites.size() ; i++)
+    {
+        _animator.moveReference(_diceSprites[i], sf::Vector2f(0, 800), 1);
+    }    
+    for(int i = 0 ; i < _abilitySprites.size() ; i++)
+    {
+        _abilitySprites[i].finalPosition = sf::Vector2f(Ability_X, AbilityOffScreen_Y[i]);
+        _abilitySprites[i].fade = true;
+    }
+    _currentState = AnimatingTurnEnds;
+    _animationTimer1 = 2;
 }
 
 void GameScreen::update_processMessage(DB_EndGameMessage* message)

@@ -228,10 +228,6 @@ bool Battle::gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId)
     {
         (*it).roll(); 
     }
-    for(std::vector<Die>::iterator it = dice.begin() ; it != dice.end() ; ++it)
-    {
-         std::cout <<" D " << (*it).id << " " << (*it).currentFaceId  << std::endl;
-    }
     gamelogic_setDiceRolled(dice);
     // set damage taken if turn end because of no valid move.
     bool hasMove = false;

@@ -10,7 +10,7 @@
 const int GameScreen::AbilityDisplayed = 7;
 const int GameScreen::Ability_X = 100;
 const int GameScreen::Ability_Y[] = {120,170,220,270,320,370,420};
-const int GameScreen::AbilityOffScreen_Y[] = {500,550,600,650,700,750,800};
+const int GameScreen::AbilityOffScreen_Y[] = {600,650,700,750,800,850,900};
 
 const int GameScreen::DieX = 26;
 const int GameScreen::DieY[] = {30, 90, 150, 210, 270, 330, 390};
@@ -24,7 +24,7 @@ const sf::FloatRect GameScreen::DoneButtonSize = sf::FloatRect(0,0,200,200);
 const sf::Vector2f GameScreen::RollButtonPosition = sf::Vector2f(135,150);
 const sf::Vector2f GameScreen::DoneButtonPosition = sf::Vector2f(405,150);
 
-const sf::Vector2f GameScreen::AbilityMoveSpeed = sf::Vector2f(0,1000);
+const sf::Vector2f GameScreen::AbilityMoveSpeed = sf::Vector2f(0,1200);
 const float GameScreen::FadeSpeed = 400;
 GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r, GameViewer& v, GameUpdater& u)
     :Screen(game), _battle(b), _role(r), _viewer(v), _updater(u), _currentState(Empty), _currentPlayer(PlayerRole::PlayerOne)
@@ -313,14 +313,11 @@ void GameScreen::animate_diceUsed(std::vector<sf::Int32> dice)
 {
     for(std::vector<sf::Int32>::iterator it = dice.begin() ; it != dice.end() ; ++it)
     {
-        std::cout << *it << "|";
         if(hasDieSprite(*it))
         {
             DieSprite ds = getAndRemoveDieSprite(*it);
-            std::cout << ds.id ;
             _leavingDiceSprites.push_back(ds);
         } 
-        std::cout << std::endl;
     }
     for(std::vector<DieSprite>::iterator it = _leavingDiceSprites.begin() ; it != _leavingDiceSprites.end() ; ++it)
     {

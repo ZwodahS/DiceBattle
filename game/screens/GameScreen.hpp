@@ -66,6 +66,7 @@ public:
     void update_gameEnd(sf::RenderWindow& window, const sf::Time& delta);
     void removeMessageUntilType(Message::MessageType type);    
 
+    void update_processMessage(DB_ActiveTurnMessage* message);
     void update_processMessage(DB_DiceRolledResultMessage* message);
     void update_processMessage(DB_EndGameMessage* message);
     void update_processMessage(DB_EndTurnMessage* message);

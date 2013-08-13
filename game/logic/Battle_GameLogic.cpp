@@ -161,11 +161,14 @@ void Battle::gamelogic_endGame(PlayerRole::ePlayerRole winner)
 
 void Battle::gamelogic_newTurn(PlayerRole::ePlayerRole newActivePlayer)
 {
+    // get a copy of all the dice available for this player.
     std::vector<Die> dice = rules.getDice();
+    // final set of dice that is going to be used.
     std::vector<Die> finalDice;
+    // get the current active player.
     Unit& unit = getUnit(newActivePlayer);
     sf::Int32 diceMax = unit.diceCounter - unit.shockCounter;
-    // if there is a need to remove
+    // add the die to the final list
     while(diceMax < dice.size() && dice.size() != 0)
     {
         int r = rand() % dice.size();
@@ -208,7 +211,7 @@ bool Battle::gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId)
     // Roll Command can only be processed when battle is in the following states.
     // .1 PreRoll - No dice id is required. The number of dice rolled will be equal to the player's diceCounter - freezeCounter.
     // .2 DiceRolledAbilityUsed - The dice represent the dice that the player choose to roll. The other dice will not be modified/rolled.
-    if(_battleState != PreRoll && _battleState != AbilityUsed)
+    if(_battleState != PreRoll && _battleState != AbilityUsed || diceId.size() == 0)
     {
         return false;
     }

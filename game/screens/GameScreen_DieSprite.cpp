@@ -6,6 +6,7 @@ GameScreen::DieSprite::DieSprite(Die di, std::vector<sf::Sprite> f, sf::Sprite d
     ,visible(true), randomizerTimer(0), selected(false) 
     ,clickBound(0,0,DiceSize,DiceSize)
 {
+    setDie(di);
 }
 
 void GameScreen::DieSprite::setRandom(bool r)

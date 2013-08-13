@@ -10,7 +10,7 @@
 class GameViewer
 {
 public:
-    GameViewer(PlayerRole::ePlayerRole r = PlayerRole::Observer);
+    GameViewer(PlayerRole::ePlayerRole r);
 
     virtual bool isConnected() = 0;
 

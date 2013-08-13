@@ -33,16 +33,6 @@ Game::~Game()
 
 void Game::run()
 {
-    /*
-    GameScreenViewer viewer(PlayerRole::Both);
-    GeneralUpdater updater(PlayerRole::Both);
-    _currentBattle = new Battle();
-    _currentScreen = new GameScreen(*this, *_currentBattle, PlayerRole::Both, viewer,updater);
-    viewer.setGameScreen((GameScreen*)_currentScreen);
-    _currentBattle->addGameViewer(&viewer);
-    _currentBattle->addGameUpdater(&updater);
-    _currentBattle->startGame(this->rules, "PlayerOne", "PlayerTwo");
-    */
     SetupScreen* setupScreen = new SetupScreen(*this);
     _currentScreen = setupScreen;
     // set up the clock for delta
@@ -115,4 +105,35 @@ void Game::draw(sf::Time& delta)
         _currentScreen->draw(window,delta);   
     }
     window.display();
+}
+
+void Game::startGame(Battle* battle, PlayerRole::ePlayerRole role)
+{
+    if(battle != 0)
+    {
+        _currentBattle = battle;
+        _viewer = new GameScreenViewer(role);
+        _updater = new GeneralUpdater(role);
+        _gameScreen = new GameScreen(*this, *_currentBattle, role, *_viewer, *_updater);
+        _viewer->setGameScreen(_gameScreen);
+        _currentScreen = _gameScreen;
+        _currentBattle->addGameViewer(_viewer);
+        _currentBattle->addGameUpdater(_updater);
+    }
+}
+
+void Game::startLocalGame(Battle* battle, PlayerRole::ePlayerRole role, std::string player1 , std::string player2)
+{
+    if(battle != 0)
+    {
+        _currentBattle = battle;
+        _viewer = new GameScreenViewer(role);
+        _updater = new GeneralUpdater(role);
+        _gameScreen = new GameScreen(*this, *_currentBattle, role, *_viewer, *_updater);
+        _viewer->setGameScreen(_gameScreen);
+        _currentScreen = _gameScreen;
+        _currentBattle->addGameViewer(_viewer);
+        _currentBattle->addGameUpdater(_updater);
+        _currentBattle->startGame(rules, player1, player2);
+    }
 }

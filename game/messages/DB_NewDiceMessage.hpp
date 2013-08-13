@@ -5,6 +5,7 @@
 #include <SFML/Network.hpp>
 struct DB_NewDiceMessage : public Message
 {
+    DB_NewDiceMessage();
     DB_NewDiceMessage(std::vector<Die> dice);
     std::vector<Die> dice;
 };

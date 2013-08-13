@@ -50,6 +50,8 @@ public:
      * A boolean representing if the client is currently connected to a server.
      */
     bool connected;
+
+    void appendExternalMessageHeader(sf::Packet& packet);
 private:
     void hostingDisconnected();
     void serverDisconnected();

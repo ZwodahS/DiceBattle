@@ -18,6 +18,8 @@ class Battle;
 class Game
 {
     public:
+        static const sf::Int32 SetupMessage = 1111;
+        static const sf::Int32 GameMessage = 2222;
         Game();
         ~Game();
         void run(); 
@@ -43,6 +45,10 @@ class Game
         void hostingStopped();
         void packetReceived(sf::Packet& packet, Connection* connection);
         void packetReceivedFromServer(sf::Packet& packet);
+
+
+        void appendSetupMessageHeader(sf::Packet& packet);
+        void appendGameMessageHeader(sf::Packet& packet);
     private:
         void update(sf::Time& delta);
         void draw(sf::Time& delta);
@@ -50,6 +56,7 @@ class Game
         void startLocalGame(Battle* battle, PlayerRole::ePlayerRole role, std::string player1, std::string player2);
         Screen* _currentScreen;
         GameScreen* _gameScreen;        
+        SetupScreen* _setupScreen;
         Battle* _currentBattle;
         GameScreenViewer* _viewer;
         GeneralUpdater* _updater;

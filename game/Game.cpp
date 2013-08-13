@@ -136,4 +136,14 @@ void Game::startLocalGame(Battle* battle, PlayerRole::ePlayerRole role, std::str
     }
 }
 
+void Game::appendSetupMessageHeader(sf::Packet& packet)
+{
+    connection.appendExternalMessageHeader(packet);
+    packet << SetupMessage;
+}
 
+void Game::appendGameMessageHeader(sf::Packet& packet)
+{
+    connection.appendExternalMessageHeader(packet);
+    packet << GameMessage;
+}

@@ -1,6 +1,16 @@
 ToDo:
     $ 2 Big button for roll and done
     $ Space out the dice.
+    $ Screen extension
+        $ A ScreenState that defines 5 state - PreEnter, Entering, Active, Exiting, Exited. 
+            + This state is used in Game obj to know when to "switch" the screen.
+    $ SetupScreen
+        $ Create a Setup object to store the current game setup state.
+            + This will also provide all the methods needed for the host/client to send message to one another.
+        $ Add a Observer button to switch to being an observer.
+        $ Player should be allowed to switch to another "role" when they click it.
+            + In this case, the active selection will be the role that the player currently is.
+            + When a slot is empty , it will be disabled as gray and the word "empty"
 Steps:
     $ Finish the local 2 player game first. This will test the game logic and make sure it works.
         $ Finish the game logic.
@@ -13,19 +23,4 @@ Steps:
     $ Allow for observer to join in the middle of the game.
         + This means that the lobby code should have some support for this.
 
-Task at hand:
-    $ Need a Rule class to store all the ability in the game.
-        + the rule object is created locally. It is used for local game.
-        + However, in the case of a network game, the rule will be received from the server upon connecting.
-        + In the case of a lobby style game, the rule will be saved when the client connects to the server.
-    $ Need Input handling for GameScreen
 
-Other Screens:
-    $ Starting Screen
-        buttons for the respective game.
-        # new game + choose AI
-        # connect to peer
-        # host
-        # connect to lobby
-        # help manual
-        # exit

@@ -1,34 +1,84 @@
 #include "Game.hpp"
-
+#include "screens/Screen.hpp"
+#include "screens/SetupScreen.hpp"
+#include "screens/GameScreen.hpp"
 void Game::clientConnected(Connection* connection)
 {
-    std::cout << "client Connected" << std::endl;
+    if(_currentScreen != 0)
+    {
+        _currentScreen->clientConnected(connection);
+    }
 }
 void Game::clientDisconnected(Connection* connection)
 {
-    std::cout << "Client Disconnected" << std::endl;
+    if(_currentScreen != 0)
+    {
+        _currentScreen->clientDisconnected(connection);
+    }
 }
 void Game::serverConnected()
 {
-    std::cout << "Server Connected" << std::endl;
+    if(_currentScreen != 0)
+    {
+        _currentScreen->serverConnected();
+    }
 }
 void Game::serverDisconnected()
 {
-    std::cout << "Server Disconnected" << std::endl;
+    if(_currentScreen != 0)
+    {
+        _currentScreen->serverDisconnected();
+    }
 }
 void Game::hostingStarted()
 {
-    std::cout << "Hosting Started" << std::endl;
+    if(_currentScreen != 0)
+    {
+        _currentScreen->hostingStarted();
+    }
 }
 void Game::hostingStopped()
 {
-    std::cout << "Hosting Stopped" << std::endl;
+    if(_currentScreen != 0)
+    {
+        _currentScreen->hostingStopped();
+    }
 }
 void Game::packetReceived(sf::Packet& packet, Connection* connection)
 {
-    std::cout << "Packet received" << std::endl;
+    sf::Int32 type;
+    packet >> type;
+    if(type == SetupMessage)
+    {
+        if(_setupScreen != 0)
+        {
+            _setupScreen->packetReceived(packet, connection);
+        }
+    }
+    else if(type == GameMessage)
+    {
+        if(_gameScreen != 0)
+        {
+            _gameScreen->packetReceived(packet, connection);
+        }
+    }
 }
 void Game::packetReceivedFromServer(sf::Packet& packet)
 {
-    std::cout << "Packet Received from server" << std::endl;
+    sf::Int32 type;
+    packet >> type;
+    if(type == SetupMessage)
+    {
+        if(_setupScreen != 0)
+        {
+            _setupScreen->packetReceivedFromServer(packet);
+        }
+    }
+    else if(type == GameMessage)
+    {
+        if(_gameScreen != 0)
+        {
+            _gameScreen->packetReceivedFromServer(packet);
+        }
+    }
 }

@@ -221,3 +221,8 @@ void ConnectionManager::packetReceivedFromServer(sf::Packet& packet)
         game.packetReceivedFromServer(packet);
     }
 }
+
+void ConnectionManager::appendExternalMessageHeader(sf::Packet& packet)
+{
+    packet << ExternalMessage;
+}

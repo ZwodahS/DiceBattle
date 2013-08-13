@@ -39,6 +39,11 @@ GameScreen::~GameScreen()
 {
 }
 
+void GameScreen::textInput(char c)
+{
+
+}
+
 void GameScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
 {
     for(std::vector<DieSprite>::iterator it = _leavingDiceSprites.begin() ; it != _leavingDiceSprites.end() ; ++it)

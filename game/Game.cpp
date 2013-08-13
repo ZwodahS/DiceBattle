@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "screens/SetupScreen.hpp"
 #include "screens/GameScreen.hpp"
 #include "screens/Screen.hpp"
 #include "screens/GameScreenViewer.hpp"
@@ -32,6 +33,7 @@ Game::~Game()
 
 void Game::run()
 {
+    /*
     GameScreenViewer viewer(PlayerRole::Both);
     GeneralUpdater updater(PlayerRole::Both);
     _currentBattle = new Battle();
@@ -40,6 +42,9 @@ void Game::run()
     _currentBattle->addGameViewer(&viewer);
     _currentBattle->addGameUpdater(&updater);
     _currentBattle->startGame(this->rules, "PlayerOne", "PlayerTwo");
+    */
+    SetupScreen* setupScreen = new SetupScreen(*this);
+    _currentScreen = setupScreen;
     // set up the clock for delta
     sf::Clock clock; 
     bool quit = false;
@@ -61,6 +66,24 @@ void Game::run()
             else if(event.type == sf::Event::MouseWheelMoved)
             {
                 mouse.wheelDelta = event.mouseWheel.delta;
+            }
+            else if(event.type == sf::Event::TextEntered)
+            {
+                if(event.text.unicode < 128)
+                {
+                    if(_currentScreen != 0)
+                    {
+                        _currentScreen->textInput(static_cast<char>(event.text.unicode));
+                    }
+                }
+            }
+            else if(event.type == sf::Event::LostFocus)
+            {
+                isFocused = false;
+            }
+            else if(event.type == sf::Event::GainedFocus)
+            {
+                isFocused = true;
             }
         }
         // if not quit , update then draw.

@@ -29,6 +29,15 @@ struct IconAssets
     SpriteSheet spriteSheet;
 };
 
+struct SetupScreenAssets
+{
+    TextureRegion nameBox;
+    TextureRegion ipAddrBox;
+    TextureRegion typeSelectionBox;
+    TextureRegion joinButton;
+    TextureRegion hostButton;
+};
+
 struct GameScreenAssets
 {
     //270 x 100
@@ -64,6 +73,7 @@ struct Assets
     PlaceHolderAssets placeHolder;
     IconAssets icons;
     GameScreenAssets gameScreenAssets;
+    SetupScreenAssets setupScreenAssets;
     sf::Texture master1;
     SpriteSheet masterS1;
     sf::Texture placeholderTexture;

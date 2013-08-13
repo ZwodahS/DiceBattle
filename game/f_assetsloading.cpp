@@ -75,4 +75,12 @@ void Game::loadAssets()
 
     image.loadFromFile("data/graphics/charactersheet.png");
     assets.gameScreenAssets.characterSheet = assets.masterS1.createRegion(image,0, 100);
+
+
+    ////////////////// Setup Screen ///////////////
+    assets.setupScreenAssets.nameBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,30));
+    assets.setupScreenAssets.ipAddrBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,30));
+    assets.setupScreenAssets.typeSelectionBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,30));
+    assets.setupScreenAssets.joinButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+    assets.setupScreenAssets.hostButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
 }

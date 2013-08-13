@@ -26,6 +26,7 @@ class Game
         zf::Mouse mouse;
         Assets assets;
         Rules rules;
+        bool isFocused;
         void loadAssets();
     private:
         void update(sf::Time& delta);

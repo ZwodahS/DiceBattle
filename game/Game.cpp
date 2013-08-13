@@ -32,19 +32,8 @@ Game::~Game()
 
 void Game::run()
 {
-<<<<<<< Updated upstream
-    GameScreenViewer viewer(PlayerRole::Both);
-    GeneralUpdater updater(PlayerRole::Both);
-    _currentBattle = new Battle();
-    _currentScreen = new GameScreen(*this, *_currentBattle, PlayerRole::Both, viewer,updater);
-    viewer.setGameScreen((GameScreen*)_currentScreen);
-    _currentBattle->addGameViewer(&viewer);
-    _currentBattle->addGameUpdater(&updater);
-    _currentBattle->startGame(this->rules, "PlayerOne", "PlayerTwo");
-=======
     SetupScreen* setupScreen = new SetupScreen(*this);
     _currentScreen = setupScreen;
->>>>>>> Stashed changes
     // set up the clock for delta
     sf::Clock clock; 
     bool quit = false;

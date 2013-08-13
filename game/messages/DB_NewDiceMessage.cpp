@@ -16,7 +16,7 @@ sf::Packet& operator << (sf::Packet& packet, const DB_NewDiceMessage& message)
     packet << size;
     for(std::vector<Die>::const_iterator it = message.dice.begin() ; it != message.dice.end() ; ++it)
     {
-        packet << *it; 
+        packet << *it ; 
     }
     return packet;
 }

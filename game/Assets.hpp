@@ -36,6 +36,7 @@ struct SetupScreenAssets
     TextureRegion typeSelectionBox;
     TextureRegion joinButton;
     TextureRegion hostButton;
+    TextureRegion startButton;
 };
 
 struct GameScreenAssets

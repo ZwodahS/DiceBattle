@@ -83,4 +83,5 @@ void Game::loadAssets()
     assets.setupScreenAssets.typeSelectionBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,30));
     assets.setupScreenAssets.joinButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
     assets.setupScreenAssets.hostButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+    assets.setupScreenAssets.startButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
 }

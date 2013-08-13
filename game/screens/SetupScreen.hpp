@@ -15,6 +15,7 @@ public:
     static const sf::Vector2f ipAddrPosition;
     static const sf::Vector2f joinButtonPosition;
     static const sf::Vector2f hostButtonPosition;
+    static const sf::Vector2f startButtonPosition;
     static const sf::Vector2f nameOffset;
     static const sf::Vector2f buttonTextOffset;
 
@@ -47,6 +48,7 @@ private:
     sf::Sprite nameBorder2;
     zf::SpriteGroup joinButton;
     zf::SpriteGroup hostButton;
+    zf::SpriteGroup startButton;
     sf::Sprite ipAddrBorder;
 
     sf::Text name1Text;
@@ -54,7 +56,7 @@ private:
     sf::Text ipAddr;
     sf::Text joinText;
     sf::Text hostText;
-
+    sf::Text startText;
     // text that will not change but need to be displayed.
     std::vector<sf::Text> fixedTexts;
     
@@ -66,7 +68,5 @@ private:
     void updateText(sf::Text& text, std::string stringValue);    
     void setCurrentSelection(CurrentSelection cs);    
 
-
-    sf::TcpSocket* _currentSocket;
 };
 #endif

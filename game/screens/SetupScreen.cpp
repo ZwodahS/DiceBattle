@@ -6,12 +6,13 @@ const sf::Vector2f SetupScreen::nameOffset = sf::Vector2f(10,0);
 const sf::Vector2f SetupScreen::ipAddrPosition = sf::Vector2f(150, 300);
 const sf::Vector2f SetupScreen::joinButtonPosition = sf::Vector2f(370, 300);
 const sf::Vector2f SetupScreen::hostButtonPosition = sf::Vector2f(490, 300);
+const sf::Vector2f SetupScreen::startButtonPosition = sf::Vector2f(270, 400);
 const sf::Vector2f SetupScreen::buttonTextOffset = sf::Vector2f(20,0);
 const sf::Vector2f SetupScreen::vsTextPosition = sf::Vector2f(300, 200);
 SetupScreen::SetupScreen(Game& game)
     :Screen(game), name1Text("Player", game.assets.gameScreenAssets.abilityFont, 20), name2Text("Opponent", game.assets.gameScreenAssets.abilityFont, 20)
     ,joinText("Join", game.assets.gameScreenAssets.abilityFont,20), hostText("Host", game.assets.gameScreenAssets.abilityFont, 20)
-    ,ipAddr(" ", game.assets.gameScreenAssets.abilityFont, 20), currentSelection(Name1), _currentSocket(0)
+    ,ipAddr(" ", game.assets.gameScreenAssets.abilityFont, 20), currentSelection(Name1), startText("Start", game.assets.gameScreenAssets.abilityFont, 20)
 {
     // name and the name box
     nameBorder1 = game.assets.setupScreenAssets.nameBox.createSprite();
@@ -37,6 +38,7 @@ SetupScreen::SetupScreen(Game& game)
     joinButton.setPosition(joinButtonPosition);
     joinText.setPosition(joinButtonPosition+buttonTextOffset);
     joinText.setColor(sf::Color::White);
+    
     std::vector<sf::Sprite> hostButtonSprites;
     for(int i = 0 ; i < 4 ; i++)
     {
@@ -50,6 +52,20 @@ SetupScreen::SetupScreen(Game& game)
     hostButton.setPosition(hostButtonPosition);
     hostText.setPosition(hostButtonPosition+buttonTextOffset);
     hostText.setColor(sf::Color::White);
+
+    std::vector<sf::Sprite> startButtonSprites;
+    for(int i = 0 ; i < 4 ; i++)
+    {
+        startButtonSprites.push_back(game.assets.setupScreenAssets.startButton.createSprite());
+    }
+    startButtonSprites[None].setColor(sf::Color(140,70,40));
+    startButtonSprites[Hovered].setColor(sf::Color(200,130,90));
+    startButtonSprites[Disabled].setColor(sf::Color(160,140,130));
+    startButtonSprites[Active].setColor(sf::Color(245,100,25));
+    startButton = zf::SpriteGroup(startButtonSprites);
+    startButton.setPosition(startButtonPosition);
+    startText.setPosition(startButtonPosition+buttonTextOffset);
+    startText.setColor(sf::Color::White);
 // IP
     ipAddr.setPosition(ipAddrPosition+nameOffset);
     ipAddr.setColor(sf::Color(0,0,0));
@@ -153,48 +169,63 @@ void SetupScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
     window.draw(joinText);
     hostButton.draw(window, delta);
     window.draw(hostText);
+    startButton.draw(window, delta);
+    window.draw(startText);
 }
 
 void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
 {
-    zf::Mouse& mouse = _game.mouse;
-    sf::Vector2i mousePos = mouse.getPosition(window);
-    sf::Vector2f mousePosF = sf::Vector2f(mousePos.x,mousePos.y);
-    if(mouse.left.thisReleased)
+    // handles input
+    if(_game.isFocused)
     {
-        if(nameBorder1.getGlobalBounds().contains(mousePosF))
+        zf::Mouse& mouse = _game.mouse;
+        sf::Vector2i mousePos = mouse.getPosition(window);
+        sf::Vector2f mousePosF = sf::Vector2f(mousePos.x,mousePos.y);
+        if(mouse.left.thisReleased)
         {
-            setCurrentSelection(Name1);
-        }
-        else if(nameBorder2.getGlobalBounds().contains(mousePosF))
-        {
-            setCurrentSelection(Name2);
-        }
-        else if(ipAddrBorder.getGlobalBounds().contains(mousePosF))
-        {
-            setCurrentSelection(IpAddr);
-        }
-        else if(joinButton.bound.contains(mousePosF))
-        {
-            sf::TcpSocket* socket = new sf::TcpSocket();
-            sf::Socket::Status status = socket->connect(ipAddrString, 6999, sf::seconds(5.0));
-            if(status == sf::Socket::Done)
+            if(nameBorder1.getGlobalBounds().contains(mousePosF))
             {
-                // connected.
+                setCurrentSelection(Name1);
             }
-            else
+            else if(nameBorder2.getGlobalBounds().contains(mousePosF))
             {
-                delete socket;
+                setCurrentSelection(Name2);
+            }
+            else if(ipAddrBorder.getGlobalBounds().contains(mousePosF))
+            {
+                setCurrentSelection(IpAddr);
+            }
+            else if(joinButton.bound.contains(mousePosF))
+            {
+                if(_game.connection.connected)
+                {
+                }
+                else
+                {
+                    _game.connection.connectTo(ipAddrString);
+                }
+            }
+            else if(hostButton.bound.contains(mousePosF))
+            {
+                if(_game.connection.hosting)
+                {
+                    _game.connection.stopHost();
+                }
+                else
+                {
+                    _game.connection.host();
+                }
+            }
+            else if(startButton.bound.contains(mousePosF))
+            {
+                
             }
         }
-        else if(hostButton.bound.contains(mousePosF))
+        else
         {
-            
         }
     }
-    else
-    {
-    }
+
 }
 
 void SetupScreen::updateText(sf::Text& text, std::string stringValue)

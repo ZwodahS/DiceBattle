@@ -76,8 +76,11 @@ void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta)
     {
         update_gameEnd(window,delta);
     }
-    rollButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
-    doneButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
+    if(_game.isFocused)
+    {
+        rollButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
+        doneButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
+    }
     for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
     {
         (*it).update(window,delta); 
@@ -153,7 +156,7 @@ void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& 
         // if this screen is the active player, check for inputs
         zf::Mouse& mouse = _game.mouse;
         sf::Vector2i position = mouse.getPosition(window);
-        if(_game.mouse.left.thisReleased)
+        if(_game.isFocused && _game.mouse.left.thisReleased)
         {
             if(rollButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
             {
@@ -201,7 +204,7 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
         sf::Vector2i mousePos = mouse.getPosition(window);
         sf::Vector2f mousePosF(mousePos.x,mousePos.y);
         // find out if the player select any 
-        if(mouse.left.thisReleased)
+        if(_game.isFocused && mouse.left.thisReleased)
         {
             DieSprite* clickedDieSprite = getDieSprite(mousePosF);
             if(clickedDieSprite != 0)
@@ -298,7 +301,7 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
     {
         zf::Mouse& mouse = _game.mouse;
         sf::Vector2i position = mouse.getPosition(window);
-        if(_game.mouse.left.thisReleased)
+        if(_game.isFocused && _game.mouse.left.thisReleased)
         {
             // check roll button 
             if(rollButton.clickBound.contains(sf::Vector2f(position.x, position.y)))

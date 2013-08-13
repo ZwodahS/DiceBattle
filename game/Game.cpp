@@ -14,8 +14,8 @@
 #define GAME_HEIGHT 480
 
 Game::Game()
-    :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE),
-    window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0)
+    :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE), connection(*this),
+    window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _currentBattle(0)
 {
     window.setFramerateLimit(50);
     loadAssets();
@@ -25,10 +25,6 @@ Game::Game()
 
 Game::~Game()
 {
-    if(_currentScreen != 0)
-    {
-        delete _currentScreen;
-    }
 }
 
 void Game::run()
@@ -79,6 +75,8 @@ void Game::run()
         // if not quit , update then draw.
         if(!quit)
         {
+            connection.listen();
+            connection.receive();
             update(delta);
             draw(delta);
         }
@@ -137,3 +135,5 @@ void Game::startLocalGame(Battle* battle, PlayerRole::ePlayerRole role, std::str
         _currentBattle->startGame(rules, player1, player2);
     }
 }
+
+

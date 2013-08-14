@@ -22,6 +22,7 @@
  */
 #ifndef _ZF_SFML_FUNCTIONCOMMON_H_
 #define _ZF_SFML_FUNCTIONCOMMON_H_
+#include <SFML/Graphics.hpp>
 namespace zf
 {
     static void setAlpha(sf::Sprite& sprite, sf::Uint8 alpha)

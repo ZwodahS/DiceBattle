@@ -21,6 +21,7 @@
  * http://sam.zoy.org/wtfpl/COPYING for more details. 
  */
 #include "SpriteGroup.hpp"
+#include "f_common.hpp"
 #include <iostream>
 namespace zf
 {
@@ -101,5 +102,30 @@ namespace zf
         this->_state = rhs._state;
         this->_spriteGroups = rhs._spriteGroups;
         this->_bound = rhs._bound;
+        return *this;
+    }
+
+    void SpriteGroup::setAlpha(float alpha)
+    {
+        for(std::vector<sf::Sprite>::iterator it = _spriteGroups.begin() ; it != _spriteGroups.end() ; ++it)
+        {
+            zf::setAlpha(*it, alpha); 
+        }
+    }
+    void SpriteGroup::move(sf::Vector2f moveVec)
+    {
+        sf::Vector2f newPos = getPosition() + moveVec;
+        setPosition(newPos);
+    }
+    void SpriteGroup::setColor(sf::Color color)
+    {
+        for(std::vector<sf::Sprite>::iterator it = _spriteGroups.begin() ; it != _spriteGroups.end() ; ++it)
+        {
+            (*it).setColor(color); 
+        }
+    }
+    sf::Vector2f SpriteGroup::getPosition()
+    {
+        return sf::Vector2f(_bound.left, _bound.top);
     }
 }

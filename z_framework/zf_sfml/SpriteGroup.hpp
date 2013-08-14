@@ -23,6 +23,7 @@
 
 #ifndef _ZF_SFML_SPRITEGROUP_H_
 #define _ZF_SFML_SPRITEGROUP_H_
+#include "animations/iAnimatable.hpp"
 #include <SFML/Graphics.hpp>
 /** 
  * SpriteGroup is used to group sprites state together. This allow group manipulation of sprite and only draw the
@@ -33,7 +34,7 @@
 #include <vector>
 namespace zf
 {
-    class SpriteGroup
+    class SpriteGroup : public iAnimatable
     {
         public:
             const std::vector<sf::Sprite>& spriteGroups;
@@ -52,15 +53,18 @@ namespace zf
             void setState(int state);
             SpriteGroup& operator=(const SpriteGroup &rhs);
             
-           /**
-            *
-            */ 
+            /**
+             * Draw the current sprite group. This will draw the sprite for the current state.
+             */
             void draw(sf::RenderWindow& window, sf::Time delta);
+            void setAlpha(float alpha);
+            void move(sf::Vector2f moveVec);
+            void setColor(sf::Color color);
+            sf::Vector2f getPosition();
         private:
             int _state;
             std::vector<sf::Sprite> _spriteGroups;
             sf::FloatRect _bound;
-
     };
 };
 

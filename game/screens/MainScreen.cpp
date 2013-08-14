@@ -1,5 +1,8 @@
 #include "MainScreen.hpp"
 #include "../Game.hpp"
+
+#define DEFAULT_IP_ADDRESS "Ip-address"
+#define DEFAULT_PORT "Port"
 const sf::Vector2f MainScreen::namePosition = sf::Vector2f(390, 200);
 const sf::Vector2f MainScreen::nameOffset = sf::Vector2f(10,0);
 const sf::Vector2f MainScreen::ipAddrPosition = sf::Vector2f(150, 300);
@@ -21,8 +24,8 @@ const sf::Vector2f MainScreen::Dialog_CancelButtonOffset = sf::Vector2f(180,160)
 const sf::Vector2f MainScreen::Dialog_CancelTextOffset = sf::Vector2f(15,0);
 
 
-const sf::Vector2f MainScreen::Dialog_PortTextBG = sf::Vector2f(1000,1000);
-const sf::Vector2f MainScreen::Dialog_PortTextOffset = sf::Vector2f(0,0);
+const sf::Vector2f MainScreen::Dialog_PortTextBG = sf::Vector2f(200,60);
+const sf::Vector2f MainScreen::Dialog_PortTextOffset = sf::Vector2f(10,0);
 
 const sf::Vector2f MainScreen::JoinDialog_IpBG = sf::Vector2f(20,60);
 const sf::Vector2f MainScreen::JoinDialog_IpTextOffset = sf::Vector2f(10,0);
@@ -34,13 +37,16 @@ MainScreen::MainScreen(Game& game)
     , hostText("Host", game.assets.gameScreenAssets.abilityFont, 20)
     , localText("Local", game.assets.gameScreenAssets.abilityFont, 20)
     , currentDialogState(NoDialog)
-    , joinDialog_ipText("Ip address", game.assets.gameScreenAssets.abilityFont, 20)
-    , hostDialog_portLabel("Host Port", game.assets.gameScreenAssets.abilityFont, 20)
+    , joinDialog_ipText(DEFAULT_IP_ADDRESS, game.assets.gameScreenAssets.abilityFont, 20)
+    , hostDialog_portLabel("Port :", game.assets.gameScreenAssets.abilityFont, 20)
     , dialog_nameText("Player name", game.assets.gameScreenAssets.abilityFont, 20)
     , dialog_joinhostText("Join", game.assets.gameScreenAssets.abilityFont, 20)
     , dialog_cancelText("Cancel", game.assets.gameScreenAssets.abilityFont, 20)
-    , dialog_portText("Port?", game.assets.gameScreenAssets.abilityFont, 20)
-    , name("Player")
+    , dialog_portText(DEFAULT_PORT, game.assets.gameScreenAssets.abilityFont, 20)
+    , name(" ")
+    , ip(" ")
+    , port(" ")
+    , currentTextSelection(TextSelection_None)
 {
     // BUTTONS
     std::vector<sf::Sprite> joinButtonSprites;
@@ -92,7 +98,7 @@ MainScreen::MainScreen(Game& game)
     dialog_joinhostButton = zf::SpriteGroup(hostButtonSprites);
     dialog_cancelButton = zf::SpriteGroup(hostButtonSprites);
     dialog_portBg = game.assets.mainScreenAssets.dialog.portBg.createSprite();
-
+    dialog_portText.setColor(sf::Color(110,110,90));
     joinDialog_ipBg = game.assets.mainScreenAssets.dialog.ipBg.createSprite();
     joinDialog_ipText.setColor(sf::Color(110,110,90));
     
@@ -191,11 +197,23 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                 {
                     if(dialog_joinhostButton.bound.contains(mousePosf))
                     {
-                        // process join 
+                        setupJoinGame();
                     }
                     else if(dialog_cancelButton.bound.contains(mousePosf))
                     {
                         setDialogState(NoDialog);
+                    }
+                    else if(dialog_nameBg.getGlobalBounds().contains(mousePosf))
+                    {
+                        setCurrentTextSelection(TextSelection_Name);
+                    }
+                    else if(dialog_portBg.getGlobalBounds().contains(mousePosf))
+                    {
+                        setCurrentTextSelection(TextSelection_Port);
+                    }
+                    else if(joinDialog_ipBg.getGlobalBounds().contains(mousePosf))
+                    {
+                        setCurrentTextSelection(TextSelection_Ip);
                     }
                 }
             }
@@ -207,11 +225,19 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                 {
                     if(dialog_joinhostButton.bound.contains(mousePosf))
                     {
-                        // process host 
+                        setupHostGame();
                     }
                     else if(dialog_cancelButton.bound.contains(mousePosf))
                     {
                         setDialogState(NoDialog);
+                    }
+                    else if(dialog_nameBg.getGlobalBounds().contains(mousePosf))
+                    {
+                        setCurrentTextSelection(TextSelection_Name);
+                    }
+                    else if(dialog_portBg.getGlobalBounds().contains(mousePosf))
+                    {
+                        setCurrentTextSelection(TextSelection_Port);
                     }
                 }
             }
@@ -229,6 +255,47 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
 
 void MainScreen::textInput(char c)
 {
+    if(screenState == Screen::Active)
+    {
+        if(currentTextSelection == TextSelection_None)
+        {
+        }
+        else
+        {
+            sf::Text& text = currentTextSelection == TextSelection_Name ? dialog_nameText : currentTextSelection == TextSelection_Ip ? joinDialog_ipText : dialog_portText;
+            std::string& value = currentTextSelection == TextSelection_Name ? name : currentTextSelection == TextSelection_Ip ? ip : port;
+            int maxSize = currentTextSelection == TextSelection_Name ? 15 : currentTextSelection == TextSelection_Ip ? 16 : 5;
+            if(c >= 32 && c < 127)
+            {
+                if(value == " ")
+                {
+                    value = c;
+                }
+                else if(value.size() < maxSize)
+                {
+                    value += c;
+                }
+                updateText(text, value);
+            }
+            // backspace
+            else if(c == 8)
+            {
+                if(value == " ")
+                {
+                    // do nothing
+                }
+                else if(value.length() == 1)
+                {
+                    value = " ";
+                }
+                else
+                {
+                    value = value.substr(0, value.length() - 1);
+                }
+                updateText(text, value);
+            }
+        }
+    }
 }
 
 void MainScreen::screenEnter()
@@ -279,9 +346,10 @@ void MainScreen::setDialogState(DialogState state)
         dialog_cancelText.setPosition(Dialog_BG + Dialog_CancelButtonOffset + Dialog_CancelTextOffset);
         dialog_portBg.setPosition(Dialog_BG + Dialog_PortTextBG);
         dialog_portText.setPosition(Dialog_BG + Dialog_PortTextBG + Dialog_PortTextOffset);
-
         joinDialog_ipBg.setPosition(Dialog_BG + JoinDialog_IpBG);
         joinDialog_ipText.setPosition(Dialog_BG + JoinDialog_IpBG + JoinDialog_IpTextOffset);
+        ip = " ";
+        port = " ";
     }
     else if(currentDialogState == HostDialog)
     {
@@ -296,10 +364,44 @@ void MainScreen::setDialogState(DialogState state)
         dialog_portBg.setPosition(Dialog_BG + Dialog_PortTextBG);
         dialog_portText.setPosition(Dialog_BG + Dialog_PortTextBG + Dialog_PortTextOffset);
         hostDialog_portLabel.setPosition(Dialog_BG + Dialog_PortTextBG - sf::Vector2f(100,0));
+        ip = " ";
+        port = " ";
     }
 }
 
 void MainScreen::setupLocalGame()
 {
     _game.setupLocalGame();
+}
+
+void MainScreen::setupHostGame()
+{
+    std::cout << "hOst : " << name << " " << ip << " "<< port << std::endl;
+}
+
+void MainScreen::setupJoinGame()
+{
+    std::cout << "jOIn : " << name << " " << ip << " "<< port << std::endl;
+}
+
+
+void MainScreen::updateText(sf::Text& text, std::string stringValue)
+{
+    // this is necessary for a bug in SFML that if you try to free a sf::Text with empty string, it will cause a segmentation fault.
+    if(stringValue == "")
+    {
+        text.setString(" ");
+    }
+    else
+    {
+        text.setString(stringValue);
+    }
+}
+void MainScreen::setCurrentTextSelection(CurrentTextSelection cs)
+{
+    sf::Sprite& oldBg = currentTextSelection == TextSelection_Name ? dialog_nameBg : currentTextSelection == TextSelection_Ip ? joinDialog_ipBg : dialog_portBg;
+    oldBg.setColor(sf::Color::White);
+    currentTextSelection = cs;
+    sf::Sprite& newBg = currentTextSelection == TextSelection_Name ? dialog_nameBg : currentTextSelection == TextSelection_Ip ? joinDialog_ipBg : dialog_portBg;
+    newBg.setColor(sf::Color(220,220,100));
 }

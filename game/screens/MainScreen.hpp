@@ -83,6 +83,16 @@ private:
         HostDialog,
     };
 
+    enum CurrentTextSelection
+    {
+        TextSelection_None,
+        TextSelection_Name,
+        TextSelection_Ip,
+        TextSelection_Port
+    };
+    
+    CurrentTextSelection currentTextSelection;
+    void setCurrentTextSelection(CurrentTextSelection cs);
     ////// for join dialog ///////
     sf::Sprite joinDialog_ipBg;
     sf::Text joinDialog_ipText;
@@ -102,6 +112,8 @@ private:
     sf::Sprite dialog_portBg;
 
     std::string name;
+    std::string ip;
+    std::string port;
 
     DialogState currentDialogState;
     float timer;
@@ -109,5 +121,10 @@ private:
 
     void setDialogState(DialogState);
     void setupLocalGame();
+    void setupHostGame();
+    void setupJoinGame();
+
+
+    void updateText(sf::Text& text, std::string stringValue);
 };
 #endif

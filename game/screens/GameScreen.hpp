@@ -5,6 +5,8 @@
 #include "../messages/g_messages.hpp"
 #include "../../z_framework/zf_sfml/animations/SimpleAnimator.hpp"
 #include "../../z_framework/zf_sfml/Button.hpp"
+#include "GameScreenViewer.hpp"
+#include "../logic/GeneralUpdater.hpp"
 #include <vector>
 #include <queue>
 class GameViewer;
@@ -47,7 +49,7 @@ public:
 
     static const float RandomizerChangeRate = 0.1;
     static const sf::Int32 DiceSize = 48;
-    GameScreen(Game& game, Battle& battle, PlayerRole::ePlayerRole role, GameViewer& viewer, GameUpdater& updater);
+    GameScreen(Game& game, Battle& battle, PlayerRole::ePlayerRole role);
     ~GameScreen();
     
     void textInput(char c);
@@ -245,8 +247,6 @@ private:
     PlayerRole::ePlayerRole _currentPlayer;
     Battle& _battle;
     PlayerRole::ePlayerRole _role;
-    GameViewer& _viewer;
-    GameUpdater& _updater;
     /// ANIMATOR
     SimpleAnimator _animator;
     float _animationTimer1;
@@ -255,5 +255,9 @@ private:
     ///// Buttons //////
     zf::Button rollButton;
     zf::Button doneButton;
+
+    /// Updater and Viewer
+    GameScreenViewer _viewer;
+    GeneralUpdater _updater;
 };
 #endif

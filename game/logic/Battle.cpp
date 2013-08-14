@@ -36,6 +36,32 @@ void Battle::addGameUpdater(GameUpdater* updater)
     this->_updaters.push_back(updater);
 }
 
+void Battle::removeGameViewer(GameViewer* viewer)
+{
+    for(std::vector<GameViewer*>::iterator it = _viewers.begin() ; it != _viewers.end() ; )
+    {    
+        if(*it == viewer)
+        {
+            it = _viewers.erase(it);
+            continue;
+        }
+        ++it;
+    }
+}
+
+void Battle::removeGameUpdater(GameUpdater* updater)
+{
+    for(std::vector<GameUpdater*>::iterator it = _updaters.begin() ; it != _updaters.end() ; )
+    {    
+        if(*it == updater)
+        {
+            it = _updaters.erase(it);
+            continue;
+        }
+        ++it;
+    }
+}
+
 std::vector<Die> Battle::getDice()
 {
     return _currentDice;

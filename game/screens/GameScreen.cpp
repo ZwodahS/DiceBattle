@@ -1,7 +1,4 @@
 #include "GameScreen.hpp"
-#include "GameScreenViewer.hpp"
-#include "GameScreenUpdater.hpp"
-#include "../logic/GeneralUpdater.hpp"
 #include "../Game.hpp"
 #include "../logic/Battle.hpp"
 #include "../../z_framework/zf_common/debugging.hpp"
@@ -26,17 +23,22 @@ const sf::Vector2f GameScreen::DoneButtonPosition = sf::Vector2f(405,150);
 
 const sf::Vector2f GameScreen::AbilityMoveSpeed = sf::Vector2f(0,1200);
 const float GameScreen::FadeSpeed = 400;
-GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r, GameViewer& v, GameUpdater& u)
-    :Screen(game), _battle(b), _role(r), _viewer(v), _updater(u), _currentState(Empty), _currentPlayer(PlayerRole::PlayerOne)
+GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r)
+    :Screen(game), _battle(b), _role(r), _currentState(Empty), _currentPlayer(PlayerRole::PlayerOne)
     ,rollButton(game.assets.gameScreenAssets.rollButtonSelected.createSprite(), game.assets.gameScreenAssets.rollButton.createSprite(), RollButtonSize)
     ,doneButton(game.assets.gameScreenAssets.doneButtonSelected.createSprite(), game.assets.gameScreenAssets.doneButton.createSprite(), DoneButtonSize)
+    ,_updater(r), _viewer(r, *this)
 {
     rollButton.setPosition(RollButtonPosition);
     doneButton.setPosition(DoneButtonPosition);
+    _battle.addGameViewer(&_viewer);
+    _battle.addGameUpdater(&_updater);
 }
 
 GameScreen::~GameScreen()
 {
+    _battle.removeGameViewer(&_viewer);
+    _battle.removeGameUpdater(&_updater);
 }
 
 void GameScreen::textInput(char c)

@@ -1,14 +1,9 @@
 #include "GameScreenViewer.hpp"
 #include "GameScreen.hpp"
 
-GameScreenViewer::GameScreenViewer(PlayerRole::ePlayerRole r)
-    :GameViewer(r), gameScreen(0)
+GameScreenViewer::GameScreenViewer(PlayerRole::ePlayerRole r, GameScreen& gameScreen)
+    :GameViewer(r), gameScreen(&gameScreen)
 {
-}
-
-void GameScreenViewer::setGameScreen(GameScreen* gameScreen)
-{
-    this->gameScreen = gameScreen;
 }
 
 bool GameScreenViewer::isConnected()

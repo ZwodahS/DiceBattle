@@ -32,6 +32,9 @@ public:
     };
     void addGameViewer(GameViewer* viewer);
     void addGameUpdater(GameUpdater* updater);
+    void removeGameViewer(GameViewer* viewer);
+    void removeGameUpdater(GameUpdater* updater); 
+
 
     const bool isServer;
     const PlayerRole::ePlayerRole& currentPlayer;

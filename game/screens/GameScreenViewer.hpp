@@ -5,8 +5,7 @@ class GameScreen;
 class GameScreenViewer : public GameViewer
 {
 public:
-    GameScreenViewer(PlayerRole::ePlayerRole r);
-    void setGameScreen(GameScreen* gameScreen);
+    GameScreenViewer(PlayerRole::ePlayerRole r, GameScreen& gameScreen);
 
     bool isConnected();
 

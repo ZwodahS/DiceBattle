@@ -55,11 +55,12 @@ class Game
         void startGame(Battle* battle, PlayerRole::ePlayerRole role); 
         void startLocalGame(Battle* battle, PlayerRole::ePlayerRole role, std::string player1, std::string player2);
         Screen* _currentScreen;
+        Screen* _nextScreen;
+
+
         GameScreen* _gameScreen;        
         SetupScreen* _setupScreen;
         Battle* _currentBattle;
-        GameScreenViewer* _viewer;
-        GeneralUpdater* _updater;
 
         // Use game object as the connection manager.
 

@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "screens/SetupScreen.hpp"
 #include "screens/GameScreen.hpp"
+#include "screens/MainScreen.hpp"
 #include "screens/Screen.hpp"
 #include "screens/GameScreenViewer.hpp"
 #include "logic/GeneralUpdater.hpp"
@@ -29,8 +30,8 @@ Game::~Game()
 
 void Game::run()
 {
-    SetupScreen* setupScreen = new SetupScreen(*this);
-    _currentScreen = setupScreen;
+    _mainScreen = new MainScreen(*this);
+    _currentScreen = _mainScreen;
     _currentScreen->screenEnter();
     // set up the clock for delta
     sf::Clock clock; 

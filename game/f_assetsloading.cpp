@@ -84,4 +84,15 @@ void Game::loadAssets()
     assets.setupScreenAssets.joinButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
     assets.setupScreenAssets.hostButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
     assets.setupScreenAssets.startButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+
+
+
+    //////////////// Main Screen /////////////////
+    assets.mainScreenAssets.dialog.background = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,300,200));
+    assets.mainScreenAssets.dialog.background.defaultColor = sf::Color(140,115,85);
+    assets.mainScreenAssets.dialog.ipBg = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,30));
+    assets.mainScreenAssets.dialog.nameBg = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,260,30));
+    assets.mainScreenAssets.dialog.joinhostButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+    assets.mainScreenAssets.dialog.cancelButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+    assets.mainScreenAssets.dialog.portBg = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,80,30));
 }

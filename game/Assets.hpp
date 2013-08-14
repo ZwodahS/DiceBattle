@@ -29,6 +29,24 @@ struct IconAssets
     SpriteSheet spriteSheet;
 };
 
+struct MainScreenDialogAssets
+{
+    TextureRegion background;
+    TextureRegion ipBg;
+    TextureRegion nameBg;
+    TextureRegion portBg;
+    TextureRegion joinhostButton;
+    TextureRegion cancelButton;
+};
+
+struct MainScreenAssets
+{
+    MainScreenDialogAssets dialog;
+    TextureRegion localButton;
+    TextureRegion joinButton;
+    TextureRegion hostButton;
+};
+
 struct SetupScreenAssets
 {
     TextureRegion nameBox;
@@ -75,6 +93,7 @@ struct Assets
     IconAssets icons;
     GameScreenAssets gameScreenAssets;
     SetupScreenAssets setupScreenAssets;
+    MainScreenAssets mainScreenAssets;
     sf::Texture master1;
     SpriteSheet masterS1;
     sf::Texture placeholderTexture;

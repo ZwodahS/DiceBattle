@@ -13,6 +13,7 @@
 #include <iostream>
 class Screen;
 class GameScreen;
+class MainScreen;
 class SetupScreen;
 class Battle;
 class Game
@@ -57,7 +58,7 @@ class Game
         Screen* _currentScreen;
         Screen* _nextScreen;
 
-
+        MainScreen* _mainScreen;
         GameScreen* _gameScreen;        
         SetupScreen* _setupScreen;
         Battle* _currentBattle;

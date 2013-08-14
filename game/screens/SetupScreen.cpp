@@ -24,34 +24,6 @@ SetupScreen::SetupScreen(Game& game)
     name2Text.setPosition(name2Position + nameOffset);
     name2Text.setColor(sf::Color(0,0,0));
 
-    // BUTTONS
-    std::vector<sf::Sprite> joinButtonSprites;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        joinButtonSprites.push_back(game.assets.setupScreenAssets.joinButton.createSprite());
-    }
-    joinButtonSprites[None].setColor(sf::Color(140,70,40));
-    joinButtonSprites[Hovered].setColor(sf::Color(200,130,90));
-    joinButtonSprites[Disabled].setColor(sf::Color(160,140,130));
-    joinButtonSprites[Active].setColor(sf::Color(245,100,25));
-    joinButton = zf::SpriteGroup(joinButtonSprites);
-    joinButton.setPosition(joinButtonPosition);
-    joinText.setPosition(joinButtonPosition+buttonTextOffset);
-    joinText.setColor(sf::Color::White);
-    
-    std::vector<sf::Sprite> hostButtonSprites;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        hostButtonSprites.push_back(game.assets.setupScreenAssets.hostButton.createSprite());
-    }
-    hostButtonSprites[None].setColor(sf::Color(140,70,40));
-    hostButtonSprites[Hovered].setColor(sf::Color(200,130,90));
-    hostButtonSprites[Disabled].setColor(sf::Color(160,140,130));
-    hostButtonSprites[Active].setColor(sf::Color(245,100,25));
-    hostButton = zf::SpriteGroup(hostButtonSprites);
-    hostButton.setPosition(hostButtonPosition);
-    hostText.setPosition(hostButtonPosition+buttonTextOffset);
-    hostText.setColor(sf::Color::White);
 
     std::vector<sf::Sprite> startButtonSprites;
     for(int i = 0 ; i < 4 ; i++)

@@ -2,13 +2,20 @@ ToDo:
     $ 2 Big button for roll and done
     $ Space out the dice.
     $ Transit the screen from login to game
+    $ MainScreen
+        $ A place for entering name
+        $ 3 buttons - Local game, Join, Host
     $ SetupScreen
         $ Create a Setup object to store the current game setup state.
             + This will also provide all the methods needed for the host/client to send message to one another.
         $ Add a Observer button to switch to being an observer.
-        $ Player should be allowed to switch to another "role" when they click it.
-            + In this case, the active selection will be the role that the player currently is.
-            + When a slot is empty , it will be disabled as gray and the word "empty"
+        $ If the game is local 
+            $ Clicking on the names allow it to be changed.
+        $ If the game is hosted or remote
+            $ Clicking on the role will change you to that role.
+            $ If the slot has no one, then it will change the color to "disabled"
+        $ If the game is hosted, there will be a start game button
+        $ If the game is remote, there will be a message "Waiting for host to start"
 Steps:
     $ Finish the local 2 player game first. This will test the game logic and make sure it works.
         $ Finish the game logic.

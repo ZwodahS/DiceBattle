@@ -50,11 +50,13 @@ class Game
 
         void appendSetupMessageHeader(sf::Packet& packet);
         void appendGameMessageHeader(sf::Packet& packet);
+
+        void setupLocalGame();
     private:
         void update(sf::Time& delta);
         void draw(sf::Time& delta);
         void startGame(Battle* battle, PlayerRole::ePlayerRole role); 
-        void startLocalGame(Battle* battle, PlayerRole::ePlayerRole role, std::string player1, std::string player2);
+        void setupLocalGame(Battle* battle, PlayerRole::ePlayerRole role, std::string player1, std::string player2);
         Screen* _currentScreen;
         Screen* _nextScreen;
 

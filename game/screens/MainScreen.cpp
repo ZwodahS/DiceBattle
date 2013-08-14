@@ -81,7 +81,7 @@ MainScreen::MainScreen(Game& game)
     localButtonSprites[Disabled].setColor(sf::Color(160,140,130));
     localButtonSprites[Active].setColor(sf::Color(245,100,25));
     localButton = zf::SpriteGroup(localButtonSprites);
-    localButton.setPosition(localButtonPosition + sf::Vector2f(0, -700));
+    localButton.setPosition(localButtonPosition + sf::Vector2f(-700, 0));
     localText.setPosition(localButtonPosition+buttonTextOffset);
     localText.setColor(sf::Color::White);
 
@@ -96,6 +96,10 @@ MainScreen::MainScreen(Game& game)
     joinDialog_ipBg = game.assets.mainScreenAssets.dialog.ipBg.createSprite();
     joinDialog_ipText.setColor(sf::Color(110,110,90));
     
+}
+
+MainScreen::~MainScreen()
+{
 }
 
 void MainScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
@@ -166,6 +170,7 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                 {
                     if(localButton.bound.contains(mousePosf))
                     {
+                        setupLocalGame();
                     }
                     else if(hostButton.bound.contains(mousePosf))
                     {
@@ -237,8 +242,11 @@ void MainScreen::screenEnter()
 
 void MainScreen::screenExit()
 {
+    _animator.moveReferenceTo(localButton, localButtonPosition + sf::Vector2f(-700,0), 1.5);
+    _animator.moveReferenceTo(hostButton, hostButtonPosition + sf::Vector2f(700,0), 1.5);
+    _animator.moveReferenceTo(joinButton, joinButtonPosition + sf::Vector2f(0,700), 1.5);
     screenState = Screen::Exiting;
-    timer = 2;
+    timer = 1;
 }
 
 void MainScreen::updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f position)
@@ -289,4 +297,9 @@ void MainScreen::setDialogState(DialogState state)
         dialog_portText.setPosition(Dialog_BG + Dialog_PortTextBG + Dialog_PortTextOffset);
         hostDialog_portLabel.setPosition(Dialog_BG + Dialog_PortTextBG - sf::Vector2f(100,0));
     }
+}
+
+void MainScreen::setupLocalGame()
+{
+    _game.setupLocalGame();
 }

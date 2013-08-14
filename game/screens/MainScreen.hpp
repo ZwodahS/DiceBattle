@@ -108,5 +108,6 @@ private:
     void updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f position);
 
     void setDialogState(DialogState);
+    void setupLocalGame();
 };
 #endif

@@ -12,9 +12,6 @@ public:
 
     static const sf::Vector2f name1Position;
     static const sf::Vector2f name2Position;
-    static const sf::Vector2f ipAddrPosition;
-    static const sf::Vector2f joinButtonPosition;
-    static const sf::Vector2f hostButtonPosition;
     static const sf::Vector2f startButtonPosition;
     static const sf::Vector2f nameOffset;
     static const sf::Vector2f buttonTextOffset;
@@ -33,36 +30,35 @@ public:
     {
         Name1,
         Name2,
-        IpAddr,
     };
-
-    SetupScreen(Game& game);
+    enum SetupType
+    {
+        Local,
+        Host,
+        Remote,
+    };
+    SetupScreen(Game& game, SetupType st);
     ~SetupScreen();
 
     void draw(sf::RenderWindow& window, const sf::Time& delta);
     void update(sf::RenderWindow& window, const sf::Time& delta);
     void textInput(char c);
 private:
+    
+    SetupType setupType;
 
     sf::Sprite nameBorder1;
     sf::Sprite nameBorder2;
-    zf::SpriteGroup joinButton;
-    zf::SpriteGroup hostButton;
     zf::SpriteGroup startButton;
-    sf::Sprite ipAddrBorder;
 
     sf::Text name1Text;
     sf::Text name2Text;
-    sf::Text ipAddr;
-    sf::Text joinText;
-    sf::Text hostText;
     sf::Text startText;
     // text that will not change but need to be displayed.
     std::vector<sf::Text> fixedTexts;
     
     std::string name1;
     std::string name2;
-    std::string ipAddrString;
 
     CurrentSelection currentSelection;
     void updateText(sf::Text& text, std::string stringValue);    

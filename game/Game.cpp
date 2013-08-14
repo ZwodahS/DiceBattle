@@ -15,8 +15,9 @@
 #define GAME_HEIGHT 480
 
 Game::Game()
-    :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE), connection(*this),
-    window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _nextScreen(0), _currentBattle(0)
+    :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE), connection(*this)
+    , window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _nextScreen(0), _currentBattle(0)
+    , _mainScreen(0), _gameScreen(0), _setupScreen(0)
 {
     window.setFramerateLimit(50);
     loadAssets();
@@ -95,6 +96,26 @@ void Game::update(sf::Time& delta)
     {
         _currentScreen->update(window, delta);
     }
+    if(_currentScreen->screenState == Screen::Exited)
+    {
+        if(_currentScreen == _mainScreen)
+        {
+            delete _mainScreen;
+            _mainScreen = 0;
+        }
+        else if(_currentScreen == _gameScreen)
+        {
+            delete _gameScreen;
+            _gameScreen = 0;
+        }
+        else if(_setupScreen == _currentScreen)
+        {
+            delete _setupScreen;
+            _setupScreen = 0;
+        }
+        _currentScreen = _nextScreen;
+        _nextScreen = 0;
+    }
 }
 
 void Game::draw(sf::Time& delta)
@@ -117,4 +138,15 @@ void Game::appendGameMessageHeader(sf::Packet& packet)
 {
     connection.appendExternalMessageHeader(packet);
     packet << GameMessage;
+}
+
+void Game::setupLocalGame()
+{
+    if(_setupScreen != 0)
+    {
+        delete _setupScreen;
+    }
+    _setupScreen = new SetupScreen(*this, SetupScreen::Local);
+    _currentScreen->screenExit();
+    _nextScreen = _setupScreen;
 }

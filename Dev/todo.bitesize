@@ -1,9 +1,7 @@
 ToDo:
     $ 2 Big button for roll and done
     $ Space out the dice.
-    $ Screen extension
-        $ A ScreenState that defines 5 state - PreEnter, Entering, Active, Exiting, Exited. 
-            + This state is used in Game obj to know when to "switch" the screen.
+    $ Transit the screen from login to game
     $ SetupScreen
         $ Create a Setup object to store the current game setup state.
             + This will also provide all the methods needed for the host/client to send message to one another.

@@ -115,6 +115,7 @@ void Game::update(sf::Time& delta)
         }
         _currentScreen = _nextScreen;
         _nextScreen = 0;
+        _currentScreen->screenEnter();
     }
 }
 
@@ -149,4 +150,13 @@ void Game::setupLocalGame()
     _setupScreen = new SetupScreen(*this, SetupScreen::Local);
     _currentScreen->screenExit();
     _nextScreen = _setupScreen;
+}
+
+void Game::startLocalGame(std::string player1, std::string player2)
+{
+    _currentBattle = new Battle();
+    _gameScreen = new GameScreen(*this, *_currentBattle, PlayerRole::Both);
+    _currentBattle->startGame(rules,player1,player2);
+    _currentScreen->screenExit();
+    _nextScreen = _gameScreen;
 }

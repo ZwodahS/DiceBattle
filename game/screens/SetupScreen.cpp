@@ -124,7 +124,7 @@ void SetupScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
 void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
 {
     // handles input
-    if(_game.isFocused)
+    if(_game.isFocused && screenState == Screen::Active)
     {
         zf::Mouse& mouse = _game.mouse;
         sf::Vector2i mousePos = mouse.getPosition(window);
@@ -141,11 +141,12 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
             }
             else if(startButton.bound.contains(mousePosF))
             {
-                
+                _game.startLocalGame(name1, name2);                
             }
         }
         else
         {
+            updateButtonState(startButton, mousePosF);
         }
     }
 
@@ -160,5 +161,27 @@ void SetupScreen::updateText(sf::Text& text, std::string stringValue)
     else
     {
         text.setString(stringValue);
+    }
+}
+
+void SetupScreen::screenEnter()
+{
+    Screen::screenState = Screen::Active;
+}
+
+void SetupScreen::screenExit()
+{
+    Screen::screenState = Screen::Exited;
+}
+
+void SetupScreen::updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f position)
+{
+    if(spriteGroup.bound.contains(position))
+    {
+        spriteGroup.setState(Hovered); 
+    }
+    else
+    {
+        spriteGroup.setState(None);
     }
 }

@@ -52,6 +52,7 @@ class Game
         void appendGameMessageHeader(sf::Packet& packet);
 
         void setupLocalGame();
+        void startLocalGame(std::string player1, std::string player2);
     private:
         void update(sf::Time& delta);
         void draw(sf::Time& delta);

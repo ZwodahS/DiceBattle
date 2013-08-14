@@ -43,6 +43,9 @@ public:
     void draw(sf::RenderWindow& window, const sf::Time& delta);
     void update(sf::RenderWindow& window, const sf::Time& delta);
     void textInput(char c);
+
+    void screenEnter();
+    void screenExit();
 private:
     
     SetupType setupType;
@@ -64,5 +67,6 @@ private:
     void updateText(sf::Text& text, std::string stringValue);    
     void setCurrentSelection(CurrentSelection cs);    
 
+    void updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f position);
 };
 #endif

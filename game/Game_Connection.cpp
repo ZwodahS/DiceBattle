@@ -2,18 +2,32 @@
 #include "screens/Screen.hpp"
 #include "screens/SetupScreen.hpp"
 #include "screens/GameScreen.hpp"
-void Game::clientConnected(Connection* connection)
+void Game::clientConnected(zf::Connection* connection)
 {
     if(_currentScreen != 0)
     {
         _currentScreen->clientConnected(connection);
     }
 }
-void Game::clientDisconnected(Connection* connection)
+void Game::clientDisconnected(zf::Connection* connection)
 {
     if(_currentScreen != 0)
     {
         _currentScreen->clientDisconnected(connection);
+    }
+}
+void Game::serverStarted()
+{
+    if(_currentScreen != 0)
+    {
+        _currentScreen->serverStarted();
+    }
+}
+void Game::serverStopped()
+{
+    if(_currentScreen != 0)
+    {
+        _currentScreen->serverStopped();
     }
 }
 void Game::serverConnected()
@@ -30,21 +44,18 @@ void Game::serverDisconnected()
         _currentScreen->serverDisconnected();
     }
 }
-void Game::hostingStarted()
+
+void Game::nameInUsed()
 {
-    if(_currentScreen != 0)
-    {
-        _currentScreen->hostingStarted();
-    }
 }
-void Game::hostingStopped()
+void Game::nameVerified(std::string name)
 {
-    if(_currentScreen != 0)
-    {
-        _currentScreen->hostingStopped();
-    }
 }
-void Game::packetReceived(sf::Packet& packet, Connection* connection)
+void Game::clientVerified(zf::Connection* connection)
+{
+}
+/*
+void Game::packetReceived(sf::Packet& packet, zf::Connection* connection)
 {
     sf::Int32 type;
     packet >> type;
@@ -82,3 +93,4 @@ void Game::packetReceivedFromServer(sf::Packet& packet)
         }
     }
 }
+*/

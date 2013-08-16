@@ -6,8 +6,9 @@
 #include "screens/GameScreenViewer.hpp"
 #include "logic/GeneralUpdater.hpp"
 #include "../z_framework/zf_sfml/Mouse.hpp"
-#include "Connection.hpp"
-#include "ConnectionManager.hpp"
+#include "../z_framework/zf_network/Connection.hpp"
+#include "../z_framework/zf_network/ConnectionManager.hpp"
+#include "../z_framework/zf_network/ConnectionListener.hpp"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <iostream>
@@ -16,7 +17,7 @@ class GameScreen;
 class MainScreen;
 class SetupScreen;
 class Battle;
-class Game
+class Game : public zf::ConnectionListener
 {
     public:
         static const sf::Int32 SetupMessage = 1111;
@@ -31,21 +32,22 @@ class Game
         std::string title;
         sf::RenderWindow window; 
         zf::Mouse mouse;
-        ConnectionManager connection;
+        zf::ConnectionManager connection;
         Assets assets;
         Rules rules;
         bool isFocused;
         void loadAssets();
 
         ////// Methods for ConnectionManager to inform the game about connection //////
-        void clientConnected(Connection* connection);
-        void clientDisconnected(Connection* connection);
+        void clientConnected(zf::Connection* connection);
+        void clientDisconnected(zf::Connection* connection);
+        void serverStarted();
+        void serverStopped();
         void serverConnected();
         void serverDisconnected();
-        void hostingStarted();
-        void hostingStopped();
-        void packetReceived(sf::Packet& packet, Connection* connection);
-        void packetReceivedFromServer(sf::Packet& packet);
+        void nameInUsed();
+        void nameVerified(std::string name);
+        void clientVerified(zf::Connection* connection);
 
 
         void appendSetupMessageHeader(sf::Packet& packet);

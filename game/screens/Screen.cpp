@@ -8,10 +8,16 @@ Screen::Screen(Game& game)
 Screen::~Screen()
 {
 }
-void Screen::clientConnected(Connection* connection)
+void Screen::clientConnected(zf::Connection* connection)
 {
 }
-void Screen::clientDisconnected(Connection* connection)
+void Screen::clientDisconnected(zf::Connection* connection)
+{
+}
+void Screen::serverStarted()
+{
+}
+void Screen::serverStopped()
 {
 }
 void Screen::serverConnected()
@@ -20,19 +26,15 @@ void Screen::serverConnected()
 void Screen::serverDisconnected()
 {
 }
-void Screen::hostingStarted()
+void Screen::nameInUsed()
 {
 }
-void Screen::hostingStopped()
+void Screen::nameVerified(std::string name)
 {
 }
-void Screen::packetReceived(sf::Packet& packet, Connection* connection)
+void Screen::clientVerified(zf::Connection* connection)
 {
 }
-void Screen::packetReceivedFromServer(sf::Packet& packet)
-{
-}
-
 void Screen::screenEnter()
 {
     screenState = Entering;

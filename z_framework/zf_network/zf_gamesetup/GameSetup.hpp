@@ -1,0 +1,4 @@
+#ifndef _ZF_ZFNETWORK_GAMESETUP_H_
+#define _ZF_ZFNETWORK_GAMESETUP_H_
+
+#endif

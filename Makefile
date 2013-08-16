@@ -3,7 +3,9 @@ vpath %.cpp z_framework/zf_common/
 # framework sfml code. also required.
 vpath %.cpp z_framework/zf_sfml/
 # framework sfml animation code.
-vpath %.cpp z_framework/zf_sfml/animations
+vpath %.cpp z_framework/zf_sfml/animations/
+# framework for network
+vpath %.cpp z_framework/zf_network/
 # game code.
 vpath %.cpp game/
 vpath %.cpp game/logic
@@ -30,16 +32,18 @@ zf_sfmlobjs = $(patsubst %, $(OBJDIR)/%, $(zf_sfml:.cpp=.o))
 zf_sfmlsub = $(shell cd z_framework/zf_sfml ; for F in `ls -d */`; do cd $$F ; ls *.cpp ; cd .. ; done)
 zf_sfmlsubobjs = $(patsubst %, $(OBJDIR)/%, $(zf_sfmlsub:.cpp=.o))
 
+zf_network = $(shell cd z_framework/zf_network ; ls *.cpp)
+zf_networkobjs = $(patsubst %, $(OBJDIR)/%, $(zf_network:.cpp=.o))
+
 # game code
 game = $(shell cd game; ls *.cpp ; for F in `ls -d */` ; do cd $$F; ls *.cpp ;cd ..; done)
 gameobjs = $(patsubst %,$(OBJDIR)/%,$(game:.cpp=.o))
-
 
 main=obj/main.o
 
 all: $(BIN)
 
-$(BIN) : $(main) $(zf_commonobjs) $(zf_sfmlobjs) $(zf_sfmlsubobjs) $(zf_platformerobjs) $(gameobjs)
+$(BIN) : $(main) $(zf_commonobjs) $(zf_sfmlobjs) $(zf_sfmlsubobjs) $(zf_platformerobjs) $(gameobjs) $(zf_networkobjs)
 	$(CXX) -o $(BIN) $(OBJDIR)/* $(SFML)
 
 $(OBJDIR)/%.o : %.cpp

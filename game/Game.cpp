@@ -15,7 +15,7 @@
 #define GAME_HEIGHT 480
 
 Game::Game()
-    :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE), connection(*this)
+    :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE) 
     , window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _nextScreen(0), _currentBattle(0)
     , _mainScreen(0), _gameScreen(0), _setupScreen(0)
 {
@@ -131,13 +131,13 @@ void Game::draw(sf::Time& delta)
 
 void Game::appendSetupMessageHeader(sf::Packet& packet)
 {
-    connection.appendExternalMessageHeader(packet);
+    connection.appendHeader(packet);
     packet << SetupMessage;
 }
 
 void Game::appendGameMessageHeader(sf::Packet& packet)
 {
-    connection.appendExternalMessageHeader(packet);
+    connection.appendHeader(packet);
     packet << GameMessage;
 }
 
@@ -163,7 +163,7 @@ void Game::startLocalGame(std::string player1, std::string player2)
 
 bool Game::setupHosting(unsigned short port)
 {
-    bool success = connection.host(port);
+    bool success = connection.startServer(port);
     if(success)
     {
         _setupScreen = new SetupScreen(*this, SetupScreen::Host);

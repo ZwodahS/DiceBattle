@@ -21,7 +21,7 @@ public:
      * Try to be a host
      *  return false if already connected to a server or if the listener fails to listen.
      */
-    bool host();
+    bool host(unsigned short port);
     /**
      * Stop the hosting if any
      */
@@ -29,7 +29,7 @@ public:
     /**
      * Connect to the ip
      */ 
-    bool connectTo(std::string ipAddr);
+    bool connectTo(std::string ipAddr, unsigned short port);
     
     /**
      * This will ask the listener to listen for message
@@ -52,6 +52,8 @@ public:
     bool connected;
 
     void appendExternalMessageHeader(sf::Packet& packet);
+
+    std::string localName;
 private:
     void hostingDisconnected();
     void serverDisconnected();

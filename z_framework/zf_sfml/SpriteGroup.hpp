@@ -36,35 +36,35 @@ namespace zf
 {
     class SpriteGroup : public iAnimatable
     {
-        public:
-            const std::vector<sf::Sprite>& spriteGroups;
-            const int &state;
-            const sf::FloatRect &bound;
-            /**
-             * Set the position for the group.
-             */
-            void setPosition(sf::Vector2f position);
-            void setPosition(float x , float y);
-            
-            SpriteGroup(); // empty sprite group
-            SpriteGroup(const SpriteGroup& copy);
-            SpriteGroup(std::vector<sf::Sprite> g);  // the size of the bound is assumed to be the global bound of the first sprite or 0,0,0,0 if the list is empty
-            
-            void setState(int state);
-            SpriteGroup& operator=(const SpriteGroup &rhs);
-            
-            /**
-             * Draw the current sprite group. This will draw the sprite for the current state.
-             */
-            void draw(sf::RenderWindow& window, sf::Time delta);
-            void setAlpha(float alpha);
-            void move(sf::Vector2f moveVec);
-            void setColor(sf::Color color);
-            sf::Vector2f getPosition();
-        private:
-            int _state;
-            std::vector<sf::Sprite> _spriteGroups;
-            sf::FloatRect _bound;
+    public:
+        const std::vector<sf::Sprite>& spriteGroups;
+        const int &state;
+        const sf::FloatRect &bound;
+        /**
+         * Set the position for the group.
+         */
+        void setPosition(sf::Vector2f position);
+        void setPosition(float x , float y);
+        
+        SpriteGroup(); // empty sprite group
+        SpriteGroup(const SpriteGroup& copy);
+        SpriteGroup(std::vector<sf::Sprite> g);  // the size of the bound is assumed to be the global bound of the first sprite or 0,0,0,0 if the list is empty
+        
+        void setState(int state);
+        SpriteGroup& operator=(const SpriteGroup &rhs);
+        
+        /**
+         * Draw the current sprite group. This will draw the sprite for the current state.
+         */
+        void draw(sf::RenderWindow& window, sf::Time delta);
+        void setAlpha(float alpha);
+        void move(sf::Vector2f moveVec);
+        void setColor(sf::Color color);
+        sf::Vector2f getPosition();
+    private:
+        int _state;
+        std::vector<sf::Sprite> _spriteGroups;
+        sf::FloatRect _bound;
     };
 };
 

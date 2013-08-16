@@ -30,6 +30,8 @@ namespace zf
 {
     // convert string to int.
     bool toInt(std::string str, int &value);
+    // convert string to unsigned short (mainly used for port)
+    bool toUShort(std::string str, unsigned short& value);
     // convert int to string.
     std::string toString(int i);
     // convert int to string with sign (automatically comes with a + or a -)

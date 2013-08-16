@@ -160,3 +160,20 @@ void Game::startLocalGame(std::string player1, std::string player2)
     _currentScreen->screenExit();
     _nextScreen = _gameScreen;
 }
+
+bool Game::setupHosting(unsigned short port)
+{
+    bool success = connection.host(port);
+    if(success)
+    {
+        _setupScreen = new SetupScreen(*this, SetupScreen::Host);
+        _nextScreen = _setupScreen;
+        _currentScreen->screenExit();
+    }
+    return success;
+}
+
+bool Game::setupJoin(std::string ipAddr, unsigned short port)
+{
+    
+}

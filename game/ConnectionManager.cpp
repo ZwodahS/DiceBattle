@@ -1,8 +1,7 @@
 #include "ConnectionManager.hpp"
 #include "Game.hpp"
-#define PORT 37890
 ConnectionManager::ConnectionManager(Game& g)
-    :game(g), hosting(false), connected(false)
+    :game(g), hosting(false), connected(false), localName("")
 {
     server.name = "Server";
 }
@@ -11,7 +10,7 @@ ConnectionManager::~ConnectionManager()
 {
 }
 
-bool ConnectionManager::host()
+bool ConnectionManager::host(unsigned short port)
 {
     if(hosting)
     {
@@ -19,7 +18,7 @@ bool ConnectionManager::host()
     }
     else 
     {
-        sf::Socket::Status status = listener.listen(PORT);
+        sf::Socket::Status status = listener.listen(port);
         if(status == sf::Socket::Done)
         {
             hosting = true;
@@ -28,14 +27,17 @@ bool ConnectionManager::host()
         }
         else if(status == sf::Socket::NotReady)
         {
+            std::cout << "ConnectionManager.cpp : 31 " << std::endl;
             hosting = false;
         }
         else if(status == sf::Socket::Disconnected)
         {
+            std::cout << "ConnectionManager.cpp : 36 " << std::endl;
             hosting = false;
         }
         else
         {
+            std::cout << "ConnectionManager.cpp : 41 " << std::endl;
             // error
             hosting = false;
         }
@@ -67,7 +69,7 @@ void ConnectionManager::hostingDisconnected()
     hosting = false;
     game.hostingStopped();
 }
-bool ConnectionManager::connectTo(std::string ip)
+bool ConnectionManager::connectTo(std::string ip, unsigned short port)
 {
     if(hosting)
     {
@@ -80,7 +82,7 @@ bool ConnectionManager::connectTo(std::string ip)
     }
     connected = false;
     std::cout << ip << std::endl;
-    sf::Socket::Status status = server.socket.connect(ip, PORT);
+    sf::Socket::Status status = server.socket.connect(ip, port);
     if(status == sf::Socket::Done)
     {
         std::cout << "ConnectionManager.cpp : 86 " << std::endl;

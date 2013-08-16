@@ -35,6 +35,19 @@ namespace zf
         value = temp;
         return true;
     }
+    bool toUShort(std::string str, unsigned short& value)
+    {
+        std::istringstream buffer(str);
+        unsigned short temp;
+        buffer >> temp;
+        if(str != toString(temp)) //if the converted value is different then return 0 (similar to atoi)
+        {
+            return false;
+        }
+        value = temp;
+        return true;
+    }
+
 
     std::string toString(int i)
     {

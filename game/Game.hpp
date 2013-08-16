@@ -53,6 +53,11 @@ class Game
 
         void setupLocalGame();
         void startLocalGame(std::string player1, std::string player2);
+
+        // this will attempt set up hosting at the port
+        // return true if can setup hosting, which will also exit the mainscreen
+        bool setupHosting(unsigned short port);
+        bool setupJoin(std::string ipAddr, unsigned short port);
     private:
         void update(sf::Time& delta);
         void draw(sf::Time& delta);

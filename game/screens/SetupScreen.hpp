@@ -46,12 +46,12 @@ public:
 
     void screenEnter();
     void screenExit();
+
 private:
-    
     SetupType setupType;
 
-    sf::Sprite nameBorder1;
-    sf::Sprite nameBorder2;
+    zf::SpriteGroup nameBorder1;
+    zf::SpriteGroup nameBorder2;
     zf::SpriteGroup startButton;
 
     sf::Text name1Text;
@@ -62,7 +62,7 @@ private:
     
     std::string name1;
     std::string name2;
-
+    
     CurrentSelection currentSelection;
     void updateText(sf::Text& text, std::string stringValue);    
     void setCurrentSelection(CurrentSelection cs);    

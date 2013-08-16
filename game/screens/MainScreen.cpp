@@ -1,6 +1,6 @@
 #include "MainScreen.hpp"
 #include "../Game.hpp"
-
+#include "../../z_framework/zf_common/f_conversion.hpp"
 #define DEFAULT_IP_ADDRESS "Ip-address"
 #define DEFAULT_PORT "Port"
 const sf::Vector2f MainScreen::namePosition = sf::Vector2f(390, 200);
@@ -376,7 +376,12 @@ void MainScreen::setupLocalGame()
 
 void MainScreen::setupHostGame()
 {
-    std::cout << "hOst : " << name << " " << ip << " "<< port << std::endl;
+    unsigned short value;
+    bool success = zf::toUShort(port,value);
+    if(success)
+    {
+        _game.setupHosting(value);
+    }
 }
 
 void MainScreen::setupJoinGame()

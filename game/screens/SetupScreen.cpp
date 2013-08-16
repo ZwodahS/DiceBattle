@@ -10,12 +10,32 @@ SetupScreen::SetupScreen(Game& game, SetupType st)
     :Screen(game), setupType(st), name1Text("Player", game.assets.gameScreenAssets.abilityFont, 20), name2Text("Opponent", game.assets.gameScreenAssets.abilityFont, 20)
     , currentSelection(Name1), startText("Start", game.assets.gameScreenAssets.abilityFont, 20)
 {
+    if(st == Local)
+    {
+
+    }
+    else if(st == Host)
+    {
+    }    
+    else 
+    {
+    }
     // name and the name box
-    nameBorder1 = game.assets.setupScreenAssets.nameBox.createSprite();
+    //
+    std::vector<sf::Sprite> nameBoxSprites;
+    for(int i = 0 ; i < 4 ; i++)
+    {
+        nameBoxSprites.push_back(game.assets.setupScreenAssets.nameBox.createSprite());
+    }
+    nameBoxSprites[None].setColor(sf::Color(255,255,255,255));
+    nameBoxSprites[Hovered].setColor(sf::Color(220,220,110,255));
+    nameBoxSprites[Disabled].setColor(sf::Color(200,200,165,255));
+    nameBoxSprites[Active].setColor(sf::Color(255,255,50,255));
+    nameBorder1 = zf::SpriteGroup(nameBoxSprites);
     nameBorder1.setPosition(name1Position);
     name1Text.setPosition(name1Position + nameOffset);
     name1Text.setColor(sf::Color(0,0,0));
-    nameBorder2 = game.assets.setupScreenAssets.nameBox.createSprite();
+    nameBorder2 = zf::SpriteGroup(nameBoxSprites);
     nameBorder2.setPosition(name2Position);
     name2Text.setPosition(name2Position + nameOffset);
     name2Text.setColor(sf::Color(0,0,0));
@@ -49,6 +69,7 @@ SetupScreen::~SetupScreen()
 
 void SetupScreen::textInput(char c)
 {
+    // if not local, there is no need for text input
     if(setupType != Local)
     {
         return;
@@ -90,27 +111,27 @@ void SetupScreen::setCurrentSelection(CurrentSelection cs)
 {
     if(currentSelection == Name1)
     {
-        nameBorder1.setColor(sf::Color::White);
+        nameBorder1.setState(None);
     }
     else if(currentSelection == Name2)
     {
-        nameBorder2.setColor(sf::Color::White);
+        nameBorder2.setState(None);
     }
     currentSelection = cs;
     if(currentSelection == Name1)
     {
-        nameBorder1.setColor(sf::Color(220,220,100));
+        nameBorder1.setState(Active);
     }
     else if(currentSelection == Name2)
     {
-        nameBorder2.setColor(sf::Color(220,220,100));
+        nameBorder2.setState(Active);
     }
 }
 
 void SetupScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
 {
-    window.draw(nameBorder1);
-    window.draw(nameBorder2);
+    nameBorder1.draw(window, delta);
+    nameBorder2.draw(window, delta);
     window.draw(name1Text);
     window.draw(name2Text);
     for(std::vector<sf::Text>::iterator it = fixedTexts.begin() ; it != fixedTexts.end() ; ++it)
@@ -131,22 +152,52 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
         sf::Vector2f mousePosF = sf::Vector2f(mousePos.x,mousePos.y);
         if(mouse.left.thisReleased)
         {
-            if(nameBorder1.getGlobalBounds().contains(mousePosF))
+            if(setupType == Local)
             {
-                setCurrentSelection(Name1);
+                if(nameBorder1.bound.contains(mousePosF))
+                {
+                    setCurrentSelection(Name1);
+                }
+                else if(nameBorder2.bound.contains(mousePosF))
+                {
+                    setCurrentSelection(Name2);
+                }
+                else if(startButton.bound.contains(mousePosF))
+                {
+                    _game.startLocalGame(name1, name2);                
+                }
             }
-            else if(nameBorder2.getGlobalBounds().contains(mousePosF))
+            else
             {
-                setCurrentSelection(Name2);
-            }
-            else if(startButton.bound.contains(mousePosF))
-            {
-                _game.startLocalGame(name1, name2);                
+                if(nameBorder1.bound.contains(mousePosF))
+                {
+                    // if this is already in that slot , do nothing
+                    // if not, tell the gamesetup to switch
+                    if(nameBorder1.state != Active)
+                    {
+                    }
+                }
+                else if(nameBorder2.bound.contains(mousePosF))
+                {
+                    if(nameBorder2.state != Active)
+                    {
+                    }
+                }
+                else if(startButton.bound.contains(mousePosF))
+                {
+                }
             }
         }
         else
         {
             updateButtonState(startButton, mousePosF);
+            // if it is not local, then the text field is not allow to be edited.
+            // It will become a button
+            if(setupType != Local) 
+            {
+                updateButtonState(nameBorder1, mousePosF);
+                updateButtonState(nameBorder2, mousePosF);        
+            }
         }
     }
 
@@ -176,7 +227,10 @@ void SetupScreen::screenExit()
 
 void SetupScreen::updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f position)
 {
-    if(spriteGroup.bound.contains(position))
+    if(spriteGroup.state == Active) // if already active, do nothing
+    {
+    }
+    else if(spriteGroup.bound.contains(position))
     {
         spriteGroup.setState(Hovered); 
     }
@@ -185,3 +239,4 @@ void SetupScreen::updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f p
         spriteGroup.setState(None);
     }
 }
+

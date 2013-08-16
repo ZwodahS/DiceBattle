@@ -1,11 +1,10 @@
 #ifndef _GAME_SCREENS_SCREEN_H_
 #define _GAME_SCREENS_SCREEN_H_
-
+#include "../../z_framework/zf_network/ConnectionListener.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 class Game;
-class Connection;
-class Screen
+class Screen : public zf::ConnectionListener
 {
 public:
     Screen(Game& game);
@@ -17,14 +16,16 @@ public:
     virtual void screenEnter();
     virtual void screenExit();
     
-    virtual void clientConnected(Connection* connection);
-    virtual void clientDisconnected(Connection* connection);
+    virtual void clientConnected(zf::Connection* connection);
+    virtual void clientDisconnected(zf::Connection* connection);
+    virtual void serverStarted();
+    virtual void serverStopped();
     virtual void serverConnected();
     virtual void serverDisconnected();
-    virtual void hostingStarted();
-    virtual void hostingStopped();
-    virtual void packetReceived(sf::Packet& packet, Connection* connection);
-    virtual void packetReceivedFromServer(sf::Packet& packet);
+
+    virtual void nameInUsed();
+    virtual void nameVerified(std::string name);
+    virtual void clientVerified(zf::Connection* connection);
 
     /**
      * Defines the state of the screen. Currently only Exited is used. THe others are states

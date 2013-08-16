@@ -29,3 +29,6 @@ Steps:
         + This means that the lobby code should have some support for this.
 
 
+
+Framework:
+    $ Remember to deconstruct all sockets/listener when manager is destroyed.

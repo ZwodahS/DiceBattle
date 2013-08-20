@@ -43,9 +43,9 @@ MainScreen::MainScreen(Game& game)
     , dialog_joinhostText("Join", game.assets.gameScreenAssets.abilityFont, 20)
     , dialog_cancelText("Cancel", game.assets.gameScreenAssets.abilityFont, 20)
     , dialog_portText(DEFAULT_PORT, game.assets.gameScreenAssets.abilityFont, 20)
-    , name(" ")
-    , ip(" ")
-    , port(" ")
+    , name("")
+    , ip("")
+    , port("")
     , currentTextSelection(TextSelection_None)
 {
     // BUTTONS
@@ -376,17 +376,34 @@ void MainScreen::setupLocalGame()
 
 void MainScreen::setupHostGame()
 {
+    if(name == "")
+    {
+        setCurrentTextSelection(TextSelection_Name);
+        updateText(dialog_nameText, name);
+        return;
+    }
     unsigned short value;
     bool success = zf::toUShort(port,value);
     if(success)
     {
-        _game.setupHosting(value);
+        _game.setupHosting(value, name);
     }
 }
 
 void MainScreen::setupJoinGame()
 {
-    std::cout << "jOIn : " << name << " " << ip << " "<< port << std::endl;
+    if(name == "")
+    {
+        setCurrentTextSelection(TextSelection_Name);
+        updateText(dialog_nameText, name);
+        return;
+    }
+    unsigned short value;
+    bool success = zf::toUShort(port, value);
+    if(success)
+    {
+        _game.setupJoin(name, ip, value);
+    }
 }
 
 
@@ -409,4 +426,14 @@ void MainScreen::setCurrentTextSelection(CurrentTextSelection cs)
     currentTextSelection = cs;
     sf::Sprite& newBg = currentTextSelection == TextSelection_Name ? dialog_nameBg : currentTextSelection == TextSelection_Ip ? joinDialog_ipBg : dialog_portBg;
     newBg.setColor(sf::Color(220,220,100));
+}
+
+void MainScreen::waitingForReply()
+{
+    _waitingForReply = true;
+}
+
+void MainScreen::replyTimeout()
+{
+    _waitingForReply = false;
 }

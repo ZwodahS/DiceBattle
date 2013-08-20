@@ -2,11 +2,13 @@
 #define _GAME_SCREENS_SETUPSCREEN_H_
 #include "Screen.hpp"
 #include "../../z_framework/zf_sfml/SpriteGroup.hpp"
+#include "../../z_framework/zf_network/zf_gamesetup/GameSetup.hpp"
+#include "../../z_framework/zf_network/zf_gamesetup/GameSetupListener.hpp"
 #include <string>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
-class SetupScreen : public Screen
+class SetupScreen : public Screen, public zf::GameSetupListener
 {
 public:
 
@@ -37,7 +39,11 @@ public:
         Host,
         Remote,
     };
-    SetupScreen(Game& game, SetupType st);
+    /**
+     * if the setuptype is local then set is not required.
+     * This is probably extremely hackish. ....
+     */
+    SetupScreen(Game& game, SetupType st, zf::GameSetup* setup = 0);
     ~SetupScreen();
 
     void draw(sf::RenderWindow& window, const sf::Time& delta);
@@ -47,7 +53,21 @@ public:
     void screenEnter();
     void screenExit();
 
+    void gameStarts();
+    void joinSuccess(std::string name, std::string role);
+    void playerJoined(std::string uniqueId, std::string name, std::string role);
+    void playerSwitchRole(std::string uniqueId, std::string name, std::string oldRole, std::string newRole);
+    void playerLeft(std::string uniqueId, std::string name, std::string role);
+
+
 private:
+    struct PlayerObj
+    {
+        std::string uniqueId;
+        std::string name;
+        std::string role;
+    };
+    zf::GameSetup* _gameSetup;
     SetupType setupType;
 
     zf::SpriteGroup nameBorder1;
@@ -60,13 +80,17 @@ private:
     // text that will not change but need to be displayed.
     std::vector<sf::Text> fixedTexts;
     
-    std::string name1;
-    std::string name2;
-    
+    PlayerObj player1;
+    PlayerObj player2;
+    std::vector<PlayerObj> observers;
+
     CurrentSelection currentSelection;
     void updateText(sf::Text& text, std::string stringValue);    
     void setCurrentSelection(CurrentSelection cs);    
 
     void updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f position);
+
+    void removePlayer(PlayerObj player);
+    void updatePlayer(PlayerObj player);
 };
 #endif

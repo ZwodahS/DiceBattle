@@ -42,7 +42,7 @@ namespace zf
         std::string name;
         bool verified;
         sf::TcpSocket* socket;
-
+        
 
         sf::Socket::Status sendPacket(sf::Packet& packet);
     private:

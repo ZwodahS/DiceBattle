@@ -37,8 +37,15 @@ namespace zf
         virtual ~PacketProcessingLayer();
 
         virtual void appendHeader(sf::Packet& packet);
+        virtual Connection* getConnection(std::string name);
+        virtual bool sendPacket(std::string& name, sf::Packet& packet);
+        virtual bool sendPacketToServer(sf::Packet& packet); 
+        virtual std::string getUniqueId();
+
+
         virtual sf::Int32 getHeader();
         virtual void packetReceived(sf::Packet& packet, Connection& connection);
+        virtual void packetReceivedFromServer(sf::Packet& packet);
     private:
         sf::Int32 _header;
         std::vector<PacketDownStream*> _downStreams;

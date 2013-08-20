@@ -30,7 +30,6 @@ namespace zf
      * Every downstream must belong to one upstream.
      */
     class Connection;
-    class PacketUpStream;
     class PacketDownStream
     {
     public:
@@ -42,6 +41,7 @@ namespace zf
          * Packet is received from this connection.
          */
         virtual void packetReceived(sf::Packet& packet, Connection& connection) = 0;
+        virtual void packetReceivedFromServer(sf::Packet& packet) = 0;
     protected:
     };
 }

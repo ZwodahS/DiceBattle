@@ -39,7 +39,8 @@ namespace zf
     public:
         ConnectionManager();
         ~ConnectionManager();
-
+        bool isConnected();
+        bool isHosting();
         /**
          * Start a server.
          * If this is already connected to a server, it will return false.
@@ -64,7 +65,13 @@ namespace zf
          * Override PacketUpstream methods
          */
         void appendHeader(sf::Packet& packet);
-        
+        /**
+         * Get a connection
+         */        
+        Connection* getConnection(std::string name);
+        virtual bool sendPacket(std::string& name, sf::Packet& packet);
+        virtual bool sendPacketToServer(sf::Packet& packet);
+        virtual std::string getUniqueId();
         /**
          * Listen for connections
          */
@@ -78,6 +85,10 @@ namespace zf
         void removeListener(ConnectionListener& listener);
 
         std::string verifiedName;
+
+
+        void addDownStream(PacketDownStream* downStream);
+        void removeDownStream(PacketDownStream* downStream);
     private:
         
         /**
@@ -105,10 +116,6 @@ namespace zf
          */
         std::vector<Connection*> _connectedClients;
         /**
-         * Verified Clients - clients that are given a unique identifier
-         */
-        std::vector<Connection*> _verifiedClients;
-        /**
          * Stores the list of downstreams
          */
         std::vector<PacketDownStream*> _downstreams;
@@ -131,6 +138,7 @@ namespace zf
 
         void processUnverifiedPacket(sf::Packet& packet, Connection* connection);
         void processVerifiedPacket(sf::Packet& packet, Connection* connection);
+        void processServerPacket(sf::Packet& packet);
 
         void processClientConnected(Connection* connection);
         void processClientDisconnected(Connection* connection);
@@ -147,6 +155,7 @@ namespace zf
         bool sendNameVerifiedMessage(Connection* connection, std::string name);
 
         bool sendVerifyNameMessage(std::string name);
+        bool sendPacket(Connection& connection, sf::Packet& packet);
     };
 }
 #endif

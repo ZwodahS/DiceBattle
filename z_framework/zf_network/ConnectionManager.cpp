@@ -23,6 +23,7 @@
 #include "ConnectionManager.hpp"
 #include "PacketDownStream.hpp"
 #include "ConnectionListener.hpp"
+#include <iostream>
 namespace zf
 {
     ConnectionManager::ConnectionManager()
@@ -32,6 +33,16 @@ namespace zf
 
     ConnectionManager::~ConnectionManager()
     {
+    }
+
+    bool ConnectionManager::isConnected()
+    {
+        return _isConnected;
+    }
+
+    bool ConnectionManager::isHosting()
+    {
+        return _isHosting;
     }
 
     bool ConnectionManager::startServer(unsigned short port)
@@ -72,7 +83,10 @@ namespace zf
             for(std::vector<Connection*>::iterator it = _connectedClients.begin() ; it != _connectedClients.end() ; ++it)
             {
                 processClientDisconnected(*it);
-                (*it)->socket->disconnect(); 
+                if((*it)->socket != 0)
+                {
+                    (*it)->socket->disconnect(); 
+                }
                 delete *it;
             }
             _listener.close();
@@ -94,6 +108,8 @@ namespace zf
             _serverSocket.setBlocking(false);
             _isConnected = true;
             processServerConnected();
+            // send the verify name message
+            sendVerifyNameMessage(verifiedName);
         }
         else if(status == sf::Socket::NotReady)
         {
@@ -125,15 +141,28 @@ namespace zf
             }
             else if(status == sf::Socket::NotReady)
             {
-                // no1
+                delete socket;
             }
             else if(status == sf::Socket::Disconnected)
             {
                 stopServer();
+                delete socket;
             }
             else
             {
                 stopServer();
+                delete socket;
+            }
+            // clean up in case there is a connection that is already disconnected
+            for(std::vector<Connection*>::iterator it = _connectedClients.begin() ; it != _connectedClients.end() ; )
+            {    
+                if((*it)->socket == 0)
+                {
+                    delete (*it);
+                    it = _connectedClients.erase(it);
+                    continue;
+                }
+                ++it;
             }
         }
     }
@@ -159,29 +188,14 @@ namespace zf
                 sf::Socket::Status status = (*it)->socket->receive(packet);
                 if(status == sf::Socket::Done)
                 {
-                    processUnverifiedPacket(packet, *it);
-                } 
-                else if(status == sf::Socket::NotReady)
-                {
-                }
-                else if(status == sf::Socket::Disconnected)
-                {
-                    // client disconnected ...
-                    processClientDisconnected(*it);
-                }
-                else // if(status == sf::Socket::Error)
-                {
-                }
-            }
-            // read from all the verified clients
-            for(std::vector<Connection*>::iterator it = _verifiedClients.begin() ; it != _verifiedClients.end() ; ++it)
-            {
-                sf::Packet packet;
-                // check for packet.
-                sf::Socket::Status status = (*it)->socket->receive(packet);
-                if(status == sf::Socket::Done)
-                {
-                    processVerifiedPacket(packet, *it);
+                    if((*it)->verified)
+                    {
+                        processVerifiedPacket(packet, *it);
+                    }
+                    else
+                    {
+                        processUnverifiedPacket(packet, *it);
+                    }
                 } 
                 else if(status == sf::Socket::NotReady)
                 {
@@ -198,13 +212,38 @@ namespace zf
         }
         else if(_isConnected)
         {
-
+            sf::Packet packet;
+            sf::Socket::Status status = _serverSocket.receive(packet);
+            if(status == sf::Socket::Done)
+            {
+                processServerPacket(packet);
+            }
+            else if(status == sf::Socket::NotReady)
+            {
+            }
+            else if(status == sf::Socket::Disconnected)
+            {
+                // server disconnected ... 
+                processServerDisconnected();
+            }
         }
     }
 
     void ConnectionManager::appendHeader(sf::Packet& packet)
     {
         packet << ExternalMessage;
+    }
+    
+    Connection* ConnectionManager::getConnection(std::string name)
+    {
+        for(std::vector<Connection*>::iterator it = _connectedClients.begin() ; it != _connectedClients.end() ; ++it)
+        {
+            if((*it)->verified && (*it)->name == name)
+            {
+                return *it;
+            } 
+        }
+        return 0;
     }
 
     void ConnectionManager::processUnverifiedPacket(sf::Packet& packet, Connection* connection)
@@ -244,6 +283,35 @@ namespace zf
         }
     }
 
+    void ConnectionManager::processServerPacket(sf::Packet& packet)
+    {
+        sf::Int32 type;
+        packet >> type;
+        if(type == InternalMessage)
+        {
+            processServerInternalMessage(packet);
+        }
+        else 
+        {
+            if(!_verified)
+            {
+                // if not verified, cannot pass to downstream
+            } 
+            else 
+            {
+                if(packet >> type)
+                {
+                    for(std::vector<PacketDownStream*>::iterator it = _downstreams.begin() ; it != _downstreams.end() ; ++it)
+                    {
+                        if((*it)->getHeader() == type)
+                        {
+                            (*it)->packetReceivedFromServer(packet); 
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     void ConnectionManager::processClientConnected(Connection* connection)
     {
@@ -260,19 +328,10 @@ namespace zf
             (*it)->clientDisconnected(connection); 
         }
         // find out where the connection is at.
-        if(connection->verified)
-        {
-            for(std::vector<Connection*>::iterator it = _verifiedClients.begin() ; it != _verifiedClients.end() ; ++it)
-            {
-                if(*it == connection)
-                {
-                    _verifiedClients.erase(it);
-                    break;
-                } 
-            }
-            connection->socket->disconnect();
-            delete connection;
-        }
+        connection->socket->disconnect();
+        delete connection->socket;
+        connection->socket = 0;
+        // I don't really want to delete the connection here, as this might be part of a loop
     }
 
     void ConnectionManager::processServerStarted()
@@ -338,9 +397,9 @@ namespace zf
                 if(packet >> name)
                 {
                     bool nameUsed = false;
-                    for(std::vector<Connection*>::iterator it = _verifiedClients.begin() ; it != _verifiedClients.end() ; ++it)
+                    for(std::vector<Connection*>::iterator it = _connectedClients.begin() ; it != _connectedClients.end() ; ++it)
                     {
-                        if((*it)->name == name)
+                        if((*it)->socket != 0 && (*it)->verified && (*it)->name == name)
                         {
                             nameUsed = true;
                             break;
@@ -352,19 +411,8 @@ namespace zf
                     }
                     else
                     {
-                        // move the connection to verified.
-                        for(std::vector<Connection*>::iterator it = _connectedClients.begin() ; it != _connectedClients.end() ; )
-                        {    
-                            if(*it == connection)
-                            {
-                                it = _connectedClients.erase(it);
-                                break;
-                            }
-                            ++it;
-                        }
                         connection->name = name;
                         connection->verified = true;
-                        _verifiedClients.push_back(connection);
                         if(sendNameVerifiedMessage(connection, name))
                         {
                             for(std::vector<ConnectionListener*>::iterator it = _connectionListeners.begin() ; it != _connectionListeners.end() ; ++it)
@@ -420,27 +468,7 @@ namespace zf
         packet << InternalMessage << NameInUsedMessage;
         if(connection != 0)
         {
-            sf::Socket::Status status = connection->sendPacket(packet);
-            if(status == sf::Socket::Done)
-            {
-                // do nothing
-                return true;
-            }
-            else if(status == sf::Socket::NotReady)
-            {
-                // sending fail ? 
-                return false;
-            }
-            else if(status == sf::Socket::Disconnected)
-            {
-                processClientDisconnected(connection);
-                return false;
-            }
-            else // if(status == sf::Status::Error)
-            {
-                processClientDisconnected(connection);
-                return false;
-            }
+            return sendPacket(*connection, packet);
         }
     }
 
@@ -450,26 +478,7 @@ namespace zf
         packet << InternalMessage << NameVerifiedMessage << name;
         if(connection != 0)
         {
-            sf::Socket::Status status = connection->sendPacket(packet);
-            if(status == sf::Socket::Done)
-            {
-                // do nothing
-                return true;
-            }
-            else if(status == sf::Socket::NotReady)
-            {
-                return false;
-            }
-            else if(status == sf::Socket::Disconnected)
-            {
-                processClientDisconnected(connection);
-                return false;
-            }
-            else // if(status == sf::Status::Error)
-            {
-                processClientDisconnected(connection);
-                return false;
-            }
+            return sendPacket(*connection, packet);
         }
     }
 
@@ -482,7 +491,24 @@ namespace zf
         }
         sf::Packet packet;
         packet << InternalMessage << VerifyNameMessage << name;
-        sf::Socket::Status status = _serverSocket.send(packet);
+        return sendPacketToServer(packet);
+    }
+
+    bool ConnectionManager::sendPacket(std::string& name, sf::Packet& packet)
+    {
+        if(_isHosting)
+        {
+            Connection* conn = getConnection(name);
+            if(conn != 0)
+            {
+                return sendPacket(*conn, packet);
+            }
+        }
+    }
+
+    bool ConnectionManager::sendPacket(Connection& connection, sf::Packet& packet)
+    {
+        sf::Socket::Status status = connection.sendPacket(packet);
         if(status == sf::Socket::Done)
         {
             // do nothing
@@ -494,13 +520,66 @@ namespace zf
         }
         else if(status == sf::Socket::Disconnected)
         {
-            processServerDisconnected();
+            processClientDisconnected(&connection);
             return false;
         }
         else // if(status == sf::Status::Error)
         {
-            processServerDisconnected();
+            processClientDisconnected(&connection);
             return false;
+        }
+    }
+
+    bool ConnectionManager::sendPacketToServer(sf::Packet& packet)
+    {
+        if(_isConnected)
+        {
+            sf::Socket::Status status = _serverSocket.send(packet);
+            if(status == sf::Socket::Done)
+            {
+                // do nothing
+                return true;
+            }
+            else if(status == sf::Socket::NotReady)
+            {
+                return false;
+            }
+            else if(status == sf::Socket::Disconnected)
+            {
+                processServerDisconnected();
+                return false;
+            }
+            else // if(status == sf::Status::Error)
+            {
+                processServerDisconnected();
+                return false;
+            }
+        } 
+    }
+
+    std::string ConnectionManager::getUniqueId()
+    {
+        return verifiedName;
+    }
+
+    void ConnectionManager::addDownStream(PacketDownStream* down)
+    {
+        if(down != 0)
+        {
+            _downstreams.push_back(down);
+        }
+    }
+
+    void ConnectionManager::removeDownStream(PacketDownStream* down)
+    {
+        for(std::vector<PacketDownStream*>::iterator it = _downstreams.begin() ; it != _downstreams.end() ; )
+        {    
+            if(down == *it)
+            {
+                it = _downstreams.erase(it);
+                continue;
+            }
+            ++it;
         }
     }
 }

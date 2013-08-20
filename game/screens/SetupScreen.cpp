@@ -6,19 +6,40 @@ const sf::Vector2f SetupScreen::nameOffset = sf::Vector2f(10,0);
 const sf::Vector2f SetupScreen::startButtonPosition = sf::Vector2f(270, 400);
 const sf::Vector2f SetupScreen::buttonTextOffset = sf::Vector2f(20,0);
 const sf::Vector2f SetupScreen::vsTextPosition = sf::Vector2f(300, 200);
-SetupScreen::SetupScreen(Game& game, SetupType st)
-    :Screen(game), setupType(st), name1Text("Player", game.assets.gameScreenAssets.abilityFont, 20), name2Text("Opponent", game.assets.gameScreenAssets.abilityFont, 20)
-    , currentSelection(Name1), startText("Start", game.assets.gameScreenAssets.abilityFont, 20)
+SetupScreen::SetupScreen(Game& game, SetupType st, zf::GameSetup* setup)
+    :Screen(game), setupType(st), name1Text("Player1", game.assets.gameScreenAssets.abilityFont, 20), name2Text("Player2", game.assets.gameScreenAssets.abilityFont, 20)
+    , currentSelection(Name1), startText("Start", game.assets.gameScreenAssets.abilityFont, 20), _gameSetup(setup)
 {
     if(st == Local)
     {
-
+        player1.uniqueId = "Player1";
+        player1.name = "Player1";
+        player2.uniqueId = "Player2";
+        player2.name = "Player2";
     }
     else if(st == Host)
     {
+        if(_gameSetup != 0)
+        {
+            _gameSetup->addGameSetupListener(*this);
+        }
+        name1Text.setString(" ");
+        name2Text.setString(" ");
+        player1.uniqueId = "";
+        player1.name = "";
+        player1.role = "1";
+        player2.uniqueId = "";
+        player2.name = "";
+        player2.role = "2";
     }    
     else 
     {
+        if(_gameSetup != 0)
+        {
+            _gameSetup->addGameSetupListener(*this);
+        }
+        name1Text.setString(" ");
+        name2Text.setString(" ");
     }
     // name and the name box
     //
@@ -58,13 +79,15 @@ SetupScreen::SetupScreen(Game& game, SetupType st)
     tmp.setPosition(vsTextPosition);
     fixedTexts.push_back(tmp);
 
-    name1 = "Player";
-    name2 = "Opponent";
     setCurrentSelection(Name1);
 }
 
 SetupScreen::~SetupScreen()
 {
+    if(_gameSetup != 0)
+    {
+        _gameSetup->removeGameSetupListener(*this);
+    }
 }
 
 void SetupScreen::textInput(char c)
@@ -75,7 +98,7 @@ void SetupScreen::textInput(char c)
         return;
     }
     sf::Text& text = currentSelection == Name1 ? name1Text : name2Text;
-    std::string& value = currentSelection == Name1 ? name1 : name2;
+    std::string& value = currentSelection == Name1 ? player1.name : player2.name;
     if(c >= 32 && c < 127)
     {
         if(value == " ")
@@ -164,23 +187,23 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                 }
                 else if(startButton.bound.contains(mousePosF))
                 {
-                    _game.startLocalGame(name1, name2);                
+                    _game.startLocalGame(player1.name, player2.name);                
                 }
             }
             else
             {
                 if(nameBorder1.bound.contains(mousePosF))
                 {
-                    // if this is already in that slot , do nothing
-                    // if not, tell the gamesetup to switch
-                    if(nameBorder1.state != Active)
+                    if(player1.uniqueId == "")
                     {
+                        _gameSetup->setRole("1");
                     }
                 }
                 else if(nameBorder2.bound.contains(mousePosF))
                 {
-                    if(nameBorder2.state != Active)
+                    if(player2.uniqueId == "")
                     {
+                        _gameSetup->setRole("2");
                     }
                 }
                 else if(startButton.bound.contains(mousePosF))
@@ -240,3 +263,87 @@ void SetupScreen::updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f p
     }
 }
 
+void SetupScreen::gameStarts()
+{
+    std::cout << "Setup Screen : Game Start" << std::endl;
+}
+void SetupScreen::joinSuccess(std::string name, std::string role)
+{
+    std::cout << "Setup Screen : Join success" << std::endl;
+}
+void SetupScreen::playerJoined(std::string uniqueId, std::string name, std::string role)
+{
+    PlayerObj player;
+    player.uniqueId = uniqueId;
+    player.name = name;
+    player.role = role;
+    updatePlayer(player);
+    if(_gameSetup->isHosting() && player2.uniqueId == "")
+    {
+        // force the new player role to be 2
+        _gameSetup->assignRole(uniqueId, "2");
+    }
+}
+void SetupScreen::playerSwitchRole(std::string uniqueId, std::string name, std::string oldRole, std::string newRole)
+{
+    PlayerObj player;
+    player.uniqueId = uniqueId;
+    player.name = name;
+    player.role = oldRole;
+    removePlayer(player);
+    player.role = newRole;
+    updatePlayer(player);
+    std::cout << "role switched" << uniqueId << " " << name << " " << oldRole << " " << newRole << std::endl;
+}
+void SetupScreen::playerLeft(std::string uniqueId, std::string name, std::string role)
+{
+    std::cout << "Setup Screen : Player Left" << std::endl;
+}
+
+void SetupScreen::removePlayer(PlayerObj player)
+{
+    if(player.role == "1")
+    {
+        player1.uniqueId = "";
+        player1.name = "";
+        updateText(name1Text, player1.name);
+    }
+    else if(player.role == "2")
+    {
+        player2.uniqueId = "";
+        player2.name = "";
+        updateText(name2Text, player2.name);
+    }
+    else
+    {
+        for(std::vector<PlayerObj>::iterator it = observers.begin() ; it != observers.end() ; )
+        {    
+            if((*it).uniqueId == player.uniqueId)
+            {
+                it = observers.erase(it);
+                continue;
+            }
+            ++it;
+        }
+    }
+}
+
+void SetupScreen::updatePlayer(PlayerObj player)
+{
+    if(player.role == "1")
+    {
+        player1 = player;
+        updateText(name1Text, player1.name);
+    }
+    else if(player.role == "2")
+    {
+        player2 = player;
+        updateText(name2Text, player2.name);
+    }
+    else
+    {
+        for(std::vector<PlayerObj>::iterator it = observers.begin() ; it != observers.end() ; )
+        {    
+        }
+    }
+}

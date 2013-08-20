@@ -40,6 +40,26 @@ namespace zf
         packet << _header;
     }
 
+    Connection* PacketProcessingLayer::getConnection(std::string name)
+    {
+        return _upStream.getConnection(name);
+    }
+    
+    bool PacketProcessingLayer::sendPacket(std::string& name, sf::Packet& packet)
+    {
+        return _upStream.sendPacket(name, packet);
+    }
+
+    bool PacketProcessingLayer::sendPacketToServer(sf::Packet& packet)
+    {
+        return _upStream.sendPacketToServer(packet);
+    }
+
+    std::string PacketProcessingLayer::getUniqueId()
+    {
+        return _upStream.getUniqueId();
+    }
+
     sf::Int32 PacketProcessingLayer::getHeader()
     {
         return _header;
@@ -61,6 +81,28 @@ namespace zf
             {
                 // forward the message to the downstream
                 (*it)->packetReceived(packet, connection);
+                // messages should never be sent to more than 1 downstream
+                break;
+            } 
+        }
+    }
+
+    void PacketProcessingLayer::packetReceivedFromServer(sf::Packet& packet)
+    {
+        sf::Int32 h;
+        if(!(packet >> h))
+        {
+            // bad packet
+            return;
+        }
+        // find out which downstream to send to.
+        for(std::vector<PacketDownStream*>::iterator it = _downStreams.begin() ; it != _downStreams.end() ; ++it)
+        {
+            // check for header
+            if(h == (*it)->getHeader())
+            {
+                // forward the message to the downstream
+                (*it)->packetReceivedFromServer(packet);
                 // messages should never be sent to more than 1 downstream
                 break;
             } 

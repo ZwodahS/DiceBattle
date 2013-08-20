@@ -13,7 +13,6 @@
 #define GAME_TITLE "Game Name"
 #define GAME_WIDTH 640
 #define GAME_HEIGHT 480
-
 Game::Game()
     :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE) 
     , window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _nextScreen(0), _currentBattle(0)
@@ -34,6 +33,7 @@ void Game::run()
     _mainScreen = new MainScreen(*this);
     _currentScreen = _mainScreen;
     _currentScreen->screenEnter();
+    connection.addListener(*this);
     // set up the clock for delta
     sf::Clock clock; 
     bool quit = false;
@@ -88,6 +88,18 @@ void Game::run()
 
 void Game::update(sf::Time& delta)
 {
+    if(_waitingReplyTimeout >= 0)
+    {
+        _waitingReplyTimeout -= delta.asSeconds();
+        if(_waitingReplyTimeout <= 0)
+        {
+            _waitingReplyTimeout = 0;
+            if(_mainScreen != 0)
+            {
+                _mainScreen->replyTimeout();
+            }
+        }
+    }
     if(_currentBattle != 0)
     {
         _currentBattle->update();
@@ -161,19 +173,44 @@ void Game::startLocalGame(std::string player1, std::string player2)
     _nextScreen = _gameScreen;
 }
 
-bool Game::setupHosting(unsigned short port)
+bool Game::setupHosting(unsigned short port, std::string name)
 {
     bool success = connection.startServer(port);
     if(success)
     {
-        _setupScreen = new SetupScreen(*this, SetupScreen::Host);
+        connection.verifiedName = name;
+        zf::GameSetup* gs = new zf::GameSetup(connection.verifiedName, connection, GAMESETUP_HEADER, true);
+        _setupScreen = new SetupScreen(*this, SetupScreen::Host, gs);
+        connection.addDownStream(gs);
         _nextScreen = _setupScreen;
         _currentScreen->screenExit();
+        gs->ready();
+        gs->setRole("1");
     }
     return success;
 }
 
-bool Game::setupJoin(std::string ipAddr, unsigned short port)
+bool Game::setupJoin(std::string name, std::string ipAddr, unsigned short port)
 {
-    
+    // need to send the verify message and then wait for reply.
+    if(connection.isConnected())
+    {
+        connection.disconnect();
+    }
+    else if(connection.isHosting())
+    {
+        connection.stopServer();
+    }
+    connection.verifiedName = name;
+    bool success = connection.connectTo(ipAddr, port);
+    if(success)
+    {
+        // wait for reply
+        // Disable mainscreen input
+        _mainScreen->waitingForReply();
+        // set wait time
+        _waitingReplyTimeout = 10;
+    }
 }
+
+

@@ -47,50 +47,22 @@ void Game::serverDisconnected()
 
 void Game::nameInUsed()
 {
+    std::cout << "Name in used" << std::endl;
 }
 void Game::nameVerified(std::string name)
 {
+    //since my name has been verified, try to connect to the gamesetup
+    if(_mainScreen != 0)
+    {
+        zf::GameSetup* gs = new zf::GameSetup(connection.verifiedName, connection, GAMESETUP_HEADER, false);
+        _setupScreen = new SetupScreen(*this, SetupScreen::Host, gs);
+        connection.addDownStream(gs);
+        _nextScreen = _setupScreen;
+        _currentScreen->screenExit();
+        gs->joinServer();
+    }
 }
 void Game::clientVerified(zf::Connection* connection)
 {
+    std::cout << "CLient Verified" << std::endl;
 }
-/*
-void Game::packetReceived(sf::Packet& packet, zf::Connection* connection)
-{
-    sf::Int32 type;
-    packet >> type;
-    if(type == SetupMessage)
-    {
-        if(_setupScreen != 0)
-        {
-            _setupScreen->packetReceived(packet, connection);
-        }
-    }
-    else if(type == GameMessage)
-    {
-        if(_gameScreen != 0)
-        {
-            _gameScreen->packetReceived(packet, connection);
-        }
-    }
-}
-void Game::packetReceivedFromServer(sf::Packet& packet)
-{
-    sf::Int32 type;
-    packet >> type;
-    if(type == SetupMessage)
-    {
-        if(_setupScreen != 0)
-        {
-            _setupScreen->packetReceivedFromServer(packet);
-        }
-    }
-    else if(type == GameMessage)
-    {
-        if(_gameScreen != 0)
-        {
-            _gameScreen->packetReceivedFromServer(packet);
-        }
-    }
-}
-*/

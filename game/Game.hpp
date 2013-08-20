@@ -12,6 +12,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <iostream>
+#define GAMESETUP_HEADER 4000
 class Screen;
 class GameScreen;
 class MainScreen;
@@ -58,8 +59,11 @@ class Game : public zf::ConnectionListener
 
         // this will attempt set up hosting at the port
         // return true if can setup hosting, which will also exit the mainscreen
-        bool setupHosting(unsigned short port);
-        bool setupJoin(std::string ipAddr, unsigned short port);
+        bool setupHosting(unsigned short port, std::string name);
+        /**
+         * Attempt to join the server using the name at an address.
+         */
+        bool setupJoin(std::string name, std::string ipAddr, unsigned short port);
     private:
         void update(sf::Time& delta);
         void draw(sf::Time& delta);
@@ -74,9 +78,8 @@ class Game : public zf::ConnectionListener
         Battle* _currentBattle;
 
         // Use game object as the connection manager.
-
+        float _waitingReplyTimeout;
 };
 
 
 #endif
-

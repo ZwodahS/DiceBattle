@@ -32,3 +32,8 @@ Steps:
 
 Framework:
     $ Remember to deconstruct all sockets/listener when manager is destroyed.
+    $ A potential bug when client disconnected while the list of clients is being iterated.
+        + Probably need to add a "connected" bool to the connection so that when the client is disconnected,
+        + I just disconnects it by setting the bool value.
+        + I also need to make the client list remove all disconnected clients afterward.
+    $ GameSetup : need to send the current state of the setup to a client when it first connected.

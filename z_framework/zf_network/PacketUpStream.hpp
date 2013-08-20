@@ -23,8 +23,10 @@
 #ifndef _ZF_NETWORK_PACKETUPSTREAM_H_
 #define _ZF_NETWORK_PACKETUPSTREAM_H_
 #include <SFML/Network.hpp>
+#include <string>
 namespace zf
 {
+    class Connection;
     /**
      * Defines an upstream. This allow you to wrap the packet.
      */
@@ -35,6 +37,10 @@ namespace zf
          * Append the header information to the packet.
          */
         virtual void appendHeader(sf::Packet& packet) = 0;
+        virtual Connection* getConnection(std::string name) = 0;
+        virtual bool sendPacket(std::string& name, sf::Packet& packet) = 0;
+        virtual bool sendPacketToServer(sf::Packet& packet) = 0;
+        virtual std::string getUniqueId() = 0;
     };
 }
 #endif

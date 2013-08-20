@@ -47,6 +47,9 @@ public:
     void textInput(char c);
     void screenEnter();
     void screenExit();
+
+    void waitingForReply();
+    void replyTimeout();
 private:
     enum ButtonState
     {
@@ -124,7 +127,7 @@ private:
     void setupHostGame();
     void setupJoinGame();
 
-
+    bool _waitingForReply;
     void updateText(sf::Text& text, std::string stringValue);
 };
 #endif

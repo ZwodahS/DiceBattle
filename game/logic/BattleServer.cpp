@@ -24,7 +24,6 @@ Message* BattleServer::popNextMessage()
 
 void BattleServer::packetReceivedFromServer(sf::Packet& packet)
 {
-    std::cout << "BattleServer.cpp : 35 " << std::endl;
     sf::Int32 typeIntValue;
     packet >> typeIntValue;
     Message::MessageType t = Message::toType(typeIntValue);

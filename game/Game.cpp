@@ -227,7 +227,6 @@ void Game::joinNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole role)
     }
     else
     {
-        std::cout << "WEIRD THING HAPPENS" << std::endl;
     }
 }
 

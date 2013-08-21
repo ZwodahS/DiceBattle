@@ -1,5 +1,5 @@
 Current:
-    $ make remote client send to server instead of local processing.
+    $ Bug when all 6 dice are used.
 ToDo:
     $ 2 Big button for roll and done
     $ Space out the dice.

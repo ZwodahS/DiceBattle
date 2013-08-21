@@ -109,14 +109,11 @@ void Battle::processServerMessage(Message* message)
 
 void Battle::processClientMessage(PlayerRole::ePlayerRole actor, Message* message)
 {
-    std::cout << "processing client message" << std::endl;
     if(actor == currentPlayer)
     {
-        std::cout << "Message is from current player" << std::endl;
     }
     else
     {
-        std::cout << "Message is not from current player" << std::endl;
     }
     if(message->type == Message::SendDoneCommand)
     {
@@ -216,7 +213,6 @@ void Battle::update()
             }
             else
             {
-                std::cout << "sending to  server !" << std::endl;
                 sendClientMessage((*it)->role, message);
                 message = (*it)->popNextMessage();
             }

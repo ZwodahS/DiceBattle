@@ -44,7 +44,6 @@ void BattlePacketLayer::packetReceived(sf::Packet& packet, zf::Connection& conne
     {
         if((*it)->isConnectedBy(connection))
         {
-            std::cout << "passing to TcpClient" << std::endl;
             (*it)->packetReceived(packet);
         } 
     }

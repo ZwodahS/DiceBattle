@@ -134,7 +134,6 @@ void GameScreen::freeFirstMessage()
  */
 void GameScreen::sendMessage(DB_GameStartMessage& message)
 {
-    std::cout << "GameScreen.cpp : 137 " << std::endl;
     messages.push(new DB_GameStartMessage(message));
 }
 void GameScreen::sendMessage(DB_ActiveTurnMessage& message)

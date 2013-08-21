@@ -269,11 +269,9 @@ namespace zf
         }
         else
         {
-            std::cout << "packet received" << std::endl;
             // search for the down stream to push to.
             if(packet >> type)
             {
-                std::cout << "type parsed : " << type << std::endl;
                 for(std::vector<PacketDownStream*>::iterator it = _downstreams.begin() ; it != _downstreams.end() ; ++it)
                 {
                     if((*it)->getHeader() == type)
@@ -287,7 +285,6 @@ namespace zf
 
     void ConnectionManager::processServerPacket(sf::Packet& packet)
     {
-        std::cout << "ConnectionManager.cpp : 288 " << std::endl;
         sf::Int32 type;
         packet >> type;
         if(type == InternalMessage)
@@ -304,24 +301,17 @@ namespace zf
             {
                 if(packet >> type)
                 {
-                    std::cout << _downstreams.size() << std::endl;
-                    std::cout << "ConnectionManager.cpp : 305 " << std::endl;
-                    std::cout << type << std::endl;
                     for(std::vector<PacketDownStream*>::iterator it = _downstreams.begin() ; it != _downstreams.end() ; ++it)
                     {
-                        std::cout << (*it) << std::endl;
-                        std::cout << "ConnectionManager.cpp : 308 " << std::endl;
                         if((*it)->getHeader() == type)
                         {
                             (*it)->packetReceivedFromServer(packet); 
                             break;
                         }
-                        std::cout << "ConnectionManager.cpp : 314 " << std::endl;
                     }
                 }
             }
         }
-        std::cout << "ConnectionManager.cpp : 315 " << std::endl;
     }
 
     void ConnectionManager::processClientConnected(Connection* connection)

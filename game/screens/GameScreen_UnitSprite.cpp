@@ -23,7 +23,6 @@ GameScreen::UnitSprite::UnitSprite(Unit& u, sf::Sprite bg, sf::Sprite heart, sf:
     , clickBound(0,0,270,100)
 {
     setActive(false);
-    std::cout << "address  :" << unit << std::endl;
 }
 
 void GameScreen::UnitSprite::setPosition(sf::Vector2f position)
@@ -109,8 +108,6 @@ void GameScreen::UnitSprite::setActive(bool active)
 
 void GameScreen::UnitSprite::updateData()
 {
-    std::cout << "address : " << unit << std::endl;
-    std::cout << unit->currentHp << std::endl;
     currentHpText.setString(zf::toString(unit->currentHp));
     shieldText.setString(zf::toString(unit->shieldCounter));
     stunnedText.setString(zf::toString(unit->shockCounter));

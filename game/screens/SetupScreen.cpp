@@ -297,7 +297,6 @@ void SetupScreen::gameStarts()
 }
 void SetupScreen::joinSuccess(std::string name, std::string role)
 {
-    std::cout << "Setup Screen : Join success" << std::endl;
 }
 void SetupScreen::playerJoined(std::string uniqueId, std::string name, std::string role)
 {
@@ -321,11 +320,9 @@ void SetupScreen::playerSwitchRole(std::string uniqueId, std::string name, std::
     removePlayer(player);
     player.role = newRole;
     updatePlayer(player);
-    std::cout << "role switched" << uniqueId << " " << name << " " << oldRole << " " << newRole << std::endl;
 }
 void SetupScreen::playerLeft(std::string uniqueId, std::string name, std::string role)
 {
-    std::cout << "Setup Screen : Player Left" << std::endl;
 }
 
 void SetupScreen::removePlayer(PlayerObj player)

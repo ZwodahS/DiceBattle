@@ -1,5 +1,5 @@
 #include "DB_NewDiceMessage.hpp"
-
+#include <iostream>
 DB_NewDiceMessage::DB_NewDiceMessage()
     :Message(NewDiceMessage)
 {
@@ -13,6 +13,7 @@ DB_NewDiceMessage::DB_NewDiceMessage(std::vector<Die> d)
 sf::Packet& operator << (sf::Packet& packet, const DB_NewDiceMessage& message)
 {
     sf::Int32 size = message.dice.size();
+    packet << message.type;
     packet << size;
     for(std::vector<Die>::const_iterator it = message.dice.begin() ; it != message.dice.end() ; ++it)
     {
@@ -23,6 +24,7 @@ sf::Packet& operator << (sf::Packet& packet, const DB_NewDiceMessage& message)
 sf::Packet& operator >> (sf::Packet& packet, DB_NewDiceMessage& message)
 {
     sf::Int32 size;
+    packet >> message.type;
     packet >> size;
     for(sf::Int32 i = 0 ; i < size ; i++)
     {

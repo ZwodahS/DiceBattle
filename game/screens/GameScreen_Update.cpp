@@ -339,24 +339,28 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
         if(messages.front()->type == Message::EndTurnMessage)
         {
             endTurnMessage = (DB_EndTurnMessage*)messages.front();
+            std::cout << "end turn message" << std::endl;
             messages.pop();
             break;
         }
         else if(messages.front()->type == Message::DiceRolledResultMessage)
         {
             rolledResultMessage = (DB_DiceRolledResultMessage*)messages.front();
+            std::cout << "dice rolled result message" << std::endl;
             messages.pop();
             break;
         }
         else if(messages.front()->type == Message::EndGameMessage)
         {
             endGameMessage = (DB_EndGameMessage*)messages.front();
+            std::cout << "end game message" << std::endl;
             messages.pop();
             break;
         }
         else if(messages.front()->type == Message::NewDiceMessage)
         {
             newDiceMessage = (DB_NewDiceMessage*)messages.front();
+            std::cout << "new dice message" << std::endl;
             messages.pop();
             break;
         }
@@ -501,6 +505,7 @@ void GameScreen::update_processMessage(DB_EndGameMessage* message)
 
 void GameScreen::update_processMessage(DB_NewDiceMessage* message)
 {
+    std::cout << "processing new dice" << std::endl;
     update_setDice(message->dice);
     _currentState = DiceNotRolled;
 }

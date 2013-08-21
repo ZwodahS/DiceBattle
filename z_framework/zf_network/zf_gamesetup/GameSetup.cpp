@@ -147,7 +147,6 @@ namespace zf
         std::string name;
         if(packet >> name)
         {
-            std::cout << "processing join game" << std::endl;
             Player player;
             player.uniqueId = connection.name;
             player.name = name;
@@ -165,7 +164,6 @@ namespace zf
      */
     void GameSetup::sendJoinMessage()
     {
-        std::cout << "sending join message" << std::endl;
         sf::Packet packet;
         appendHeader(packet);
         packet << AttemptJoinGameMessage << localName;

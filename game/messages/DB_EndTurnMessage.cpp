@@ -1,7 +1,7 @@
 #include "DB_EndTurnMessage.hpp"
 
-DB_EndTurnMessage::DB_EndTurnMessage(sf::Int32 damageTaken)
-    :Message(EndTurnMessage)
+DB_EndTurnMessage::DB_EndTurnMessage(sf::Int32 dt)
+    :Message(EndTurnMessage), damageTaken(dt)
 {
 }
 

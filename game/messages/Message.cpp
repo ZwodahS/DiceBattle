@@ -19,6 +19,7 @@ Message::MessageType Message::toType(sf::Int32 intValue)
         case ActiveTurnMessage : return ActiveTurnMessage;
         case AskForActionMessage : return AskForActionMessage;
         case DiceRolledResultMessage : return DiceRolledResultMessage;
+        case NewDiceMessage : return NewDiceMessage;
         case EndTurnMessage : return EndTurnMessage;
         case EndGameMessage : return EndGameMessage;
         case SendDoneCommand : return SendDoneCommand;

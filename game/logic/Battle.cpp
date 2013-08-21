@@ -94,10 +94,15 @@ void Battle::processServerMessage(Message* message)
         DB_AbilityUsedMessage* m = (DB_AbilityUsedMessage*)message;
         gamelogic_abilityUsed(m->user, m->abilityUsed, m->diceUsed);
     }
+    else if(message->type == Message::NewDiceMessage)
+    {
+        DB_NewDiceMessage* m = (DB_NewDiceMessage*)message;
+        gamelogic_newDice(m->dice);
+    }
     else if(message->type == Message::EndTurnMessage)
     {
         DB_EndTurnMessage* m = (DB_EndTurnMessage*)message;
-        gamelogic_endTurn();
+        gamelogic_endTurn(m->damageTaken);
     }
     else if(message->type == Message::EndGameMessage)
     {

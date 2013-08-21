@@ -64,5 +64,4 @@ void Game::nameVerified(std::string name)
 }
 void Game::clientVerified(zf::Connection* connection)
 {
-    std::cout << "CLient Verified" << std::endl;
 }

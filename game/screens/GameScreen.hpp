@@ -51,7 +51,10 @@ public:
     static const sf::Int32 DiceSize = 48;
     GameScreen(Game& game, Battle& battle, PlayerRole::ePlayerRole role);
     ~GameScreen();
-    
+    /*
+    void screenEnter();
+    void screenExit();
+    */
     void textInput(char c);
     void draw(sf::RenderWindow& window, const sf::Time& delta);
     void update(sf::RenderWindow& window, const sf::Time& delta);

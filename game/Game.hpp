@@ -5,10 +5,12 @@
 #include "logic/Rules.hpp"
 #include "screens/GameScreenViewer.hpp"
 #include "logic/GeneralUpdater.hpp"
+#include "logic/BattlePacketLayer.hpp"
 #include "../z_framework/zf_sfml/Mouse.hpp"
 #include "../z_framework/zf_network/Connection.hpp"
 #include "../z_framework/zf_network/ConnectionManager.hpp"
 #include "../z_framework/zf_network/ConnectionListener.hpp"
+#include "../z_framework/zf_network/zf_gamesetup/GameSetup.hpp"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <iostream>
@@ -60,6 +62,10 @@ class Game : public zf::ConnectionListener
         // this will attempt set up hosting at the port
         // return true if can setup hosting, which will also exit the mainscreen
         bool setupHosting(unsigned short port, std::string name);
+        // start the network game as a host
+        void startNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole);
+        // join the network game as a client
+        void joinNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole role);
         /**
          * Attempt to join the server using the name at an address.
          */
@@ -79,6 +85,7 @@ class Game : public zf::ConnectionListener
 
         // Use game object as the connection manager.
         float _waitingReplyTimeout;
+        BattlePacketLayer _battlePacketLayer;
 };
 
 

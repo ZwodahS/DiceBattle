@@ -3,6 +3,7 @@
 #include "GameUpdater.hpp"
 #include "BattleServer.hpp"
 #include "../../z_framework/zf_common/debugging.hpp"
+#include <iostream>
 Battle::Battle(BattleServer& battleServer)
     :_server(&battleServer), isServer(false), currentPlayer(_currentPlayer), _battleState(PreGame)
 {
@@ -108,6 +109,15 @@ void Battle::processServerMessage(Message* message)
 
 void Battle::processClientMessage(PlayerRole::ePlayerRole actor, Message* message)
 {
+    std::cout << "processing client message" << std::endl;
+    if(actor == currentPlayer)
+    {
+        std::cout << "Message is from current player" << std::endl;
+    }
+    else
+    {
+        std::cout << "Message is not from current player" << std::endl;
+    }
     if(message->type == Message::SendDoneCommand)
     {
         DB_SendDoneCommand* m = (DB_SendDoneCommand*)message;
@@ -135,6 +145,52 @@ void Battle::processClientMessage(PlayerRole::ePlayerRole actor, Message* messag
     delete message;
 }
 
+void Battle::sendClientMessage(PlayerRole::ePlayerRole actor, Message* message)
+{
+    if(message->type == Message::SendDoneCommand)
+    {
+        DB_SendDoneCommand* m = (DB_SendDoneCommand*)message;
+        if(currentPlayer == actor || actor == PlayerRole::Both)
+        {
+            sf::Packet packet;
+            _server->appendHeader(packet);
+            packet << m->type << *m;
+            if(_server != 0)
+            {
+                _server->sendPacketToServer(packet);
+            }
+        }
+    }
+    else if(message->type == Message::SendRollCommand)
+    {
+        DB_SendRollCommand* m = (DB_SendRollCommand*)message;
+        if(currentPlayer == actor || actor == PlayerRole::Both)
+        {
+            sf::Packet packet;
+            _server->appendHeader(packet);
+            packet << m->type << *m;
+            if(_server != 0)
+            {
+                _server->sendPacketToServer(packet);
+            }
+        }
+    }
+    else if(message->type == Message::SendUseAbilityCommand)
+    {
+        DB_SendUseAbilityCommand* m = (DB_SendUseAbilityCommand*)message;
+        if(currentPlayer == actor || actor == PlayerRole::Both)
+        {
+            sf::Packet packet;
+            _server->appendHeader(packet);
+            packet << m->type << *m;
+            if(_server != 0)
+            {
+                _server->sendPacketToServer(packet);
+            }
+        }
+    }
+}
+
 void Battle::update()
 {
     // process the message from the server.
@@ -153,8 +209,17 @@ void Battle::update()
         Message* message = (*it)->popNextMessage();     
         while(message != 0)
         {
-            processClientMessage((*it)->role, message);
-            message = (*it)->popNextMessage();
+            if(isServer)
+            {
+                processClientMessage((*it)->role, message);
+                message = (*it)->popNextMessage();
+            }
+            else
+            {
+                std::cout << "sending to  server !" << std::endl;
+                sendClientMessage((*it)->role, message);
+                message = (*it)->popNextMessage();
+            }
         }
     }
 }

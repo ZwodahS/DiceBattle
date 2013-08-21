@@ -104,8 +104,17 @@ namespace zf
             {
                 processPlayerRoleSwitchedMessage(packet);
             }
+            else if(type == GameStartMessage)
+            {
+                processGameStartMessage(packet);
+            }
         }
     }
+    // remove down stream - do nothing.
+    void GameSetup::removeDownStream(PacketDownStream& downStream)
+    {
+    }
+
     /**
      * Add a listener 
      */
@@ -359,6 +368,22 @@ namespace zf
         }
     }
 
+    void GameSetup::processGameStartMessage(sf::Packet& packet)
+    {
+        listener_startGame();
+    }
+
+    void GameSetup::sendGameStartMessage()
+    {
+        for(std::vector<Player>::iterator it = _connectedPlayers.begin() ; it != _connectedPlayers.end() ; ++it)
+        {
+            sf::Packet packet;
+            appendHeader(packet);
+            packet << GameStartMessage;
+            upstream.sendPacket((*it).uniqueId, packet); 
+        }
+    }
+
 
 ///////////////////////////////////////////////// LISTENS FOR DISCONNECT ////////////////    
     void GameSetup::clientConnected(Connection* connection)
@@ -463,7 +488,14 @@ namespace zf
             (*it)->playerLeft(player.uniqueId, player.name, player.role); 
         }
     }
-
+    
+    void GameSetup::listener_startGame()
+    {
+        for(std::vector<GameSetupListener*>::iterator it = _gameSetupListeners.begin() ; it != _gameSetupListeners.end() ; ++it)
+        {
+            (*it)->gameStarts(); 
+        }
+    }
     ////// Public API ////// 
     bool GameSetup::ready()
     {
@@ -521,6 +553,37 @@ namespace zf
                 listener_roleSet(*player, oldRole);
             }
         }
+    }
+
+    void GameSetup::startGame()
+    {
+        listener_startGame();
+        sendGameStartMessage();
+    }
+
+    std::vector<std::string> GameSetup::getUniqueId(std::string role)
+    {
+        std::vector<std::string> str;
+        for(std::vector<Player>::iterator it = _connectedPlayers.begin() ; it != _connectedPlayers.end() ; ++it)
+        {
+            if((*it).role == role)
+            {
+                str.push_back((*it).uniqueId);
+            }        
+        }
+        return str;
+    }
+
+    std::string GameSetup::getLocalRole()
+    {
+        // should never be 0.
+        Player* player = getPlayer(localName);
+        return player->role;
+    }
+
+    const std::vector<GameSetup::Player>& GameSetup::getPlayers()
+    {
+        return _connectedPlayers;
     }
 }
 

@@ -25,7 +25,7 @@ struct AbilityEffect
 
 sf::Packet& operator << (sf::Packet& packet, const AbilityEffect& message);
 sf::Packet& operator >> (sf::Packet& packet, AbilityEffect& message);
-
+std::ostream& operator << (std::ostream& stream, const AbilityEffect& effect);
 bool operator==(const AbilityEffect& lhs, const AbilityEffect& rhs);
 bool operator!=(const AbilityEffect& lhs, const AbilityEffect& rhs);
 

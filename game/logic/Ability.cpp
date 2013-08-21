@@ -159,3 +159,17 @@ bool operator!=(const Ability& lhs, const Ability& rhs)
 {
     return !(lhs == rhs);
 }
+std::ostream& operator << (std::ostream& stream, const Ability& ability)
+{
+    stream << "Ability Name : " << ability.name << "[" << ability.id << "]" << std::endl;
+    stream << "Ability Effects : " << std::endl;
+    for(std::vector<AbilityEffect>::const_iterator it = ability.effects.begin() ; it != ability.effects.end() ; ++it)
+    {
+         stream << (*it) << std::endl;
+    }
+    for(std::vector<DieFace::eDieFace>::const_iterator it = ability.costs.begin() ; it != ability.costs.end() ; ++it)
+    {
+         stream << *it  << std::endl;
+    }
+    return stream;
+}

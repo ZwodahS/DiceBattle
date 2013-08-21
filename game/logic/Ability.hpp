@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <SFML/Network.hpp>
+#include <iostream>
 /**
  * Stores the abilities that is available in the game.
  */
@@ -37,7 +38,7 @@ public:
 
 sf::Packet& operator << (sf::Packet& packet, const Ability& message);
 sf::Packet& operator >> (sf::Packet& packet, Ability& message);
-
+std::ostream& operator << (std::ostream& stream, const Ability& ability);
 bool operator==(const Ability& lhs, const Ability& rhs);
 bool operator!=(const Ability& lhs, const Ability& rhs);
 

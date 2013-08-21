@@ -62,7 +62,10 @@ private:
      * only allow command type message.
      */
     void processClientMessage(PlayerRole::ePlayerRole actor, Message* message);
-
+    /**
+     * For the case that you are not server, send the msg to server
+     */
+    void sendClientMessage(PlayerRole::ePlayerRole actor, Message* message);
     BattleState _battleState;
     /**
      * If this is not a server, then this will store the server that this battle object 

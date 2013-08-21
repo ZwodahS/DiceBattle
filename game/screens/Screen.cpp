@@ -37,10 +37,10 @@ void Screen::clientVerified(zf::Connection* connection)
 }
 void Screen::screenEnter()
 {
-    screenState = Entering;
+    screenState = Active;
 }
 
 void Screen::screenExit()
 {
-    screenState = Exiting;
+    screenState = Exited;
 }

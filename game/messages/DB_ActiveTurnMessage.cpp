@@ -6,7 +6,7 @@ DB_ActiveTurnMessage::DB_ActiveTurnMessage()
 }
 
 DB_ActiveTurnMessage::DB_ActiveTurnMessage(PlayerRole::ePlayerRole r, sf::Int32 burn, sf::Int32 availableDice, sf::Int32 frozenDice, std::vector<Die> rollable)
-    :Message(ActiveTurnMessage), currentPlayer(r), rollableDice(rollable)
+    :Message(ActiveTurnMessage), currentPlayer(r), rollableDice(rollable), burnDamage(burn), availableDice(availableDice), frozenDice(frozenDice)
 {
 }
 

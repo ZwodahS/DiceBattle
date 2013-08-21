@@ -13,6 +13,8 @@ void Battle::gamelogic_startGame(Rules& rules, const Unit& player1, const Unit& 
 
 void Battle::gamelogic_setActiveTurn(const PlayerRole::ePlayerRole& cp, sf::Int32 burn, sf::Int32 available, sf::Int32 frozen, std::vector<Die> dice)
 {
+    std::cout << _units[0].currentHp << " " << _units[1].currentHp << std::endl;
+    std::cout << burn << " " << available << " " << frozen << " " << std::endl;
     viewer_sendActiveTurnMessages(cp, burn, available, frozen,dice);
     // assign the current player
     _currentPlayer = cp; 
@@ -24,6 +26,7 @@ void Battle::gamelogic_setActiveTurn(const PlayerRole::ePlayerRole& cp, sf::Int3
     _currentDice = dice;
     // set the state to pre roll
     _battleState = PreRoll;
+    std::cout << _units[0].currentHp << " " << _units[1].currentHp << std::endl;
 }
 
 void Battle::gamelogic_setDiceRolled(Die& die)
@@ -84,8 +87,10 @@ void Battle::gamelogic_abilityUsed(const PlayerRole::ePlayerRole& user, const Ab
     gamelogic_removeDice(diceUsed);
     // get the current unit.
     Unit& userUnit = getUnit(user);
+    std::cout << "user hp : " << userUnit.currentHp << std::endl;
     // get the opponent of current unit.
     Unit& opponentUnit = getUnit(PlayerRole::opponentOf(user));
+    std::cout << "opponent hp : " << opponentUnit.currentHp << std::endl;
     // for every ability effects of this ability
     for(std::vector<AbilityEffect>::const_iterator it = abilityUsed.effects.begin() ; it != abilityUsed.effects.end() ; ++it)
     {

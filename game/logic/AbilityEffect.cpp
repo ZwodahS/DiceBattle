@@ -31,3 +31,8 @@ bool operator!=(const AbilityEffect& lhs, const AbilityEffect& rhs)
 {
     return !(lhs == rhs);
 }
+std::ostream& operator << (std::ostream& stream, const AbilityEffect& effect)
+{
+    stream << AbilityType::toString(effect.type) << " " << effect.value;
+    return stream;
+}

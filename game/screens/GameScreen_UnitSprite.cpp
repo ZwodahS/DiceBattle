@@ -1,7 +1,7 @@
 #include "GameScreen.hpp"
 #include "../Game.hpp"
 #include "../../z_framework/zf_common/f_conversion.hpp"
-
+#include <iostream>
 const int UnitSprite_NameX = 10;
 const int UnitSprite_NameY = 0;
 const int UnitSprite_HeartX = 5;
@@ -23,6 +23,7 @@ GameScreen::UnitSprite::UnitSprite(Unit& u, sf::Sprite bg, sf::Sprite heart, sf:
     , clickBound(0,0,270,100)
 {
     setActive(false);
+    std::cout << "address  :" << unit << std::endl;
 }
 
 void GameScreen::UnitSprite::setPosition(sf::Vector2f position)
@@ -108,6 +109,8 @@ void GameScreen::UnitSprite::setActive(bool active)
 
 void GameScreen::UnitSprite::updateData()
 {
+    std::cout << "address : " << unit << std::endl;
+    std::cout << unit->currentHp << std::endl;
     currentHpText.setString(zf::toString(unit->currentHp));
     shieldText.setString(zf::toString(unit->shieldCounter));
     stunnedText.setString(zf::toString(unit->shockCounter));

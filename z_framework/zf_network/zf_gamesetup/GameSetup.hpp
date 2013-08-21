@@ -77,6 +77,7 @@ namespace zf
         virtual bool sendPacket(std::string& name, sf::Packet& packet);
         virtual bool sendPacketToServer(sf::Packet& packet);
         virtual std::string getUniqueId();
+        virtual void removeDownStream(PacketDownStream& downStream);
         std::string localName;
         bool isHosting();
     
@@ -130,6 +131,19 @@ namespace zf
          * This can only be called by the host at the moment.
          */
         void assignRole(std::string uniqueId, std::string role);
+        /**
+         * Inform all client that the game has started.
+         */
+        void startGame();
+        /**
+         * Get the uniqueId of the players that are of a certain role
+         */
+        std::vector<std::string> getUniqueId(std::string role);
+        /**
+         * Get local role
+         */
+        std::string getLocalRole();
+        const std::vector<Player>& getPlayers();
     private:
         std::vector<GameSetupListener*> _gameSetupListeners;
         bool _isHosting;
@@ -143,7 +157,7 @@ namespace zf
         const static sf::Int32 PlayerJoinedMessage = 2002;
         const static sf::Int32 PlayerLeftMessage = 2003;
         const static sf::Int32 PlayerRoleSwitchedMessage = 2004;
-
+        const static sf::Int32 GameStartMessage = 2005;
 
         void processAttemptToJoinGameMessage(sf::Packet& packet, Connection& connection);
         void sendJoinMessage();
@@ -160,6 +174,8 @@ namespace zf
         void sendPlayerRoleSwitchMessage(Player player);
         void processPlayerLeftMessage(sf::Packet& packet);
         void sendPlayerLeftMessage(Player player);
+        void processGameStartMessage(sf::Packet& packet);
+        void sendGameStartMessage();
         std::vector<Player> _connectedPlayers;
 
         
@@ -168,11 +184,11 @@ namespace zf
         void listener_playerJoined(Player player);
         void listener_playerLeft(Player player);
         void listener_roleSet(Player player, std::string oldRole);
+        void listener_startGame();
         /// functions for actual processing.
         void gamesetup_addPlayer(Player player);
         void gamesetup_removePlayer(std::string uniqueId);
         void gamesetup_setRole(std::string uniqueId, std::string role);
-
 
         Player* getPlayer(std::string uniqueId);
     };

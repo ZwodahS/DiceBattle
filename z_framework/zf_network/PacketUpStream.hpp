@@ -26,6 +26,7 @@
 #include <string>
 namespace zf
 {
+    class PacketDownStream;
     class Connection;
     /**
      * Defines an upstream. This allow you to wrap the packet.
@@ -41,6 +42,7 @@ namespace zf
         virtual bool sendPacket(std::string& name, sf::Packet& packet) = 0;
         virtual bool sendPacketToServer(sf::Packet& packet) = 0;
         virtual std::string getUniqueId() = 0;
+        virtual void removeDownStream(PacketDownStream& downStream) = 0;
     };
 }
 #endif

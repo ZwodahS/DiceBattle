@@ -20,6 +20,21 @@ namespace AbilityType
             default : return None;
         }
     }
+    std::string toString(eAbilityType type)
+    {
+        switch(type)
+        {
+            case None : return "None";
+            case PhysicalDamage: return "PhysicalDamage";
+            case MagicalDamage: return "MagicalDamage";
+            case Shield: return "Shield";
+            case Heal: return "Heal";
+            case Burn: return "Burn";
+            case Freeze: return "Freeze";
+            case Shock: return "Shock";
+            default : return "None";
+        }
+    }
 }
 
 sf::Packet& operator << (sf::Packet& packet, const AbilityType::eAbilityType& message)

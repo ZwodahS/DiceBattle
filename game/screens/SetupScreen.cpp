@@ -161,7 +161,10 @@ void SetupScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
     {
         window.draw(*it); 
     }
-    startButton.draw(window, delta);
+    if(setupType == Local || setupType == Host)
+    {
+        startButton.draw(window, delta);
+    }
     window.draw(startText);
 }
 
@@ -208,6 +211,25 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                 }
                 else if(startButton.bound.contains(mousePosF))
                 {
+                    // make sure we are host
+                    if(setupType == Host)
+                    {
+                        std::string r = _gameSetup->getLocalRole();
+                        PlayerRole::ePlayerRole role;
+                        if(r == "1")
+                        {
+                            role = PlayerRole::PlayerOne;
+                        }
+                        else if(r == "2")
+                        {
+                            role = PlayerRole::PlayerTwo;
+                        }
+                        else
+                        {
+                            role = PlayerRole::Observer;
+                        }
+                        _game.startNetworkGame(_gameSetup, role);
+                    }
                 }
             }
         }
@@ -265,7 +287,13 @@ void SetupScreen::updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f p
 
 void SetupScreen::gameStarts()
 {
-    std::cout << "Setup Screen : Game Start" << std::endl;
+    // only start the game if we are the client
+    if(setupType == Remote)
+    {
+        std::string r = _gameSetup->getLocalRole();
+        PlayerRole::ePlayerRole role = r == "1" ? PlayerRole::PlayerOne : r == "2" ? PlayerRole::PlayerTwo : PlayerRole::Observer;
+        _game.joinNetworkGame(_gameSetup, role);
+    }
 }
 void SetupScreen::joinSuccess(std::string name, std::string role)
 {

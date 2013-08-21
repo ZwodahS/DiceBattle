@@ -5,8 +5,12 @@
 #include "screens/Screen.hpp"
 #include "screens/GameScreenViewer.hpp"
 #include "logic/GeneralUpdater.hpp"
+#include "logic/BattleServer.hpp"
 #include "logic/Battle.hpp"
+#include "logic/TcpClient.hpp"
 #include "../z_framework/zf_common/debugging.hpp"
+#include "../z_framework/zf_network/zf_gamesetup/GameSetup.hpp"
+#include "../z_framework/zf_network/Connection.hpp"
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #define CLEAR_COLOR sf::Color(20,20,20,255)
@@ -16,12 +20,13 @@
 Game::Game()
     :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE) 
     , window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _nextScreen(0), _currentBattle(0)
-    , _mainScreen(0), _gameScreen(0), _setupScreen(0)
+    , _mainScreen(0), _gameScreen(0), _setupScreen(0), _battlePacketLayer(connection)
 {
     window.setFramerateLimit(50);
     loadAssets();
     rules.loadFromFile("data/default.rule");
     rules.sortAbilities();
+    connection.addDownStream(_battlePacketLayer);
 }
 
 Game::~Game()
@@ -78,11 +83,15 @@ void Game::run()
         // if not quit , update then draw.
         if(!quit)
         {
-            connection.listen();
-            connection.receive();
             update(delta);
             draw(delta);
+            if(_currentScreen != 0 && _currentScreen->screenState == Screen::Active)
+            {
+                connection.listen();
+                connection.receive();
+            }
         }
+    
     }
 }
 
@@ -173,6 +182,55 @@ void Game::startLocalGame(std::string player1, std::string player2)
     _nextScreen = _gameScreen;
 }
 
+void Game::startNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole role)
+{
+    std::vector<std::string> p1 = setup->getUniqueId("1");
+    std::vector<std::string> p2 = setup->getUniqueId("2");
+    if(p1.size() != 1 || p2.size() != 1)
+    {
+        return;
+    }
+    _currentBattle = new Battle();
+    // add all the client as listener.
+    for(std::vector<zf::GameSetup::Player>::const_iterator it = setup->getPlayers().begin() ; it != setup->getPlayers().end() ; ++it)
+    {
+        zf::Connection* conn = connection.getConnection((*it).uniqueId); 
+        if(conn != 0)
+        {
+            PlayerRole::ePlayerRole role = (*it).role == "1" ? PlayerRole::PlayerOne : (*it).role == "2" ? PlayerRole::PlayerTwo : PlayerRole::Observer;
+            TcpClient& client = _battlePacketLayer.getClient(*conn, role);
+            _currentBattle->addGameViewer(&client.viewer);
+            _currentBattle->addGameUpdater(&client.updater);
+        }
+    }
+    // this will inform all client that game has started and get ready to receive battle message
+    setup->startGame();
+    _gameScreen = new GameScreen(*this, *_currentBattle, role);
+    _currentBattle->startGame(rules, p1[0], p2[0]);
+    _currentScreen->screenExit();
+    _nextScreen = _gameScreen;
+}
+
+void Game::joinNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole role)
+{
+    if(_currentBattle == 0)
+    {
+        // create the server
+        BattleServer* server = new BattleServer(_battlePacketLayer);
+        _battlePacketLayer.setBattleServer(server);
+        // create the current battle using the server
+        _currentBattle = new Battle(*server);
+        // create the game screen and exit
+        _gameScreen = new GameScreen(*this, *_currentBattle, role);
+        _currentScreen->screenExit();
+        _nextScreen = _gameScreen;
+    }
+    else
+    {
+        std::cout << "WEIRD THING HAPPENS" << std::endl;
+    }
+}
+
 bool Game::setupHosting(unsigned short port, std::string name)
 {
     bool success = connection.startServer(port);
@@ -181,7 +239,7 @@ bool Game::setupHosting(unsigned short port, std::string name)
         connection.verifiedName = name;
         zf::GameSetup* gs = new zf::GameSetup(connection.verifiedName, connection, GAMESETUP_HEADER, true);
         _setupScreen = new SetupScreen(*this, SetupScreen::Host, gs);
-        connection.addDownStream(gs);
+        connection.addDownStream(*gs);
         _nextScreen = _setupScreen;
         _currentScreen->screenExit();
         gs->ready();

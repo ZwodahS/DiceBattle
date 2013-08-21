@@ -55,8 +55,8 @@ void Game::nameVerified(std::string name)
     if(_mainScreen != 0)
     {
         zf::GameSetup* gs = new zf::GameSetup(connection.verifiedName, connection, GAMESETUP_HEADER, false);
-        _setupScreen = new SetupScreen(*this, SetupScreen::Host, gs);
-        connection.addDownStream(gs);
+        _setupScreen = new SetupScreen(*this, SetupScreen::Remote, gs);
+        connection.addDownStream(*gs);
         _nextScreen = _setupScreen;
         _currentScreen->screenExit();
         gs->joinServer();

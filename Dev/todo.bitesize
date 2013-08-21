@@ -1,3 +1,5 @@
+Current:
+    $ make remote client send to server instead of local processing.
 ToDo:
     $ 2 Big button for roll and done
     $ Space out the dice.
@@ -36,4 +38,4 @@ Framework:
         + Probably need to add a "connected" bool to the connection so that when the client is disconnected,
         + I just disconnects it by setting the bool value.
         + I also need to make the client list remove all disconnected clients afterward.
-    $ GameSetup : need to send the current state of the setup to a client when it first connected.
+    $ GameSetup : Remove the name attributes and use uniqueId instead.

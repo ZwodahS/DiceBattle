@@ -1,7 +1,8 @@
 #include "BattleServer.hpp"
-
-BattleServer::BattleServer()
-    :connected(false)
+#include "BattlePacketLayer.hpp"
+#include <iostream>
+BattleServer::BattleServer(BattlePacketLayer& parent)
+    :connected(false), _parent(parent)
 {
 }
 
@@ -15,15 +16,15 @@ Message* BattleServer::popNextMessage()
     {
         return 0;
     }
-
     Message* m = messages.front();
     messages.pop();
     return m;
 
 }
 
-void BattleServer::forwardPacket(sf::Packet& packet)
+void BattleServer::packetReceivedFromServer(sf::Packet& packet)
 {
+    std::cout << "BattleServer.cpp : 35 " << std::endl;
     sf::Int32 typeIntValue;
     packet >> typeIntValue;
     Message::MessageType t = Message::toType(typeIntValue);
@@ -93,4 +94,14 @@ void BattleServer::forwardPacket(sf::Packet& packet)
         packet >> *message;
         messages.push(message);
     }
+}
+
+void BattleServer::sendPacketToServer(sf::Packet& packet)
+{
+    _parent.sendPacketToServer(packet);
+}
+
+void BattleServer::appendHeader(sf::Packet& packet)
+{
+    _parent.appendHeader(packet);
 }

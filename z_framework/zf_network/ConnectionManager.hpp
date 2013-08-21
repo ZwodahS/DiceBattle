@@ -87,8 +87,8 @@ namespace zf
         std::string verifiedName;
 
 
-        void addDownStream(PacketDownStream* downStream);
-        void removeDownStream(PacketDownStream* downStream);
+        void addDownStream(PacketDownStream& downStream);
+        void removeDownStream(PacketDownStream& downStream);
     private:
         
         /**

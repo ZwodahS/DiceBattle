@@ -202,7 +202,7 @@ bool Battle::gamelogic_receivedDoneCommand()
         return false;
     }
     gamelogic_endTurn();
-    if(gamelogic_checkGameEnd())
+    if(!gamelogic_checkGameEnd())
     {
         gamelogic_newTurn(PlayerRole::opponentOf(_currentPlayer));
     }

@@ -38,10 +38,26 @@ namespace zf
          * Append the header information to the packet.
          */
         virtual void appendHeader(sf::Packet& packet) = 0;
+        /**
+         * Get the connection with this name.
+         * return 0 if the name don't exist.
+         */
         virtual Connection* getConnection(std::string name) = 0;
+        /**
+         * send the packet to the connection with the name
+         */
         virtual bool sendPacket(std::string& name, sf::Packet& packet) = 0;
+        /**
+         * send the packet to the server.
+         */
         virtual bool sendPacketToServer(sf::Packet& packet) = 0;
+        /**
+         * get the uniqueId representing the local connection manager.
+         */
         virtual std::string getUniqueId() = 0;
+        /**
+         * method to remove the down stream. 
+         */
         virtual void removeDownStream(PacketDownStream& downStream) = 0;
     };
 }

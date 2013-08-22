@@ -20,13 +20,11 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. 
  */
-
 #ifndef _ZF_COMMON_DIRECTION_H_
 #define _ZF_COMMON_DIRECTION_H_
 #endif
-
 /*
- *  This is just a simple enum used by many code in the framework
+ * This is just a simple enum used by many code in the framework
  */
 namespace zf
 {

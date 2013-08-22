@@ -23,14 +23,13 @@
 #ifndef _ZF_NETWORK_CONNECTION_H_
 #define _ZF_NETWORK_CONNECTION_H_
 #include <SFML/Network.hpp>
-/**
- * Defines a single connection that is connected to this server.
- * It stores a unique identifier to identifier this connection.
- * The unique identifier can be used as a username.
- *
- */
 namespace zf
 {
+    /**
+     * Defines a single connection that is connected to this server.
+     * It stores a unique identifier to identifier this connection.
+     * The unique identifier can be used as a username.
+     */
     class Connection
     {
     public:
@@ -39,18 +38,26 @@ namespace zf
          */
         Connection(bool managed = true);
         ~Connection();
+        /**
+         * The name of this connection
+         */
         std::string name;
+        /**
+         * bool representing if this connection is verified.
+         */
         bool verified;
+        /**
+         * The socket that this connection is connected by.
+         */
         sf::TcpSocket* socket;
-        
-
+        /**
+         * Send the packet to this socket.
+         */
         sf::Socket::Status sendPacket(sf::Packet& packet);
     private:
         // prevent copy and assign
         Connection(const Connection& conn);
         Connection& operator=(const Connection& conn);
-        
-            
         bool _managed;
     };
 }

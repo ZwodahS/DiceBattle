@@ -33,7 +33,6 @@ struct Grid
     Grid();
     Grid(int row, int col);
     ~Grid();
-
     /* 
      * Converts a position value to a grid value.
      * The float value is cast to the int value using floor.

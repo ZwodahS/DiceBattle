@@ -47,8 +47,6 @@ namespace zf
         value = temp;
         return true;
     }
-
-
     std::string toString(int i)
     {
         std::stringstream sstr;

@@ -28,15 +28,15 @@ namespace zf
 {
     class Input
     {
-        public:
-            static void processKey(InputState &inputState, bool newState)
-            {
-                inputState.lastDown = inputState.thisDown;
-                inputState.thisDown = newState;
-                inputState.thisPressed = inputState.thisDown && !(inputState.lastDown);
-                inputState.thisHeld = inputState.thisDown && inputState.lastDown;
-                inputState.thisReleased = !inputState.thisDown && inputState.lastDown;
-            }
+    public:
+        static void processKey(InputState &inputState, bool newState)
+        {
+            inputState.lastDown = inputState.thisDown;
+            inputState.thisDown = newState;
+            inputState.thisPressed = inputState.thisDown && !(inputState.lastDown);
+            inputState.thisHeld = inputState.thisDown && inputState.lastDown;
+            inputState.thisReleased = !inputState.thisDown && inputState.lastDown;
+        }
     };
 }
 #endif

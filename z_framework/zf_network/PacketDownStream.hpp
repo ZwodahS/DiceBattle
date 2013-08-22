@@ -41,6 +41,9 @@ namespace zf
          * Packet is received from this connection.
          */
         virtual void packetReceived(sf::Packet& packet, Connection& connection) = 0;
+        /**
+         * Packet is received from server.
+         */
         virtual void packetReceivedFromServer(sf::Packet& packet) = 0;
     protected:
     };

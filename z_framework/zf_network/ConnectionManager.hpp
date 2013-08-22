@@ -135,7 +135,7 @@ namespace zf
          */
         bool _verified;
 
-
+        ////////////////////////// Internal message ///////////////////////////
         void processUnverifiedPacket(sf::Packet& packet, Connection* connection);
         void processVerifiedPacket(sf::Packet& packet, Connection* connection);
         void processServerPacket(sf::Packet& packet);
@@ -147,7 +147,6 @@ namespace zf
         void processServerConnected();
         void processServerDisconnected();
 
-        //
         void processInternalMessage(sf::Packet& packet, Connection* connection);
         void processServerInternalMessage(sf::Packet& packet);
 

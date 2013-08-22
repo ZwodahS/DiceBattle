@@ -26,6 +26,9 @@
 namespace zf
 {
     class Connection;
+    /**
+     * Connection Listener define the interface to listen to changes in connection
+     */
     class ConnectionListener
     {
     public:

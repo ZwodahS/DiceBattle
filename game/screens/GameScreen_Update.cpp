@@ -501,6 +501,7 @@ void GameScreen::update_processMessage(DB_EndTurnMessage* message)
 
 void GameScreen::update_processMessage(DB_EndGameMessage* message)
 {
+    std::cout << "end game message" << std::endl;
 }
 
 void GameScreen::update_processMessage(DB_NewDiceMessage* message)

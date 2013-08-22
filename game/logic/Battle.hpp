@@ -138,6 +138,8 @@ private:
      * End the game.
      */
     void gamelogic_endGame(PlayerRole::ePlayerRole winner);
+    
+    bool gamelogic_checkGameEnd();
 
     //// The following are for receiving commands from gameupdater ////
 

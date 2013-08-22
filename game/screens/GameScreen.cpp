@@ -64,13 +64,16 @@ void GameScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
     {
         (*it).draw(window,delta); 
     }
-    if(_currentState == AbilityUsed)
+    if(_role == PlayerRole::Both || _role == _battle.currentPlayer)
     {
-        doneButton.draw(window, delta);
-    }
-    if(_currentState == AbilityUsed || _currentState == DiceNotRolled)
-    {
-        rollButton.draw(window,delta);
+        if(_currentState == AbilityUsed)
+        {
+            doneButton.draw(window, delta);
+        }
+        if(_currentState == AbilityUsed || _currentState == DiceNotRolled)
+        {
+            rollButton.draw(window,delta);
+        }
     }
 }
 

@@ -25,7 +25,7 @@ void Die::setCurrentFace(sf::Int32 faceIndex)
 
 void Die::roll()
 {
-    if(!frozen)
+    if(!frozen || !rolled)
     {
         sf::Int32 r = rand() % faces.size(); 
         currentFaceId = r;

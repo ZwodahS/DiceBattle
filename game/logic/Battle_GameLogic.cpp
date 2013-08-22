@@ -202,7 +202,10 @@ bool Battle::gamelogic_receivedDoneCommand()
         return false;
     }
     gamelogic_endTurn();
-    gamelogic_newTurn(PlayerRole::opponentOf(_currentPlayer));
+    if(gamelogic_checkGameEnd())
+    {
+        gamelogic_newTurn(PlayerRole::opponentOf(_currentPlayer));
+    }
     return true;
 }
 
@@ -215,17 +218,30 @@ bool Battle::gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId)
     {
         return false;
     }
-    const std::vector<Die> ruleDice = rules.getDice();
+  
     std::vector<Die> dice;
     // get all the dice from the rules for all these id.
     for(sf::Int32 i = 0 ; i < diceId.size(); i++)
     {
-        // make sure that the dice id is within the rules.
-        if(diceId[i] < 0 || diceId[i] >= ruleDice.size())
+        bool found = false;
+        //find the current dice
+        for(std::vector<Die>::iterator it = _currentDice.begin() ; it != _currentDice.end() ; ++it)
+        {
+            if(diceId[i] == (*it).id)
+            {
+                if((*it).frozen && (*it).rolled)
+                {
+                    return false;
+                }
+                dice.push_back(*it);
+                found = true;
+                break;
+            }
+        }
+        if(!found)
         {
             return false;
         }
-        dice.push_back(ruleDice[diceId[i]]);
     }
     // roll all the dice
     for(std::vector<Die>::iterator it = dice.begin() ; it != dice.end() ; ++it)
@@ -247,7 +263,12 @@ bool Battle::gamelogic_receivedRollCommand(const std::vector<sf::Int32>& diceId)
     {
         Unit& unit = getUnit(_currentPlayer);
         gamelogic_endTurn(unit.getNoMoveDamage());
-        gamelogic_newTurn(PlayerRole::opponentOf(_currentPlayer));
+        if(!gamelogic_checkGameEnd())
+        {
+            gamelogic_newTurn(PlayerRole::opponentOf(_currentPlayer));
+            // new turn also may have end game due to burn damage
+            gamelogic_checkGameEnd();
+        }
     }
     return true;
 }
@@ -286,13 +307,8 @@ bool Battle::gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, con
     }
     gamelogic_abilityUsed(_currentPlayer, abilityUsed,diceUsed);
     // check if the game ends 
-    if(_units[PlayerRole::PlayerOne].currentHp <= 0)
+    if(gamelogic_checkGameEnd())
     {
-        gamelogic_endGame(PlayerRole::PlayerTwo);        
-    }
-    else if(_units[PlayerRole::PlayerTwo].currentHp <= 0)
-    {
-        gamelogic_endGame(PlayerRole::PlayerOne);
     }
     else
     {
@@ -304,4 +320,19 @@ bool Battle::gamelogic_receivedUseAbilityCommand(const Ability& abilityUsed, con
         }
     }
     return true;
+}
+
+bool Battle::gamelogic_checkGameEnd()
+{
+    if(_units[PlayerRole::PlayerOne].currentHp <= 0)
+    {
+        gamelogic_endGame(PlayerRole::PlayerTwo);
+        return true;
+    }
+    else if(_units[PlayerRole::PlayerTwo].currentHp <= 0)
+    {
+        gamelogic_endGame(PlayerRole::PlayerOne);
+        return true;
+    }
+    return false;
 }

@@ -205,6 +205,7 @@ bool Battle::gamelogic_receivedDoneCommand()
     if(!gamelogic_checkGameEnd())
     {
         gamelogic_newTurn(PlayerRole::opponentOf(_currentPlayer));
+        gamelogic_checkGameEnd();
     }
     return true;
 }

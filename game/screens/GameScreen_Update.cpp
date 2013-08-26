@@ -184,13 +184,25 @@ void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& 
         }
     }
     DB_DiceRolledResultMessage* message = 0;
-    removeMessageUntilType(Message::DiceRolledResultMessage);
-    if(messages.size() != 0)
+    DB_EndGameMessage* endGameMessage = 0;
+    while(messages.size() != 0)
     {
-        message = (DB_DiceRolledResultMessage*)messages.front();
-        messages.pop();
-        update_processMessage(message);
-        delete message;
+        if(messages.front()->type == Message::DiceRolledResultMessage)
+        {
+            message = (DB_DiceRolledResultMessage*)messages.front();
+            messages.pop();
+            update_processMessage(message);
+            delete message;
+            break;
+        }
+        else if(messages.front()->type == Message::EndGameMessage)
+        {
+            endGameMessage = (DB_EndGameMessage*)messages.front();
+            messages.pop();
+            update_processMessage(endGameMessage);
+            delete message;
+            break;
+        }
     }
 }
 
@@ -285,8 +297,10 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
             else if(messages.front()->type == Message::EndTurnMessage)
             {
                 endTurnMessage = (DB_EndTurnMessage*)messages.front();
+                messages.pop();
                 update_processMessage(endTurnMessage);
                 updateUnits();
+                delete endTurnMessage;
                 break;
             }
             else
@@ -458,6 +472,7 @@ void GameScreen::update_gameEnding(sf::RenderWindow& window, const sf::Time& del
     if(_game.isFocused && mouse.left.thisDown && backToSetupButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
     {
         _game.backToSetup(_gameType, _role);
+        _currentState = GameEnd;
     }
     // if presss, then switch to game end state and call the game to exit this screen
 }
@@ -520,6 +535,11 @@ void GameScreen::update_processMessage(DB_EndTurnMessage* message)
 void GameScreen::update_processMessage(DB_EndGameMessage* message)
 {
     _currentState = GameEnding;
+    std::string outString;
+    outString = _battle.getUnit(message->winner).name;
+    outString += " won";
+    resultText.setString(outString);
+    resultText.setPosition(ResultTextPosition - sf::Vector2f(resultText.getGlobalBounds().width / 2, 0));
 }
 
 void GameScreen::update_processMessage(DB_NewDiceMessage* message)

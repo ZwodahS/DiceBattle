@@ -1,6 +1,7 @@
 #ifndef _GAME_SCREENS_SETUPSCREEN_H_
 #define _GAME_SCREENS_SETUPSCREEN_H_
 #include "Screen.hpp"
+#include "../constants/GameType.hpp"
 #include "../../z_framework/zf_sfml/SpriteGroup.hpp"
 #include "../../z_framework/zf_network/zf_gamesetup/GameSetup.hpp"
 #include "../../z_framework/zf_network/zf_gamesetup/GameSetupListener.hpp"
@@ -33,17 +34,11 @@ public:
         Name1,
         Name2,
     };
-    enum SetupType
-    {
-        Local,
-        Host,
-        Remote,
-    };
     /**
      * if the setuptype is local then set is not required.
      * This is probably extremely hackish. ....
      */
-    SetupScreen(Game& game, SetupType st, zf::GameSetup* setup = 0);
+    SetupScreen(Game& game, GameType::eGameType st, zf::GameSetup* setup = 0);
     ~SetupScreen();
 
     void draw(sf::RenderWindow& window, const sf::Time& delta);
@@ -68,7 +63,7 @@ private:
         std::string role;
     };
     zf::GameSetup* _gameSetup;
-    SetupType setupType;
+    GameType::eGameType setupType;
 
     zf::SpriteGroup nameBorder1;
     zf::SpriteGroup nameBorder2;

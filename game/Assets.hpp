@@ -52,8 +52,6 @@ struct SetupScreenAssets
     TextureRegion nameBox;
     TextureRegion ipAddrBox;
     TextureRegion typeSelectionBox;
-    TextureRegion joinButton;
-    TextureRegion hostButton;
     TextureRegion startButton;
 };
 
@@ -69,6 +67,9 @@ struct GameScreenAssets
     TextureRegion rollButtonSelected;
     TextureRegion doneButton;
     TextureRegion doneButtonSelected;
+    TextureRegion resultDialogBox;
+    TextureRegion backToSetupButton;
+    TextureRegion backToSetupButtonSelected;
     sf::Font abilityFont;
     SpriteSheet spriteSheet;
 };

@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "constants/GameType.hpp"
 #include "screens/SetupScreen.hpp"
 #include "screens/GameScreen.hpp"
 #include "screens/MainScreen.hpp"
@@ -20,7 +21,7 @@
 Game::Game()
     :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE) 
     , window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _nextScreen(0), _currentBattle(0)
-    , _mainScreen(0), _gameScreen(0), _setupScreen(0), _battlePacketLayer(connection)
+    , _mainScreen(0), _gameScreen(0), _setupScreen(0), _battlePacketLayer(connection), _gameSetup(0)
 {
     window.setFramerateLimit(50);
     loadAssets();
@@ -109,15 +110,11 @@ void Game::update(sf::Time& delta)
             }
         }
     }
-    if(_currentBattle != 0)
-    {
-        _currentBattle->update();
-    }
     if(_currentScreen != 0)
     {
         _currentScreen->update(window, delta);
     }
-    if(_currentScreen->screenState == Screen::Exited)
+    if(_currentScreen != 0 && _currentScreen->screenState == Screen::Exited)
     {
         if(_currentScreen == _mainScreen)
         {
@@ -126,6 +123,12 @@ void Game::update(sf::Time& delta)
         }
         else if(_currentScreen == _gameScreen)
         {
+            // clean up the battle server
+            _battlePacketLayer.resetLayer();
+            // clean the battle obj
+            delete _currentBattle;
+            _currentBattle = 0;
+            // go back to the correct setup
             delete _gameScreen;
             _gameScreen = 0;
         }
@@ -133,10 +136,18 @@ void Game::update(sf::Time& delta)
         {
             delete _setupScreen;
             _setupScreen = 0;
+            // clear up gamesetup as well.
+            connection.removeDownStream(*_gameSetup);
+            delete _gameSetup;
+            _gameSetup = 0;
         }
         _currentScreen = _nextScreen;
         _nextScreen = 0;
         _currentScreen->screenEnter();
+    }
+    if(_currentBattle != 0)
+    {
+        _currentBattle->update();
     }
 }
 
@@ -168,15 +179,26 @@ void Game::setupLocalGame()
     {
         delete _setupScreen;
     }
-    _setupScreen = new SetupScreen(*this, SetupScreen::Local);
+    _setupScreen = new SetupScreen(*this, GameType::Local);
     _currentScreen->screenExit();
     _nextScreen = _setupScreen;
 }
 
 void Game::startLocalGame(std::string player1, std::string player2)
 {
+    // make sure we are in the setup screen
+    if(_currentScreen != _setupScreen)
+    {
+        return;
+    }
+    // free the previous battle if any
+    if(_currentBattle != 0)
+    {
+        delete _currentBattle;
+        _currentBattle = 0;
+    }
     _currentBattle = new Battle();
-    _gameScreen = new GameScreen(*this, *_currentBattle, PlayerRole::Both);
+    _gameScreen = new GameScreen(*this, *_currentBattle, PlayerRole::Both, GameType::Local);
     _currentBattle->startGame(rules,player1,player2);
     _currentScreen->screenExit();
     _nextScreen = _gameScreen;
@@ -184,6 +206,17 @@ void Game::startLocalGame(std::string player1, std::string player2)
 
 void Game::startNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole role)
 {
+    // make sure we are in the setup screen
+    if(_currentScreen != _setupScreen)
+    {
+        return;
+    }
+    // free the previous battle if any
+    if(_currentBattle != 0)
+    {
+        delete _currentBattle;
+        _currentBattle = 0;
+    }
     std::vector<std::string> p1 = setup->getUniqueId("1");
     std::vector<std::string> p2 = setup->getUniqueId("2");
     if(p1.size() != 1 || p2.size() != 1)
@@ -205,7 +238,7 @@ void Game::startNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole role)
     }
     // this will inform all client that game has started and get ready to receive battle message
     setup->startGame();
-    _gameScreen = new GameScreen(*this, *_currentBattle, role);
+    _gameScreen = new GameScreen(*this, *_currentBattle, role, GameType::Host);
     _currentBattle->startGame(rules, p1[0], p2[0]);
     _currentScreen->screenExit();
     _nextScreen = _gameScreen;
@@ -213,21 +246,26 @@ void Game::startNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole role)
 
 void Game::joinNetworkGame(zf::GameSetup* setup, PlayerRole::ePlayerRole role)
 {
-    if(_currentBattle == 0)
+    // make sure we are in the setup screen
+    if(_currentScreen != _setupScreen)
     {
-        // create the server
-        BattleServer* server = new BattleServer(_battlePacketLayer);
-        _battlePacketLayer.setBattleServer(server);
-        // create the current battle using the server
-        _currentBattle = new Battle(*server);
-        // create the game screen and exit
-        _gameScreen = new GameScreen(*this, *_currentBattle, role);
-        _currentScreen->screenExit();
-        _nextScreen = _gameScreen;
+        return;
     }
-    else
+    // free the previous battle if any
+    if(_currentBattle != 0)
     {
+        delete _currentBattle;
+        _currentBattle = 0;
     }
+    // create the server
+    BattleServer* server = new BattleServer(_battlePacketLayer);
+    _battlePacketLayer.setBattleServer(server);
+    // create the current battle using the server
+    _currentBattle = new Battle(*server);
+    // create the game screen and exit
+    _gameScreen = new GameScreen(*this, *_currentBattle, role, GameType::Remote);
+    _currentScreen->screenExit();
+    _nextScreen = _gameScreen;
 }
 
 bool Game::setupHosting(unsigned short port, std::string name)
@@ -236,13 +274,12 @@ bool Game::setupHosting(unsigned short port, std::string name)
     if(success)
     {
         connection.verifiedName = name;
-        zf::GameSetup* gs = new zf::GameSetup(connection.verifiedName, connection, GAMESETUP_HEADER, true);
-        _setupScreen = new SetupScreen(*this, SetupScreen::Host, gs);
-        connection.addDownStream(*gs);
+        _gameSetup = getNewGameSetup(true);
+        _setupScreen = new SetupScreen(*this, GameType::Host, _gameSetup);
         _nextScreen = _setupScreen;
         _currentScreen->screenExit();
-        gs->ready();
-        gs->setRole("1");
+        _gameSetup->ready();
+        _gameSetup->setRole("1");
     }
     return success;
 }
@@ -270,4 +307,60 @@ bool Game::setupJoin(std::string name, std::string ipAddr, unsigned short port)
     }
 }
 
+/*
+ * This is hacked in at the last minute. Probably extremely hackish
+ */
+void Game::backToSetup(GameType::eGameType gameType, PlayerRole::ePlayerRole myRole)
+{
+    if(_gameScreen == 0 || _gameScreen != _currentScreen || _currentScreen->screenState != Screen::Active)
+    {
+        return;
+    }
+    else
+    {
+        if(gameType == GameType::Local)
+        {
+            _setupScreen = new SetupScreen(*this, GameType::Local);
+            _currentScreen->screenExit();
+            _nextScreen = _setupScreen;
+        }
+        else if(gameType == GameType::Host)
+        {
+            // make sure we are still hosting
+            if(connection.isHosting())
+            {
+                _gameSetup = getNewGameSetup(true);
+                _setupScreen = new SetupScreen(*this, GameType::Host, _gameSetup);
+                _nextScreen = _setupScreen;
+                _currentScreen->screenExit();
+                _gameSetup->ready();
+                _gameSetup->setRole("1");
+            }
+        }
+        else if(gameType == GameType::Remote)
+        {
+            // make sure we are still connected
+            if(connection.isConnected())
+            {
+                _gameSetup = getNewGameSetup(false);
+                _setupScreen = new SetupScreen(*this, GameType::Remote, _gameSetup);
+                _nextScreen = _setupScreen;
+                _currentScreen->screenExit();
+                _gameSetup->joinServer();
+            }
+        }
+    }    
+}
 
+zf::GameSetup* Game::getNewGameSetup(bool isHosting)
+{
+    if(_gameSetup != 0)
+    {
+        connection.removeDownStream(*_gameSetup);
+        delete _gameSetup;
+        _gameSetup = 0;
+    }
+    _gameSetup = new zf::GameSetup(connection.verifiedName, connection, GAMESETUP_HEADER, isHosting);
+    connection.addDownStream(*_gameSetup);
+    return _gameSetup;
+}

@@ -1,6 +1,6 @@
 " This file stores the rules for the game/server.
 " This value stores the hp of the player.
-100
+50
 " The following is the dice information.
 " Each number corresponds to the face that is in that die.
 " Each die must have 6 face, and must have 6 dice
@@ -58,22 +58,22 @@ Sword attack (6)
 1 36
 Defence Up (1)
 1
-3 3
+3 2
 Defence Up (2)
 1 1
-3 6
+3 4
 Defence Up (3)
 1 1 1
-3 9
+3 6
 Defence Up (4)
 1 1 1 1
-3 12
+3 8
 Defence Up (5)
 1 1 1 1 1
-3 15
+3 10
 Defence Up (6)
 1 1 1 1 1 1
-3 18
+3 12
 Heal lvl.1
 2 2 2
 4 10
@@ -122,3 +122,6 @@ Stun lvl.3
 Stun lvl.4
 5 5 5 5 5 5
 7 4
+Elemental Blast
+3 3 4 4 5 5
+5 1 6 1 7 1 2 5

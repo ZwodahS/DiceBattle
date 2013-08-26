@@ -40,6 +40,7 @@ public:
     TcpClient& getClient(zf::Connection& connection, PlayerRole::ePlayerRole r);
     void removeClient(zf::Connection& connection);
     void setBattleServer(BattleServer* battleServer);
+    void resetLayer();
     BattlePacketLayer(zf::PacketUpStream& upstream);
 private:
     std::vector<TcpClient*> _viewers;

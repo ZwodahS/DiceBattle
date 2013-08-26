@@ -17,20 +17,29 @@ const int GameScreen::UnitPositionY[] = {5, 5};
 
 const sf::FloatRect GameScreen::RollButtonSize = sf::FloatRect(0,0,200,200);
 const sf::FloatRect GameScreen::DoneButtonSize = sf::FloatRect(0,0,200,200);
+const sf::FloatRect GameScreen::BackToSetupButtonSize = sf::FloatRect(0,0,200,200);
 
 const sf::Vector2f GameScreen::RollButtonPosition = sf::Vector2f(135,150);
 const sf::Vector2f GameScreen::DoneButtonPosition = sf::Vector2f(405,150);
+const sf::Vector2f GameScreen::BackToSetupButtonPosition = sf::Vector2f(270,250);
+const sf::Vector2f GameScreen::ResultDialogPosition = sf::Vector2f(120,200);
+const sf::Vector2f GameScreen::ResultTextPosition = sf::Vector2f(320, 210);
 
 const sf::Vector2f GameScreen::AbilityMoveSpeed = sf::Vector2f(0,1200);
 const float GameScreen::FadeSpeed = 400;
-GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r)
+GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r, GameType::eGameType gt)
     :Screen(game), _battle(b), _role(r), _currentState(Empty), _currentPlayer(PlayerRole::PlayerOne)
     ,rollButton(game.assets.gameScreenAssets.rollButtonSelected.createSprite(), game.assets.gameScreenAssets.rollButton.createSprite(), RollButtonSize)
     ,doneButton(game.assets.gameScreenAssets.doneButtonSelected.createSprite(), game.assets.gameScreenAssets.doneButton.createSprite(), DoneButtonSize)
-    ,_updater(r), _viewer(r, *this)
+    ,backToSetupButton(game.assets.gameScreenAssets.backToSetupButtonSelected.createSprite(), game.assets.gameScreenAssets.backToSetupButton.createSprite(), BackToSetupButtonSize)
+    ,_updater(r), _viewer(r, *this), resultText("Player1 Wins", game.assets.gameScreenAssets.abilityFont, 24), _gameType(gt)
 {
     rollButton.setPosition(RollButtonPosition);
     doneButton.setPosition(DoneButtonPosition);
+    backToSetupButton.setPosition(BackToSetupButtonPosition);
+    resultText.setPosition(ResultTextPosition);
+    resultDialog = game.assets.gameScreenAssets.resultDialogBox.createSprite();
+    resultDialog.setPosition(ResultDialogPosition);
     _battle.addGameViewer(&_viewer);
     _battle.addGameUpdater(&_updater);
 }
@@ -74,6 +83,12 @@ void GameScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
         {
             rollButton.draw(window,delta);
         }
+    }
+    if(_currentState == GameEnding)
+    {
+        window.draw(resultDialog);
+        window.draw(resultText);
+        backToSetupButton.draw(window, delta);
     }
 }
 
@@ -379,3 +394,30 @@ void GameScreen::updateUnits()
     _units[PlayerRole::PlayerTwo].updateData();
 }
 
+void GameScreen::freeBattle()
+{
+    // do nothing at the moment, just make sure we don't access it after that.
+}
+
+void GameScreen::screenEnter()
+{
+    screenState = Active;
+}
+
+void GameScreen::screenExit()
+{
+    exitTimer = 2;
+    screenState = Exiting;
+    _animator.moveReferenceTo(_units[0], sf::Vector2f(UnitPositionX[0], UnitPositionY[0]) + sf::Vector2f(0,-200), 1);
+    _animator.moveReferenceTo(_units[1], sf::Vector2f(UnitPositionX[1], UnitPositionY[1]) + sf::Vector2f(0,-200), 1);
+    // if there are dice, get them out too
+    for(int i = 0 ; i < _diceSprites.size() ; i++)
+    {
+        _animator.moveReference(_diceSprites[i], sf::Vector2f(0, 800), 1);
+    }    
+    for(int i = 0 ; i < _abilitySprites.size() ; i++)
+    {
+        _abilitySprites[i].finalPosition = sf::Vector2f(Ability_X, AbilityOffScreen_Y[i]);
+        _abilitySprites[i].fade = true;
+    }
+}

@@ -30,6 +30,18 @@ namespace PlayerRole
             default : return None;
         }
     }
+    std::string toString(ePlayerRole player)
+    {
+        switch(player)
+        {
+            case PlayerOne : return "Player One";
+            case PlayerTwo : return "Player Two";
+            case Observer : return "Observer";
+            case Both : return "Both";
+            case None :
+            default : return "None";
+        }
+    }
 }
 
 sf::Packet& operator << (sf::Packet& packet, const PlayerRole::ePlayerRole& message)

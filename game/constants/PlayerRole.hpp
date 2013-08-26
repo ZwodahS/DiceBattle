@@ -1,6 +1,7 @@
 #ifndef _GAME_CONSTANTS_PLAYERROLE
 #define _GAME_CONSTANTS_PLAYERROLE
 #include <SFML/Network.hpp>
+#include <string>
 namespace PlayerRole
 {
     /**
@@ -24,6 +25,7 @@ namespace PlayerRole
     ePlayerRole toPlayerRole(sf::Int32);
     ePlayerRole randomPlayer();
     ePlayerRole opponentOf(ePlayerRole player);
+    std::string toString(ePlayerRole player);
 }
 
 sf::Packet& operator << (sf::Packet& packet, const PlayerRole::ePlayerRole& message);

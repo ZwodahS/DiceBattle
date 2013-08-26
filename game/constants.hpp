@@ -4,4 +4,5 @@
 #include "constants/PlayerRole.hpp"
 #include "constants/AbilityType.hpp"
 #include "constants/DieFace.hpp"
+#include "constants/GameType.hpp"
 #endif

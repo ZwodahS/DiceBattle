@@ -108,3 +108,21 @@ void BattlePacketLayer::setBattleServer(BattleServer* battleServer)
 {
     this->_battleServer = battleServer;
 }
+
+/**
+ * This method is called after every game to clean up all the server, listener and updater.
+ */
+void BattlePacketLayer::resetLayer()
+{
+    if(_battleServer != 0)
+    {
+        delete _battleServer;
+        _battleServer = 0;
+    }
+    for(std::vector<TcpClient*>::iterator it = _viewers.begin() ; it != _viewers.end() ; ++it)
+    {
+        delete *it;
+    }
+    _viewers.clear();
+}
+

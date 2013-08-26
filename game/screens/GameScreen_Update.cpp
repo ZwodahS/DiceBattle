@@ -25,9 +25,22 @@ void GameScreen::removeMessageUntilType(Message::MessageType type)
 
 void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta)
 {
+    _animator.update(window,delta);
+    // if screen is not active, do nothing
+    if(screenState != Active)
+    {
+        if(screenState == Exiting)
+        {
+            exitTimer -= delta.asSeconds();
+            if(exitTimer <= 0)
+            {
+                screenState = Exited;
+            }
+        }
+        return;
+    }
     zf::Mouse& mouse = _game.mouse;
     sf::Vector2i mousePosition = mouse.getPosition(window);
-    _animator.update(window,delta);
     if(_currentState == Empty)
     {
         update_empty(window,delta);
@@ -80,6 +93,7 @@ void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta)
     {
         rollButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
         doneButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
+        backToSetupButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
     }
     for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
     {
@@ -339,28 +353,24 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
         if(messages.front()->type == Message::EndTurnMessage)
         {
             endTurnMessage = (DB_EndTurnMessage*)messages.front();
-            std::cout << "end turn message" << std::endl;
             messages.pop();
             break;
         }
         else if(messages.front()->type == Message::DiceRolledResultMessage)
         {
             rolledResultMessage = (DB_DiceRolledResultMessage*)messages.front();
-            std::cout << "dice rolled result message" << std::endl;
             messages.pop();
             break;
         }
         else if(messages.front()->type == Message::EndGameMessage)
         {
             endGameMessage = (DB_EndGameMessage*)messages.front();
-            std::cout << "end game message" << std::endl;
             messages.pop();
             break;
         }
         else if(messages.front()->type == Message::NewDiceMessage)
         {
             newDiceMessage = (DB_NewDiceMessage*)messages.front();
-            std::cout << "new dice message" << std::endl;
             messages.pop();
             break;
         }
@@ -442,6 +452,14 @@ void GameScreen::update_animatingTurnEnds(sf::RenderWindow& window, const sf::Ti
 }
 void GameScreen::update_gameEnding(sf::RenderWindow& window, const sf::Time& delta)
 {
+    // check if the back to setup button is pressed.
+    zf::Mouse& mouse = _game.mouse;
+    sf::Vector2i position = mouse.getPosition(window);
+    if(_game.isFocused && mouse.left.thisDown && backToSetupButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
+    {
+        _game.backToSetup(_gameType, _role);
+    }
+    // if presss, then switch to game end state and call the game to exit this screen
 }
 void GameScreen::update_gameEnd(sf::RenderWindow& window, const sf::Time& delta)
 {
@@ -501,12 +519,11 @@ void GameScreen::update_processMessage(DB_EndTurnMessage* message)
 
 void GameScreen::update_processMessage(DB_EndGameMessage* message)
 {
-    std::cout << "end game message" << std::endl;
+    _currentState = GameEnding;
 }
 
 void GameScreen::update_processMessage(DB_NewDiceMessage* message)
 {
-    std::cout << "processing new dice" << std::endl;
     update_setDice(message->dice);
     _currentState = DiceNotRolled;
 }

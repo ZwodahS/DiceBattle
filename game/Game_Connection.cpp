@@ -54,12 +54,11 @@ void Game::nameVerified(std::string name)
     //since my name has been verified, try to connect to the gamesetup
     if(_mainScreen != 0)
     {
-        zf::GameSetup* gs = new zf::GameSetup(connection.verifiedName, connection, GAMESETUP_HEADER, false);
-        _setupScreen = new SetupScreen(*this, SetupScreen::Remote, gs);
-        connection.addDownStream(*gs);
+        _gameSetup = getNewGameSetup(false);
+        _setupScreen = new SetupScreen(*this, GameType::Remote, _gameSetup);
         _nextScreen = _setupScreen;
         _currentScreen->screenExit();
-        gs->joinServer();
+        _gameSetup->joinServer();
     }
 }
 void Game::clientVerified(zf::Connection* connection)

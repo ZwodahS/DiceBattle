@@ -75,19 +75,23 @@ void Game::loadAssets()
 
     image.loadFromFile("data/graphics/charactersheet.png");
     assets.gameScreenAssets.characterSheet = assets.masterS1.createRegion(image,0, 100);
+    
 
+    assets.gameScreenAssets.resultDialogBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,400,100));
+    assets.gameScreenAssets.resultDialogBox.defaultColor = sf::Color(140,115,85);
+    assets.gameScreenAssets.backToSetupButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+    assets.gameScreenAssets.backToSetupButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+    assets.gameScreenAssets.backToSetupButtonSelected.defaultColor = sf::Color(200,130,90);
 
     ////////////////// Setup Screen ///////////////
     assets.setupScreenAssets.nameBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,30));
     assets.setupScreenAssets.ipAddrBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,30));
     assets.setupScreenAssets.typeSelectionBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,30));
-    assets.setupScreenAssets.joinButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
-    assets.setupScreenAssets.hostButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
     assets.setupScreenAssets.startButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
 
-
-
     //////////////// Main Screen /////////////////
+    assets.mainScreenAssets.joinButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+    assets.mainScreenAssets.hostButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
     assets.mainScreenAssets.dialog.background = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,300,200));
     assets.mainScreenAssets.dialog.background.defaultColor = sf::Color(140,115,85);
     assets.mainScreenAssets.dialog.ipBg = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,30));

@@ -52,7 +52,7 @@ MainScreen::MainScreen(Game& game)
     std::vector<sf::Sprite> joinButtonSprites;
     for(int i = 0 ; i < 4 ; i++)
     {
-        joinButtonSprites.push_back(game.assets.setupScreenAssets.joinButton.createSprite());
+        joinButtonSprites.push_back(game.assets.mainScreenAssets.joinButton.createSprite());
     }
     joinButtonSprites[None].setColor(sf::Color(140,70,40));
     joinButtonSprites[Hovered].setColor(sf::Color(200,130,90));
@@ -66,7 +66,7 @@ MainScreen::MainScreen(Game& game)
     std::vector<sf::Sprite> hostButtonSprites;
     for(int i = 0 ; i < 4 ; i++)
     {
-        hostButtonSprites.push_back(game.assets.setupScreenAssets.hostButton.createSprite());
+        hostButtonSprites.push_back(game.assets.mainScreenAssets.hostButton.createSprite());
     }
     hostButtonSprites[None].setColor(sf::Color(140,70,40));
     hostButtonSprites[Hovered].setColor(sf::Color(200,130,90));
@@ -80,7 +80,7 @@ MainScreen::MainScreen(Game& game)
     std::vector<sf::Sprite> localButtonSprites;
     for(int i = 0 ; i < 4 ; i++)
     {
-        localButtonSprites.push_back(game.assets.setupScreenAssets.hostButton.createSprite());
+        localButtonSprites.push_back(game.assets.mainScreenAssets.hostButton.createSprite());
     }
     localButtonSprites[None].setColor(sf::Color(140,70,40));
     localButtonSprites[Hovered].setColor(sf::Color(200,130,90));

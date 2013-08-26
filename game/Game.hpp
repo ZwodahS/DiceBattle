@@ -70,6 +70,12 @@ class Game : public zf::ConnectionListener
          * Attempt to join the server using the name at an address.
          */
         bool setupJoin(std::string name, std::string ipAddr, unsigned short port);
+    
+        /**
+         * Go back to setup from game screen.
+         */
+        void backToSetup(GameType::eGameType gameType, PlayerRole::ePlayerRole myRole);
+
     private:
         void update(sf::Time& delta);
         void draw(sf::Time& delta);
@@ -86,6 +92,9 @@ class Game : public zf::ConnectionListener
         // Use game object as the connection manager.
         float _waitingReplyTimeout;
         BattlePacketLayer _battlePacketLayer;
+
+        zf::GameSetup* _gameSetup;
+        zf::GameSetup* getNewGameSetup(bool isHosting);
 };
 
 

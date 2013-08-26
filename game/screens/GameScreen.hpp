@@ -27,8 +27,12 @@ public:
     static const int UnitPositionY[2];
     static const sf::FloatRect RollButtonSize;
     static const sf::FloatRect DoneButtonSize;
+    static const sf::FloatRect BackToSetupButtonSize;
     static const sf::Vector2f RollButtonPosition;
     static const sf::Vector2f DoneButtonPosition;
+    static const sf::Vector2f BackToSetupButtonPosition;
+    static const sf::Vector2f ResultDialogPosition;
+    static const sf::Vector2f ResultTextPosition;
     static const float FadeSpeed;
     static const sf::Vector2f AbilityMoveSpeed;
     enum GameScreenState // kind of mimic the state in Battle object but include all the intermediate animation state
@@ -49,12 +53,12 @@ public:
 
     static const float RandomizerChangeRate = 0.1;
     static const sf::Int32 DiceSize = 48;
-    GameScreen(Game& game, Battle& battle, PlayerRole::ePlayerRole role);
+    GameScreen(Game& game, Battle& battle, PlayerRole::ePlayerRole role, GameType::eGameType gameType);
     ~GameScreen();
-    /*
+
     void screenEnter();
     void screenExit();
-    */
+
     void textInput(char c);
     void draw(sf::RenderWindow& window, const sf::Time& delta);
     void update(sf::RenderWindow& window, const sf::Time& delta);
@@ -92,7 +96,13 @@ public:
     void sendMessage(DB_NewDiceMessage& message);
     void sendMessage(DB_EndTurnMessage& message);
     void sendMessage(DB_EndGameMessage& message);
+
+    // clean up
+    void freeBattle();
 private:
+    /// store the game type ///
+    GameType::eGameType _gameType;
+
     ///// all the sprites of the game /////
     //////// DIE SPRITE /////////
     class DieSprite : public iAnimatable
@@ -258,9 +268,16 @@ private:
     ///// Buttons //////
     zf::Button rollButton;
     zf::Button doneButton;
+    ///// Dialog /////
+    sf::Sprite resultDialog;
+    sf::Text resultText;
+    zf::Button backToSetupButton;
 
     /// Updater and Viewer
     GameScreenViewer _viewer;
     GeneralUpdater _updater;
+
+    // exit timer
+    float exitTimer;
 };
 #endif

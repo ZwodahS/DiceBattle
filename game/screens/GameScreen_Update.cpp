@@ -323,7 +323,7 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
                 std::vector<sf::Int32> toRoll;
                 for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
                 {
-                    if((*it).selected)
+                    if(!(*it).locked)
                     {
                         toRoll.push_back((*it).die.id);
                     } 
@@ -339,7 +339,7 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
                 DieSprite* ds = getDieSprite(sf::Vector2f(position.x, position.y));
                 if(ds != 0)
                 {
-                    ds->toggleSelection();
+                    ds->toggleLocked();
                 }
             }
         }

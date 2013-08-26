@@ -82,6 +82,8 @@ void Game::loadAssets()
     assets.gameScreenAssets.backToSetupButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
     assets.gameScreenAssets.backToSetupButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
     assets.gameScreenAssets.backToSetupButtonSelected.defaultColor = sf::Color(200,130,90);
+    assets.gameScreenAssets.lockIcon = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,20,20)); 
+
 
     ////////////////// Setup Screen ///////////////
     assets.setupScreenAssets.nameBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,30));

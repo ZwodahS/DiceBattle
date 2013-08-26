@@ -70,6 +70,7 @@ struct GameScreenAssets
     TextureRegion resultDialogBox;
     TextureRegion backToSetupButton;
     TextureRegion backToSetupButtonSelected;
+    TextureRegion lockIcon;
     sf::Font abilityFont;
     SpriteSheet spriteSheet;
 };

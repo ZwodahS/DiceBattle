@@ -108,18 +108,21 @@ private:
     class DieSprite : public iAnimatable
     {
     public:
-        DieSprite(Die die, std::vector<sf::Sprite> faces, sf::Sprite dieBorder, sf::Sprite selectionBorder);
+        DieSprite(Die die, std::vector<sf::Sprite> faces, sf::Sprite dieBorder, sf::Sprite selectionBorder, sf::Sprite lockIcon);
         Die die;
         std::vector<sf::Sprite> faces;
         sf::Sprite dieBorder;
         sf::Sprite selectionBorder;
+        sf::Sprite lockIcon;
         sf::Int32 currentFaceId;
         float randomizerTimer;
         sf::FloatRect clickBound;
         bool random;
         bool visible;
         bool selected;
+        bool locked;
         void setDie(Die& die);
+        void toggleLocked();
         void toggleSelection();
         void setEmpty(bool e);
         void setRandom(bool r);

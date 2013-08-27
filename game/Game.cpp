@@ -21,7 +21,7 @@
 Game::Game()
     :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE) 
     , window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _nextScreen(0), _currentBattle(0)
-    , _mainScreen(0), _gameScreen(0), _setupScreen(0), _battlePacketLayer(connection), _gameSetup(0)
+    , _mainScreen(0), _gameScreen(0), _setupScreen(0), _battlePacketLayer(connection), _gameSetup(0), isFocused(true)
 {
     window.setFramerateLimit(50);
     loadAssets();

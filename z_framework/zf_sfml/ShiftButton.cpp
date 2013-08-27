@@ -10,7 +10,7 @@ namespace zf
     ShiftButton::ShiftButton(const ShiftButton& shiftButton)
         : bound(_bound), _sprite(shiftButton._sprite), _actualPosition(shiftButton._actualPosition)
         , _currentPosition(shiftButton._currentPosition), _shiftMax(shiftButton._shiftMax), _bound(shiftButton._bound)
-        , _currentShift(shiftButton._currentShift)
+        , _currentShift(shiftButton._currentShift), _shiftDuration(shiftButton._shiftDuration)
     {
     }
 

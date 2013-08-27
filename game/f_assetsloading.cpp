@@ -91,7 +91,8 @@ void Game::loadAssets()
     assets.gameScreenAssets.lockIcon = assets.masterS1.createRegion(image,640,60); 
 
     ////////////////// Setup Screen ///////////////
-    assets.setupScreenAssets.nameBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,30));
+    image.loadFromFile("data/graphics/setupscreen/namebox.png");
+    assets.setupScreenAssets.nameBox = assets.masterS1.createRegion(image, 640, 430);
     image.loadFromFile("data/graphics/setupscreen/startButton.png");
     assets.setupScreenAssets.startButton = assets.masterS1.createRegion(image, 400, 624);
     assets.setupScreenAssets.startButtonSelected = assets.masterS1.createRegion(sf::IntRect(400, 624, 100, 30));
@@ -112,7 +113,7 @@ void Game::loadAssets()
     image.loadFromFile("data/graphics/mainscreen/namebox.png");
     assets.mainScreenAssets.dialog.nameBg = assets.masterS1.createRegion(image, 640, 400);
     image.loadFromFile("data/graphics/mainscreen/portbox.png");
-    assets.mainScreenAssets.dialog.portBg = assets.masterS1.createRegion(image, 640, 430);
+    assets.mainScreenAssets.dialog.portBg = assets.masterS1.createRegion(image, 940, 130);
     image.loadFromFile("data/graphics/mainscreen/joinButton.png");
     assets.mainScreenAssets.dialog.joinButton = assets.masterS1.createRegion(image, 100, 624);
     assets.mainScreenAssets.dialog.joinButtonSelected = assets.masterS1.createRegion(sf::IntRect(100,624,100,30));

@@ -107,6 +107,7 @@ private:
     //////// DIE SPRITE /////////
     class DieSprite : public iAnimatable
     {
+        static const sf::Vector2f LockOffset;
     public:
         DieSprite(Die die, std::vector<sf::Sprite> faces, sf::Sprite dieBorder, sf::Sprite selectionBorder, sf::Sprite lockIcon);
         Die die;
@@ -127,13 +128,13 @@ private:
         void setEmpty(bool e);
         void setRandom(bool r);
         void setVisible(bool v);
-        void setFrozen(bool f);
         void update(sf::RenderWindow& window, const sf::Time& delta);
         void draw(sf::RenderWindow& window, const sf::Time& delta);
         void setPosition(sf::Vector2f position);
         sf::Vector2f getPosition();
         void move(sf::Vector2f move);
         void setAlpha(float alpha);
+        void setColor(sf::Color color);
     };
     DieSprite makeDie(Die& d);
     ///////// END OF DIESPRITE ////////
@@ -162,6 +163,9 @@ private:
         void update(sf::RenderWindow& window, const sf::Time& delta);
         void resetUnitStats();
         void setActive(bool active);
+        void setAlpha(float alpha);
+        void setColor(sf::Color color);
+        void move(sf::Vector2f move);
         sf::FloatRect clickBound;
     }; 
     UnitSprite makeUnitSprite(Unit& unit);
@@ -189,6 +193,9 @@ private:
         sf::Vector2f getPosition();
         void draw(sf::RenderWindow& window, const sf::Time& delta);
         void update(sf::RenderWindow& window, const sf::Time& delta);
+        void setAlpha(float alpha);
+        void setColor(sf::Color color);
+        void move(sf::Vector2f move);
     };
     AbilitySprite makeAbilitySprite(const Ability& ability);
     /////// End of Ability Sprite //////

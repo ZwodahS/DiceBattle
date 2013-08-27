@@ -1,14 +1,16 @@
 #include "MainScreen.hpp"
 #include "../Game.hpp"
 #include "../../z_framework/zf_common/f_conversion.hpp"
+#include <SFML/Network.hpp>
 #define DEFAULT_IP_ADDRESS "Ip-address"
 #define DEFAULT_PORT "Port"
 const sf::Vector2f MainScreen::namePosition = sf::Vector2f(390, 200);
 const sf::Vector2f MainScreen::nameOffset = sf::Vector2f(10,0);
 const sf::Vector2f MainScreen::ipAddrPosition = sf::Vector2f(150, 300);
-const sf::Vector2f MainScreen::localButtonPosition = sf::Vector2f(100, 300);
-const sf::Vector2f MainScreen::joinButtonPosition = sf::Vector2f(250, 300);
-const sf::Vector2f MainScreen::hostButtonPosition = sf::Vector2f(400, 300);
+
+const sf::Vector2f MainScreen::localButtonPosition = sf::Vector2f(-33, 200);
+const sf::Vector2f MainScreen::hostButtonPosition = sf::Vector2f(-33, 270);
+const sf::Vector2f MainScreen::joinButtonPosition = sf::Vector2f(-33, 340);
 const sf::Vector2f MainScreen::buttonTextOffset = sf::Vector2f(20,0);
 const sf::Vector2f MainScreen::vsTextPosition = sf::Vector2f(300, 200);
 
@@ -19,10 +21,7 @@ const sf::Vector2f MainScreen::Dialog_NameOffset = sf::Vector2f(20,20);
 const sf::Vector2f MainScreen::Dialog_NameTextOffset = sf::Vector2f(10,0);
 
 const sf::Vector2f MainScreen::Dialog_JoinHostButtonOffset = sf::Vector2f(20,160);
-const sf::Vector2f MainScreen::Dialog_JoinHostTextOffset = sf::Vector2f(20,0);
 const sf::Vector2f MainScreen::Dialog_CancelButtonOffset = sf::Vector2f(180,160);
-const sf::Vector2f MainScreen::Dialog_CancelTextOffset = sf::Vector2f(15,0);
-
 
 const sf::Vector2f MainScreen::Dialog_PortTextBG = sf::Vector2f(200,60);
 const sf::Vector2f MainScreen::Dialog_PortTextOffset = sf::Vector2f(10,0);
@@ -30,78 +29,39 @@ const sf::Vector2f MainScreen::Dialog_PortTextOffset = sf::Vector2f(10,0);
 const sf::Vector2f MainScreen::JoinDialog_IpBG = sf::Vector2f(20,60);
 const sf::Vector2f MainScreen::JoinDialog_IpTextOffset = sf::Vector2f(10,0);
 
-const sf::Vector2f MainScreen::HostDialog_PortLabel = sf::Vector2f(0,0);
+const sf::FloatRect MainScreen::Dialog_ButtonSize = sf::FloatRect(0,0,100,30);
 MainScreen::MainScreen(Game& game)
     : Screen(game)
-    , joinText("Join", game.assets.gameScreenAssets.abilityFont,20)
-    , hostText("Host", game.assets.gameScreenAssets.abilityFont, 20)
-    , localText("Local", game.assets.gameScreenAssets.abilityFont, 20)
     , currentDialogState(NoDialog)
     , joinDialog_ipText(DEFAULT_IP_ADDRESS, game.assets.gameScreenAssets.abilityFont, 20)
-    , hostDialog_portLabel("Port :", game.assets.gameScreenAssets.abilityFont, 20)
     , dialog_nameText("Player name", game.assets.gameScreenAssets.abilityFont, 20)
-    , dialog_joinhostText("Join", game.assets.gameScreenAssets.abilityFont, 20)
-    , dialog_cancelText("Cancel", game.assets.gameScreenAssets.abilityFont, 20)
     , dialog_portText(DEFAULT_PORT, game.assets.gameScreenAssets.abilityFont, 20)
     , name("")
     , ip("")
     , port("")
     , currentTextSelection(TextSelection_None)
+    , dialog_joinButton(game.assets.mainScreenAssets.dialog.joinButtonSelected.createSprite(), game.assets.mainScreenAssets.dialog.joinButton.createSprite(), Dialog_ButtonSize)
+    , dialog_hostButton(game.assets.mainScreenAssets.dialog.hostButtonSelected.createSprite(), game.assets.mainScreenAssets.dialog.hostButton.createSprite(), Dialog_ButtonSize)
+    , dialog_cancelButton(game.assets.mainScreenAssets.dialog.cancelButtonSelected.createSprite(), game.assets.mainScreenAssets.dialog.cancelButton.createSprite(), Dialog_ButtonSize)
+    , _joinButton(game.assets.mainScreenAssets.joinButton.createSprite(), sf::Vector2f(30,0), 0.2)
+    , _hostButton(game.assets.mainScreenAssets.hostButton.createSprite(), sf::Vector2f(30,0), 0.2)
+    , _localButton(game.assets.mainScreenAssets.localButton.createSprite(), sf::Vector2f(30,0), 0.2)
 {
     // BUTTONS
-    std::vector<sf::Sprite> joinButtonSprites;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        joinButtonSprites.push_back(game.assets.mainScreenAssets.joinButton.createSprite());
-    }
-    joinButtonSprites[None].setColor(sf::Color(140,70,40));
-    joinButtonSprites[Hovered].setColor(sf::Color(200,130,90));
-    joinButtonSprites[Disabled].setColor(sf::Color(160,140,130));
-    joinButtonSprites[Active].setColor(sf::Color(245,100,25));
-    joinButton = zf::SpriteGroup(joinButtonSprites);
-    joinButton.setPosition(joinButtonPosition + sf::Vector2f(0,700));
-    joinText.setPosition(joinButtonPosition+buttonTextOffset);
-    joinText.setColor(sf::Color::White);
-    
-    std::vector<sf::Sprite> hostButtonSprites;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        hostButtonSprites.push_back(game.assets.mainScreenAssets.hostButton.createSprite());
-    }
-    hostButtonSprites[None].setColor(sf::Color(140,70,40));
-    hostButtonSprites[Hovered].setColor(sf::Color(200,130,90));
-    hostButtonSprites[Disabled].setColor(sf::Color(160,140,130));
-    hostButtonSprites[Active].setColor(sf::Color(245,100,25));
-    hostButton = zf::SpriteGroup(hostButtonSprites);
-    hostButton.setPosition(hostButtonPosition + sf::Vector2f(700,0));
-    hostText.setPosition(hostButtonPosition+buttonTextOffset);
-    hostText.setColor(sf::Color::White);
-
-    std::vector<sf::Sprite> localButtonSprites;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        localButtonSprites.push_back(game.assets.mainScreenAssets.hostButton.createSprite());
-    }
-    localButtonSprites[None].setColor(sf::Color(140,70,40));
-    localButtonSprites[Hovered].setColor(sf::Color(200,130,90));
-    localButtonSprites[Disabled].setColor(sf::Color(160,140,130));
-    localButtonSprites[Active].setColor(sf::Color(245,100,25));
-    localButton = zf::SpriteGroup(localButtonSprites);
-    localButton.setPosition(localButtonPosition + sf::Vector2f(-700, 0));
-    localText.setPosition(localButtonPosition+buttonTextOffset);
-    localText.setColor(sf::Color::White);
+    _joinButton.setPosition(joinButtonPosition + sf::Vector2f(-300,0));
+    _hostButton.setPosition(hostButtonPosition + sf::Vector2f(-300,0));
+    _localButton.setPosition(localButtonPosition + sf::Vector2f(-300, 0));
 
     dialog_background = game.assets.mainScreenAssets.dialog.background.createSprite();
     dialog_nameBg = game.assets.mainScreenAssets.dialog.nameBg.createSprite();
     dialog_nameText.setColor(sf::Color(110,110,90));
     // temporary use it for now.
-    dialog_joinhostButton = zf::SpriteGroup(hostButtonSprites);
-    dialog_cancelButton = zf::SpriteGroup(hostButtonSprites);
     dialog_portBg = game.assets.mainScreenAssets.dialog.portBg.createSprite();
     dialog_portText.setColor(sf::Color(110,110,90));
     joinDialog_ipBg = game.assets.mainScreenAssets.dialog.ipBg.createSprite();
     joinDialog_ipText.setColor(sf::Color(110,110,90));
     
+
 }
 
 MainScreen::~MainScreen()
@@ -110,12 +70,9 @@ MainScreen::~MainScreen()
 
 void MainScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
 {
-    localButton.draw(window, delta);
-    hostButton.draw(window, delta);
-    joinButton.draw(window, delta);
-    window.draw(localText);
-    window.draw(hostText);
-    window.draw(joinText);
+    _localButton.draw(window, delta);
+    _hostButton.draw(window, delta);
+    _joinButton.draw(window, delta);
     if(currentDialogState == NoDialog)
     {
     }
@@ -124,10 +81,8 @@ void MainScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
         window.draw(dialog_background);
         window.draw(dialog_nameBg);
         window.draw(dialog_nameText);
-        dialog_joinhostButton.draw(window, delta);
-        window.draw(dialog_joinhostText);
+        dialog_joinButton.draw(window, delta);
         dialog_cancelButton.draw(window, delta);
-        window.draw(dialog_cancelText);
         window.draw(dialog_portBg);
         window.draw(dialog_portText);
         window.draw(joinDialog_ipBg);
@@ -138,13 +93,10 @@ void MainScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
         window.draw(dialog_background);
         window.draw(dialog_nameBg);
         window.draw(dialog_nameText);
-        dialog_joinhostButton.draw(window, delta);
-        window.draw(dialog_joinhostText);
+        dialog_hostButton.draw(window,delta);
         dialog_cancelButton.draw(window, delta);
-        window.draw(dialog_cancelText);
         window.draw(dialog_portBg);
         window.draw(dialog_portText);
-        window.draw(hostDialog_portLabel);
     }
 }
 
@@ -168,21 +120,21 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
             sf::Vector2f mousePosf = sf::Vector2f(mousePosi.x, mousePosi.y);
             if(currentDialogState == NoDialog)
             {
-                updateButtonState(localButton, mousePosf);
-                updateButtonState(hostButton, mousePosf);
-                updateButtonState(joinButton, mousePosf);
+                _localButton.updateSelection(mousePosf, delta);
+                _hostButton.updateSelection(mousePosf, delta);
+                _joinButton.updateSelection(mousePosf, delta);
 
                 if(mouse.left.thisReleased)
                 {
-                    if(localButton.bound.contains(mousePosf))
+                    if(_localButton.bound.contains(mousePosf))
                     {
                         setupLocalGame();
                     }
-                    else if(hostButton.bound.contains(mousePosf))
+                    else if(_hostButton.bound.contains(mousePosf))
                     {
                         setDialogState(HostDialog);
                     }
-                    else if(joinButton.bound.contains(mousePosf))
+                    else if(_joinButton.bound.contains(mousePosf))
                     {
                         setDialogState(JoinDialog);
                     }
@@ -190,16 +142,16 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
             }
             else if(currentDialogState == JoinDialog)
             {
-                updateButtonState(dialog_joinhostButton, mousePosf);
-                updateButtonState(dialog_cancelButton, mousePosf);
+                dialog_joinButton.updateSelection(mousePosf);
+                dialog_cancelButton.updateSelection(mousePosf);
 
                 if(mouse.left.thisReleased)
                 {
-                    if(dialog_joinhostButton.bound.contains(mousePosf))
+                    if(dialog_joinButton.clickBound.contains(mousePosf))
                     {
                         setupJoinGame();
                     }
-                    else if(dialog_cancelButton.bound.contains(mousePosf))
+                    else if(dialog_cancelButton.clickBound.contains(mousePosf))
                     {
                         setDialogState(NoDialog);
                     }
@@ -219,15 +171,15 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
             }
             else if(currentDialogState == HostDialog)
             {
-                updateButtonState(dialog_joinhostButton, mousePosf);
-                updateButtonState(dialog_cancelButton, mousePosf);
+                dialog_hostButton.updateSelection(mousePosf);
+                dialog_cancelButton.updateSelection(mousePosf);
                 if(mouse.left.thisReleased)
                 {
-                    if(dialog_joinhostButton.bound.contains(mousePosf))
+                    if(dialog_hostButton.clickBound.contains(mousePosf))
                     {
                         setupHostGame();
                     }
-                    else if(dialog_cancelButton.bound.contains(mousePosf))
+                    else if(dialog_cancelButton.clickBound.contains(mousePosf))
                     {
                         setDialogState(NoDialog);
                     }
@@ -239,6 +191,7 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                     {
                         setCurrentTextSelection(TextSelection_Port);
                     }
+                    // in here we don't really try to change the ip
                 }
             }
         }
@@ -301,17 +254,17 @@ void MainScreen::textInput(char c)
 void MainScreen::screenEnter()
 {
     screenState = Screen::Entering;
-    _animator.moveReferenceTo(localButton, localButtonPosition, 1.5);
-    _animator.moveReferenceTo(hostButton, hostButtonPosition, 1.5);
-    _animator.moveReferenceTo(joinButton, joinButtonPosition, 1.5);
+    _animator.moveReferenceTo(_localButton, localButtonPosition, 1.5);
+    _animator.moveReferenceTo(_hostButton, hostButtonPosition, 1.5);
+    _animator.moveReferenceTo(_joinButton, joinButtonPosition, 1.5);
     timer = 2;
 }
 
 void MainScreen::screenExit()
 {
-    _animator.moveReferenceTo(localButton, localButtonPosition + sf::Vector2f(-700,0), 1.5);
-    _animator.moveReferenceTo(hostButton, hostButtonPosition + sf::Vector2f(700,0), 1.5);
-    _animator.moveReferenceTo(joinButton, joinButtonPosition + sf::Vector2f(0,700), 1.5);
+    _animator.moveReference(_localButton, sf::Vector2f(-700,0), 1.5);
+    _animator.moveReference(_hostButton, sf::Vector2f(-700,0), 1.5);
+    _animator.moveReference(_joinButton, sf::Vector2f(-700,0), 1.5);
     screenState = Screen::Exiting;
     timer = 1;
 }
@@ -330,20 +283,14 @@ void MainScreen::updateButtonState(zf::SpriteGroup& spriteGroup, sf::Vector2f po
 
 void MainScreen::setDialogState(DialogState state)
 {
-    localButton.setState(None);
-    joinButton.setState(None);
-    hostButton.setState(None);
     currentDialogState = state;
     if(currentDialogState == JoinDialog)
     {
         dialog_background.setPosition(Dialog_BG);
         dialog_nameBg.setPosition(Dialog_BG + Dialog_NameOffset);
         dialog_nameText.setPosition(Dialog_BG + Dialog_NameOffset + Dialog_NameTextOffset);
-        dialog_joinhostButton.setPosition(Dialog_BG + Dialog_JoinHostButtonOffset);
-        dialog_joinhostText.setPosition(Dialog_BG + Dialog_JoinHostButtonOffset + Dialog_JoinHostTextOffset);
-        dialog_joinhostText.setString("Join");
+        dialog_joinButton.setPosition(Dialog_BG + Dialog_JoinHostButtonOffset);
         dialog_cancelButton.setPosition(Dialog_BG + Dialog_CancelButtonOffset);
-        dialog_cancelText.setPosition(Dialog_BG + Dialog_CancelButtonOffset + Dialog_CancelTextOffset);
         dialog_portBg.setPosition(Dialog_BG + Dialog_PortTextBG);
         dialog_portText.setPosition(Dialog_BG + Dialog_PortTextBG + Dialog_PortTextOffset);
         joinDialog_ipBg.setPosition(Dialog_BG + JoinDialog_IpBG);
@@ -353,17 +300,26 @@ void MainScreen::setDialogState(DialogState state)
     }
     else if(currentDialogState == HostDialog)
     {
+        /**
+         * Commented out because the ipaddress doesn't seems to be accurate.
+         * In the case that this is to be implemented, remember to draw it.
+         * I know it is bad to leave commented code. But this is functional !
+        sf::IpAddress ip = sf::IpAddress::getPublicAddress(sf::seconds(3));
+        if(ip == sf::IpAddress::None)
+        {
+            ip = sf::IpAddress::getLocalAddress();
+        }
+        joinDialog_ipBg.setPosition(Dialog_BG + JoinDialog_IpBG);
+        joinDialog_ipText.setPosition(Dialog_BG + JoinDialog_IpBG + JoinDialog_IpTextOffset);
+        joinDialog_ipText.setString(ip.toString());
+        */
         dialog_background.setPosition(Dialog_BG);
         dialog_nameBg.setPosition(Dialog_BG + Dialog_NameOffset);
         dialog_nameText.setPosition(Dialog_BG + Dialog_NameOffset + Dialog_NameTextOffset);
-        dialog_joinhostButton.setPosition(Dialog_BG + Dialog_JoinHostButtonOffset);
-        dialog_joinhostText.setPosition(Dialog_BG + Dialog_JoinHostButtonOffset + Dialog_JoinHostTextOffset);
-        dialog_joinhostText.setString("Host");
+        dialog_hostButton.setPosition(Dialog_BG + Dialog_JoinHostButtonOffset);
         dialog_cancelButton.setPosition(Dialog_BG + Dialog_CancelButtonOffset);
-        dialog_cancelText.setPosition(Dialog_BG + Dialog_CancelButtonOffset + Dialog_CancelTextOffset);
         dialog_portBg.setPosition(Dialog_BG + Dialog_PortTextBG);
         dialog_portText.setPosition(Dialog_BG + Dialog_PortTextBG + Dialog_PortTextOffset);
-        hostDialog_portLabel.setPosition(Dialog_BG + Dialog_PortTextBG - sf::Vector2f(100,0));
         ip = " ";
         port = " ";
     }

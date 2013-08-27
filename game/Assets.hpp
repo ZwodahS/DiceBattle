@@ -35,8 +35,12 @@ struct MainScreenDialogAssets
     TextureRegion ipBg;
     TextureRegion nameBg;
     TextureRegion portBg;
-    TextureRegion joinhostButton;
+    TextureRegion joinButton;
+    TextureRegion joinButtonSelected;
+    TextureRegion hostButton;
+    TextureRegion hostButtonSelected;
     TextureRegion cancelButton;
+    TextureRegion cancelButtonSelected;
 };
 
 struct MainScreenAssets
@@ -50,9 +54,8 @@ struct MainScreenAssets
 struct SetupScreenAssets
 {
     TextureRegion nameBox;
-    TextureRegion ipAddrBox;
-    TextureRegion typeSelectionBox;
     TextureRegion startButton;
+    TextureRegion startButtonSelected;
 };
 
 struct GameScreenAssets
@@ -92,6 +95,7 @@ struct PlaceHolderAssets
 struct Assets
 {
     PlaceHolderAssets placeHolder;
+    TextureRegion background;
     IconAssets icons;
     GameScreenAssets gameScreenAssets;
     SetupScreenAssets setupScreenAssets;

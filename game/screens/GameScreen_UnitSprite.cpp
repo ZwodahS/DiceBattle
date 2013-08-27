@@ -98,11 +98,11 @@ void GameScreen::UnitSprite::setActive(bool active)
 {
     if(active)
     {
-        background.setColor(sf::Color(230,230,140));
+        background.setColor(sf::Color(255,255,170));
     }
     else
     {
-        background.setColor(sf::Color(140,140,85));
+        background.setColor(sf::Color(255,255,255));
     }
 }
 
@@ -113,4 +113,14 @@ void GameScreen::UnitSprite::updateData()
     stunnedText.setString(zf::toString(unit->shockCounter));
     burntText.setString(zf::toString(unit->burnCounter));
     frozenText.setString(zf::toString(unit->freezeCounter));
+}
+
+void GameScreen::UnitSprite::setAlpha(float alpha)
+{
+}
+void GameScreen::UnitSprite::setColor(sf::Color color)
+{
+}
+void GameScreen::UnitSprite::move(sf::Vector2f move)
+{
 }

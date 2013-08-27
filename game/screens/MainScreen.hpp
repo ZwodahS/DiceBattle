@@ -3,6 +3,8 @@
 #include "Screen.hpp"
 #include "../../z_framework/zf_sfml/animations/SimpleAnimator.hpp"
 #include "../../z_framework/zf_sfml/SpriteGroup.hpp"
+#include "../../z_framework/zf_sfml/Button.hpp"
+#include "../../z_framework/zf_sfml/ShiftButton.hpp"
 #include <SFML/Network.hpp>
 #include <SFML/Graphics.hpp>
 class MainScreen : public Screen
@@ -25,9 +27,7 @@ public:
     static const sf::Vector2f Dialog_NameTextOffset; // common to both
     
     static const sf::Vector2f Dialog_JoinHostButtonOffset;
-    static const sf::Vector2f Dialog_JoinHostTextOffset;
     static const sf::Vector2f Dialog_CancelButtonOffset;
-    static const sf::Vector2f Dialog_CancelTextOffset;
     
     static const sf::Vector2f Dialog_ButtonTextOffset;
 
@@ -37,8 +37,7 @@ public:
     static const sf::Vector2f JoinDialog_IpBG;
     static const sf::Vector2f JoinDialog_IpTextOffset;
 
-    static const sf::Vector2f HostDialog_PortLabel;
-
+    static const sf::FloatRect Dialog_ButtonSize;
     MainScreen(Game& game);
     ~MainScreen();
     
@@ -58,12 +57,9 @@ private:
         Disabled = 2,
         Active = 3,
     };
-    zf::SpriteGroup localButton;
-    zf::SpriteGroup hostButton;
-    zf::SpriteGroup joinButton;
-    sf::Text localText;
-    sf::Text hostText; 
-    sf::Text joinText;   
+    zf::ShiftButton _joinButton;
+    zf::ShiftButton _hostButton;
+    zf::ShiftButton _localButton;
     SimpleAnimator _animator;
 
     // I have to pull this out as a class next time ...
@@ -99,18 +95,16 @@ private:
     ////// for join dialog ///////
     sf::Sprite joinDialog_ipBg;
     sf::Text joinDialog_ipText;
+    zf::Button dialog_joinButton;
     ////// specific for host dialog //////
-    sf::Text hostDialog_portLabel;
-    
+    zf::Button dialog_hostButton;
+
     // Common to both dialog.
     sf::Sprite dialog_background;
     sf::Sprite dialog_nameBg;
     sf::Text dialog_nameText;
     // common to both join or host
-    zf::SpriteGroup dialog_joinhostButton;
-    sf::Text dialog_joinhostText;
-    zf::SpriteGroup dialog_cancelButton;
-    sf::Text dialog_cancelText;
+    zf::Button dialog_cancelButton;
     sf::Text dialog_portText;
     sf::Sprite dialog_portBg;
 

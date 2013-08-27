@@ -95,6 +95,8 @@ class Game : public zf::ConnectionListener
 
         zf::GameSetup* _gameSetup;
         zf::GameSetup* getNewGameSetup(bool isHosting);
+
+        sf::Sprite background;
 };
 
 

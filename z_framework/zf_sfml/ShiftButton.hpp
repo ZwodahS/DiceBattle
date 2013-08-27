@@ -20,52 +20,48 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. 
  */
-
-#ifndef _ZF_SFML_SPRITEGROUP_H_
-#define _ZF_SFML_SPRITEGROUP_H_
+/**
+ * ShiftButton is a type of button that shift its position if it is hovered. 
+ */
+#ifndef _ZF_SFML_SHIFTBUTTON_H_
+#define _ZF_SFML_SHIFTBUTTON_H_
+#include "f_common.hpp"
 #include "animations/iAnimatable.hpp"
 #include <SFML/Graphics.hpp>
-/** 
- * SpriteGroup is used to group sprites state together. This allow group manipulation of sprite and only draw the
- * state that ie needed.
- *
- * SpriteGroup assumed that the size of the sprites are the same.
- */
-#include <vector>
 namespace zf
 {
-    class SpriteGroup : public iAnimatable
+    class ShiftButton : public iAnimatable
     {
     public:
-        const std::vector<sf::Sprite>& spriteGroups;
-        const int &state;
-        const sf::FloatRect &bound;
-        /**
-         * Set the position for the group.
-         */
+        ShiftButton(sf::Sprite buttonSprite, sf::Vector2f shiftMax, float shiftDuration);
+        ShiftButton(const ShiftButton& shiftButton);
+        ShiftButton();
+        ~ShiftButton();
+
         void setPosition(sf::Vector2f position);
-        void setPosition(float x , float y);
-        
-        SpriteGroup(); // empty sprite group
-        SpriteGroup(const SpriteGroup& copy);
-        SpriteGroup(std::vector<sf::Sprite> g);  // the size of the bound is assumed to be the global bound of the first sprite or 0,0,0,0 if the list is empty
-        
-        void setState(int state);
-        SpriteGroup& operator=(const SpriteGroup &rhs);
-        
-        /**
-         * Draw the current sprite group. This will draw the sprite for the current state.
-         */
+        void updateSelection(const sf::Vector2f& mousePos, const sf::Time& delta);
+
         void draw(sf::RenderWindow& window, const sf::Time& delta);
+        
+        const sf::FloatRect& bound;
+
+        ShiftButton& operator= (const ShiftButton& rhs);
+        /// iAnimatable ///
         void setAlpha(float alpha);
-        void move(sf::Vector2f moveVec);
+        void move(sf::Vector2f move);
         void setColor(sf::Color color);
         sf::Vector2f getPosition();
     private:
-        int _state;
-        std::vector<sf::Sprite> _spriteGroups;
-        sf::FloatRect _bound;
-    };
-};
 
+        sf::Sprite _sprite;
+        sf::Vector2f _actualPosition;
+        sf::Vector2f _currentPosition;
+        sf::Vector2f _shiftMax;
+        sf::FloatRect _bound;
+
+        sf::Vector2f _currentShift;
+        float _shiftDuration;
+        void updateShift();
+    };
+}
 #endif

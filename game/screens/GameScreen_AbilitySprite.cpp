@@ -131,3 +131,12 @@ sf::Vector2f GameScreen::AbilitySprite::getPosition()
 {
     return sf::Vector2f(clickBound.left, clickBound.top);
 }
+void GameScreen::AbilitySprite::setAlpha(float alpha)
+{
+}
+void GameScreen::AbilitySprite::setColor(sf::Color color)
+{
+}
+void GameScreen::AbilitySprite::move(sf::Vector2f move)
+{
+}

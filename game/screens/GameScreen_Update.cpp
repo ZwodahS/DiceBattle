@@ -337,7 +337,7 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
                 std::vector<sf::Int32> toRoll;
                 for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
                 {
-                    if(!(*it).locked)
+                    if(!(*it).locked && !(*it).die.frozen)
                     {
                         toRoll.push_back((*it).die.id);
                     } 

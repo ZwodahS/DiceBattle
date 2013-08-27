@@ -5,7 +5,7 @@
 #include <iostream>
 
 const int GameScreen::AbilityDisplayed = 7;
-const int GameScreen::Ability_X = 100;
+const int GameScreen::Ability_X = 120;
 const int GameScreen::Ability_Y[] = {120,170,220,270,320,370,420};
 const int GameScreen::AbilityOffScreen_Y[] = {600,650,700,750,800,850,900};
 
@@ -15,14 +15,14 @@ const int GameScreen::DieY[] = {30, 90, 150, 210, 270, 330, 390};
 const int GameScreen::UnitPositionX[] = {100, 370};
 const int GameScreen::UnitPositionY[] = {5, 5};
 
-const sf::FloatRect GameScreen::RollButtonSize = sf::FloatRect(0,0,200,200);
-const sf::FloatRect GameScreen::DoneButtonSize = sf::FloatRect(0,0,200,200);
-const sf::FloatRect GameScreen::BackToSetupButtonSize = sf::FloatRect(0,0,200,200);
+const sf::FloatRect GameScreen::RollButtonSize = sf::FloatRect(0,0,200,70);
+const sf::FloatRect GameScreen::DoneButtonSize = sf::FloatRect(0,0,200,70);
+const sf::FloatRect GameScreen::BackToSetupButtonSize = sf::FloatRect(0,0,100,30);
 
 const sf::Vector2f GameScreen::RollButtonPosition = sf::Vector2f(135,150);
 const sf::Vector2f GameScreen::DoneButtonPosition = sf::Vector2f(405,150);
 const sf::Vector2f GameScreen::BackToSetupButtonPosition = sf::Vector2f(270,250);
-const sf::Vector2f GameScreen::ResultDialogPosition = sf::Vector2f(120,200);
+const sf::Vector2f GameScreen::ResultDialogPosition = sf::Vector2f(170,200);
 const sf::Vector2f GameScreen::ResultTextPosition = sf::Vector2f(320, 210);
 
 const sf::Vector2f GameScreen::AbilityMoveSpeed = sf::Vector2f(0,1200);
@@ -38,6 +38,7 @@ GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r, GameTyp
     doneButton.setPosition(DoneButtonPosition);
     backToSetupButton.setPosition(BackToSetupButtonPosition);
     resultText.setPosition(ResultTextPosition);
+    resultText.setColor(sf::Color::Black);
     resultDialog = game.assets.gameScreenAssets.resultDialogBox.createSprite();
     resultDialog.setPosition(ResultDialogPosition);
     _battle.addGameViewer(&_viewer);

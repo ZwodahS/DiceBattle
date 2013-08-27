@@ -89,7 +89,7 @@ namespace zf
         }
     }
 
-    void SpriteGroup::draw(sf::RenderWindow& window, sf::Time delta)
+    void SpriteGroup::draw(sf::RenderWindow& window, const sf::Time& delta)
     {
         if(!(state < 0 || state >= _spriteGroups.size()))
         {

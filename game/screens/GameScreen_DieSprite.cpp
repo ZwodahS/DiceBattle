@@ -1,6 +1,9 @@
 #include "GameScreen.hpp"
 #include "../Game.hpp"
 #include "../../z_framework/zf_sfml/f_common.hpp"
+
+const sf::Vector2f GameScreen::DieSprite::LockOffset = sf::Vector2f(35,35);
+
 GameScreen::DieSprite::DieSprite(Die di, std::vector<sf::Sprite> f, sf::Sprite d, sf::Sprite sb, sf::Sprite lock)
     :die(di), faces(f), dieBorder(d), selectionBorder(sb), currentFaceId(0), random(true), lockIcon(lock)
     ,visible(true), randomizerTimer(0), selected(false), locked(false)
@@ -43,7 +46,7 @@ void GameScreen::DieSprite::setDie(Die& d)
     }
     else
     {
-        this->dieBorder.setColor(sf::Color(255,255,255,255));
+        this->dieBorder.setColor(sf::Color(240,240,240,255));
     }
 
 }
@@ -92,6 +95,7 @@ void GameScreen::DieSprite::setAlpha(float alpha)
 {
     zf::setAlpha(selectionBorder, alpha);
     zf::setAlpha(dieBorder, alpha);
+    zf::setAlpha(lockIcon, alpha);
     for(std::vector<sf::Sprite>::iterator it = faces.begin() ; it != faces.end() ; ++it)
     {
         zf::setAlpha((*it), alpha); 
@@ -108,7 +112,7 @@ void GameScreen::DieSprite::setPosition(sf::Vector2f position)
     }
     clickBound.left = position.x;
     clickBound.top = position.y;
-    lockIcon.setPosition(position + sf::Vector2f(30,30));
+    lockIcon.setPosition(position + LockOffset);
 }
 
 sf::Vector2f GameScreen::DieSprite::getPosition()
@@ -131,4 +135,9 @@ GameScreen::DieSprite GameScreen::makeDie(Die& die)
     }
     DieSprite d(die,faces, _game.assets.gameScreenAssets.die.createSprite(), _game.assets.gameScreenAssets.dieSelectionBorder.createSprite(), _game.assets.gameScreenAssets.lockIcon.createSprite());
     return d;
+}
+
+void GameScreen::DieSprite::setColor(sf::Color color)
+{
+    // do nothing
 }

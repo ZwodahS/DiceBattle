@@ -5,12 +5,15 @@ const sf::Vector2f SetupScreen::name2Position = sf::Vector2f(390, 200);
 const sf::Vector2f SetupScreen::nameOffset = sf::Vector2f(10,0);
 const sf::Vector2f SetupScreen::startButtonPosition = sf::Vector2f(270, 400);
 const sf::Vector2f SetupScreen::buttonTextOffset = sf::Vector2f(20,0);
-const sf::Vector2f SetupScreen::vsTextPosition = sf::Vector2f(300, 200);
+const sf::Vector2f SetupScreen::vsTextPosition = sf::Vector2f(300, 185);
 const sf::Vector2f SetupScreen::waitingForServerOffset = sf::Vector2f(300,250);
+const sf::FloatRect SetupScreen::ButtonSize = sf::FloatRect(0,0,100,30);
+
 SetupScreen::SetupScreen(Game& game, GameType::eGameType st, zf::GameSetup* setup)
     :Screen(game), setupType(st), name1Text("Player1", game.assets.gameScreenAssets.abilityFont, 20), name2Text("Player2", game.assets.gameScreenAssets.abilityFont, 20)
-    , currentSelection(Name1), startText("Start", game.assets.gameScreenAssets.abilityFont, 20), _gameSetup(setup), _connected(false), _rejoinTimer(0)
+    , currentSelection(Name1), _gameSetup(setup), _connected(false), _rejoinTimer(0)
     , waitingForServerText("Waiting for server ...", game.assets.gameScreenAssets.abilityFont, 20)
+    , _startButton(game.assets.setupScreenAssets.startButtonSelected.createSprite(), game.assets.setupScreenAssets.startButton.createSprite(), ButtonSize)
 {
     if(st == GameType::Local)
     {
@@ -18,6 +21,8 @@ SetupScreen::SetupScreen(Game& game, GameType::eGameType st, zf::GameSetup* setu
         player1.name = "Player1";
         player2.uniqueId = "Player2";
         player2.name = "Player2";
+        _connected = true;
+        setCurrentSelection(Name1);
     }
     else if(st == GameType::Host)
     {
@@ -64,27 +69,14 @@ SetupScreen::SetupScreen(Game& game, GameType::eGameType st, zf::GameSetup* setu
     name2Text.setPosition(name2Position + nameOffset);
     name2Text.setColor(sf::Color(0,0,0));
 
-    std::vector<sf::Sprite> startButtonSprites;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        startButtonSprites.push_back(game.assets.setupScreenAssets.startButton.createSprite());
-    }
-    startButtonSprites[None].setColor(sf::Color(140,70,40));
-    startButtonSprites[Hovered].setColor(sf::Color(200,130,90));
-    startButtonSprites[Disabled].setColor(sf::Color(160,140,130));
-    startButtonSprites[Active].setColor(sf::Color(245,100,25));
-    startButton = zf::SpriteGroup(startButtonSprites);
-    startButton.setPosition(startButtonPosition);
-    startText.setPosition(startButtonPosition+buttonTextOffset);
-    startText.setColor(sf::Color::White);
 // VS TEXT    
     sf::Text tmp("VS", game.assets.gameScreenAssets.abilityFont, 40);
     tmp.setPosition(vsTextPosition);
     fixedTexts.push_back(tmp);
 
-    setCurrentSelection(Name1);
     waitingForServerText.setPosition(waitingForServerOffset);
-
+    
+    _startButton.setPosition(startButtonPosition);
 }
 
 SetupScreen::~SetupScreen()
@@ -168,9 +160,8 @@ void SetupScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
     }
     if(setupType == GameType::Local || setupType == GameType::Host)
     {
-        startButton.draw(window, delta);
+        _startButton.draw(window, delta);
     }
-    window.draw(startText);
     if(!_connected)
     {
         window.draw(waitingForServerText);
@@ -207,7 +198,7 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                 {
                     setCurrentSelection(Name2);
                 }
-                else if(startButton.bound.contains(mousePosF))
+                else if(_startButton.clickBound.contains(mousePosF))
                 {
                     _game.startLocalGame(player1.name, player2.name);                
                 }
@@ -228,7 +219,7 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                         _gameSetup->setRole("2");
                     }
                 }
-                else if(startButton.bound.contains(mousePosF))
+                else if(_startButton.clickBound.contains(mousePosF))
                 {
                     // make sure we are host
                     if(setupType == GameType::Host)
@@ -254,7 +245,7 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
         }
         else
         {
-            updateButtonState(startButton, mousePosF);
+            _startButton.updateSelection(mousePosF);
             // if it is not local, then the text field is not allow to be edited.
             // It will become a button
             if(setupType != GameType::Local) 

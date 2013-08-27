@@ -3,6 +3,7 @@
 #include "Screen.hpp"
 #include "../constants/GameType.hpp"
 #include "../../z_framework/zf_sfml/SpriteGroup.hpp"
+#include "../../z_framework/zf_sfml/Button.hpp"
 #include "../../z_framework/zf_network/zf_gamesetup/GameSetup.hpp"
 #include "../../z_framework/zf_network/zf_gamesetup/GameSetupListener.hpp"
 #include <string>
@@ -20,7 +21,7 @@ public:
     static const sf::Vector2f buttonTextOffset;
     static const sf::Vector2f waitingForServerOffset;
     static const sf::Vector2f vsTextPosition;
-
+    static const sf::FloatRect ButtonSize;
     static const int MAX_NAME_SIZE = 12;
     enum ButtonState
     {
@@ -67,11 +68,10 @@ private:
 
     zf::SpriteGroup nameBorder1;
     zf::SpriteGroup nameBorder2;
-    zf::SpriteGroup startButton;
+    zf::Button _startButton;
 
     sf::Text name1Text;
     sf::Text name2Text;
-    sf::Text startText;
     sf::Text waitingForServerText;
     // text that will not change but need to be displayed.
     std::vector<sf::Text> fixedTexts;

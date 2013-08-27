@@ -28,6 +28,7 @@ Game::Game()
     rules.loadFromFile("data/default.rule");
     rules.sortAbilities();
     connection.addDownStream(_battlePacketLayer);
+    background = assets.background.createSprite();
 }
 
 Game::~Game()
@@ -154,6 +155,8 @@ void Game::update(sf::Time& delta)
 void Game::draw(sf::Time& delta)
 {
     window.clear(CLEAR_COLOR);
+    // always draw background
+    window.draw(background);
     if(_currentScreen != 0)
     {
         _currentScreen->draw(window,delta);   

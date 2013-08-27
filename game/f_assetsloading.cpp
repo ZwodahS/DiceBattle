@@ -3,8 +3,8 @@
 void Game::loadAssets()
 {
     /// master sprite sheet
-    assets.master1.create(1024,1024);
-    assets.masterS1.create(&assets.master1,sf::IntRect(0,0,1024,1024));
+    assets.master1.create(1280,1280);
+    assets.masterS1.create(&assets.master1,sf::IntRect(0,0,1280,1280));
     //// placeholder spritesheet
     assets.placeholderTexture.create(1200,1200);
     
@@ -31,74 +31,98 @@ void Game::loadAssets()
     assets.placeHolder.sq38 = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,38,38));
     assets.placeHolder.sq150 = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,150));
 
+    image.loadFromFile("data/graphics/background.png");
+    assets.background = assets.masterS1.createRegion(image,0,0);
 
-    assets.icons.spriteSheet = assets.masterS1.createSubSheet(sf::Vector2i(0,0), sf::IntRect(0,0,34,34), 0, 20);
+    assets.icons.spriteSheet = assets.masterS1.createSubSheet(sf::Vector2i(0,480), sf::IntRect(0,0,34,34), 0, 20);
     
-    image.loadFromFile("data/graphics/icons/sword.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/sword.png");
     assets.icons.sword = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/magical.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/magical.png");
     assets.icons.magical = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/physical.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/physical.png");
     assets.icons.physical = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/armor.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/armor.png");
     assets.icons.armor = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/shield.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/shield.png");
     assets.icons.shield = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/burnt.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/burnt.png");
     assets.icons.burnt = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/fire.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/fire.png");
     assets.icons.fire = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/frozen.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/frozen.png");
     assets.icons.frozen = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/ice.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/ice.png");
     assets.icons.ice = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/stunned.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/stunned.png");
     assets.icons.stunned = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/shock.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/shock.png");
     assets.icons.shock = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/heart.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/heart.png");
     assets.icons.heart = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/icons/heal.png");
+    image.loadFromFile("data/graphics/gamescreen/icons/heal.png");
     assets.icons.heal = assets.icons.spriteSheet.createRegion(image);
-    image.loadFromFile("data/graphics/die.png");
-    assets.gameScreenAssets.die = assets.masterS1.createRegion(image,0,600);
+    image.loadFromFile("data/graphics/gamescreen/die.png");
+    assets.gameScreenAssets.die = assets.masterS1.createRegion(image,640,0);
     assets.gameScreenAssets.dieSelectionBorder = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,48,48));
     assets.gameScreenAssets.dieSelectionBorder.defaultColor = sf::Color(230,40,50);
 
-    assets.gameScreenAssets.abilityStrip = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,540,40));
-    assets.gameScreenAssets.rollButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));
-    assets.gameScreenAssets.rollButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));
-    assets.gameScreenAssets.rollButtonSelected.defaultColor = sf::Color(80,80,180,255);
-    assets.gameScreenAssets.doneButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));
-    assets.gameScreenAssets.doneButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,200));
-    assets.gameScreenAssets.doneButtonSelected.defaultColor = sf::Color(80,80,180,255);
-
-    image.loadFromFile("data/graphics/charactersheet.png");
-    assets.gameScreenAssets.characterSheet = assets.masterS1.createRegion(image,0, 100);
+    image.loadFromFile("data/graphics/gamescreen/abilitystrip.png");
+    assets.gameScreenAssets.abilityStrip = assets.masterS1.createRegion(image,0, 514);
+    image.loadFromFile("data/graphics/gamescreen/gamerollbutton.png");
+    assets.gameScreenAssets.rollButton = assets.masterS1.createRegion(image,0,554);
+    assets.gameScreenAssets.rollButtonSelected = assets.masterS1.createRegion(sf::IntRect(0,554,200,70));
+    assets.gameScreenAssets.rollButtonSelected.defaultColor = sf::Color(255,255,170,255);
+    image.loadFromFile("data/graphics/gamescreen/gamedonebutton.png");
+    assets.gameScreenAssets.doneButton = assets.masterS1.createRegion(image,200,554);
+    assets.gameScreenAssets.doneButtonSelected = assets.masterS1.createRegion(sf::IntRect(200,554,200,70));
+    assets.gameScreenAssets.doneButtonSelected.defaultColor = sf::Color(255,255,170,255);
+    image.loadFromFile("data/graphics/gamescreen/charactersheet.png");
+    assets.gameScreenAssets.characterSheet = assets.masterS1.createRegion(image,700, 0);
     
-
-    assets.gameScreenAssets.resultDialogBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,400,100));
-    assets.gameScreenAssets.resultDialogBox.defaultColor = sf::Color(140,115,85);
-    assets.gameScreenAssets.backToSetupButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
-    assets.gameScreenAssets.backToSetupButtonSelected = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
-    assets.gameScreenAssets.backToSetupButtonSelected.defaultColor = sf::Color(200,130,90);
-    assets.gameScreenAssets.lockIcon = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,20,20)); 
-
+    image.loadFromFile("data/graphics/gamescreen/resultdialog.png");
+    assets.gameScreenAssets.resultDialogBox = assets.masterS1.createRegion(image, 640, 100);
+    
+    image.loadFromFile("data/graphics/okButton.png");
+    assets.gameScreenAssets.backToSetupButton = assets.masterS1.createRegion(image, 500, 514);
+    assets.gameScreenAssets.backToSetupButtonSelected = assets.masterS1.createRegion(sf::IntRect(500,514,100,30));
+    assets.gameScreenAssets.backToSetupButtonSelected.defaultColor = sf::Color(255,255,170);
+    image.loadFromFile("data/graphics/gamescreen/lock.png");
+    assets.gameScreenAssets.lockIcon = assets.masterS1.createRegion(image,640,60); 
 
     ////////////////// Setup Screen ///////////////
     assets.setupScreenAssets.nameBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,30));
-    assets.setupScreenAssets.ipAddrBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,200,30));
-    assets.setupScreenAssets.typeSelectionBox = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,30));
-    assets.setupScreenAssets.startButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
+    image.loadFromFile("data/graphics/setupscreen/startButton.png");
+    assets.setupScreenAssets.startButton = assets.masterS1.createRegion(image, 400, 624);
+    assets.setupScreenAssets.startButtonSelected = assets.masterS1.createRegion(sf::IntRect(400, 624, 100, 30));
+    assets.setupScreenAssets.startButtonSelected.defaultColor = sf::Color(255,255,170,255);
 
     //////////////// Main Screen /////////////////
-    assets.mainScreenAssets.joinButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
-    assets.mainScreenAssets.hostButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
-    assets.mainScreenAssets.dialog.background = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,300,200));
-    assets.mainScreenAssets.dialog.background.defaultColor = sf::Color(140,115,85);
-    assets.mainScreenAssets.dialog.ipBg = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,150,30));
-    assets.mainScreenAssets.dialog.nameBg = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,260,30));
-    assets.mainScreenAssets.dialog.joinhostButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
-    assets.mainScreenAssets.dialog.cancelButton = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,100,30));
-    assets.mainScreenAssets.dialog.portBg = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,80,30));
+    image.loadFromFile("data/graphics/mainscreen/bigJoinButton.png");
+    assets.mainScreenAssets.joinButton = assets.masterS1.createRegion(image, 0, 654);
+    image.loadFromFile("data/graphics/mainscreen/bigHostButton.png");
+    assets.mainScreenAssets.hostButton = assets.masterS1.createRegion(image, 200, 654);
+    image.loadFromFile("data/graphics/mainscreen/bigLocalButton.png");
+    assets.mainScreenAssets.localButton = assets.masterS1.createRegion(image, 400, 654);
+    
+    image.loadFromFile("data/graphics/mainscreen/dialog.png");
+    assets.mainScreenAssets.dialog.background = assets.masterS1.createRegion(image, 640, 200);
+    image.loadFromFile("data/graphics/mainscreen/ipbox.png");
+    assets.mainScreenAssets.dialog.ipBg = assets.masterS1.createRegion(image, 940, 100);
+    image.loadFromFile("data/graphics/mainscreen/namebox.png");
+    assets.mainScreenAssets.dialog.nameBg = assets.masterS1.createRegion(image, 640, 400);
+    image.loadFromFile("data/graphics/mainscreen/portbox.png");
+    assets.mainScreenAssets.dialog.portBg = assets.masterS1.createRegion(image, 640, 430);
+    image.loadFromFile("data/graphics/mainscreen/joinButton.png");
+    assets.mainScreenAssets.dialog.joinButton = assets.masterS1.createRegion(image, 100, 624);
+    assets.mainScreenAssets.dialog.joinButtonSelected = assets.masterS1.createRegion(sf::IntRect(100,624,100,30));
+    assets.mainScreenAssets.dialog.joinButtonSelected.defaultColor = sf::Color(255,255,170,255);
+    image.loadFromFile("data/graphics/mainscreen/hostButton.png");
+    assets.mainScreenAssets.dialog.hostButton = assets.masterS1.createRegion(image, 200, 624);
+    assets.mainScreenAssets.dialog.hostButtonSelected = assets.masterS1.createRegion(sf::IntRect(200,624,100,30));
+    assets.mainScreenAssets.dialog.hostButtonSelected.defaultColor = sf::Color(255,255,170,255);
+    image.loadFromFile("data/graphics/mainscreen/cancelButton.png");
+    assets.mainScreenAssets.dialog.cancelButton = assets.masterS1.createRegion(image, 300, 624);
+    assets.mainScreenAssets.dialog.cancelButtonSelected = assets.masterS1.createRegion(sf::IntRect(300,624,100,30));
+    assets.mainScreenAssets.dialog.cancelButtonSelected.defaultColor = sf::Color(255,255,170,255);
 }

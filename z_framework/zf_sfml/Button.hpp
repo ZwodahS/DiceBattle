@@ -29,27 +29,27 @@
 #include <SFML/Graphics.hpp>
 namespace zf
 {
-    struct Button
+    class Button
     {
-        public:
-            sf::Sprite selectedSprite;
-            sf::Sprite unselectedSprite;
-            void setPosition(sf::Vector2f position);
-            void updateSelection(sf::Vector2f mousePos);
-            Button(const Button &button);
-            Button(sf::Sprite selectedSprite, sf::Sprite unselectedSprite, sf::FloatRect size);
-            Button();
-            ~Button();
+    public:
+        sf::Sprite selectedSprite;
+        sf::Sprite unselectedSprite;
+        void setPosition(sf::Vector2f position);
+        void updateSelection(sf::Vector2f mousePos);
+        Button(const Button &button);
+        Button(sf::Sprite selectedSprite, sf::Sprite unselectedSprite, sf::FloatRect size);
+        Button();
+        ~Button();
 
-            void draw(sf::RenderWindow& window, sf::Time delta);
-            const sf::FloatRect &clickBound;
-            const bool& selected;
+        void draw(sf::RenderWindow& window, sf::Time delta);
+        const sf::FloatRect &clickBound;
+        const bool& selected;
 
-            Button& operator=(const Button &rhs);
-        private:
-            sf::FloatRect _clickBound;
-            bool _selected;
-            void setSelected(bool selection);
+        Button& operator=(const Button &rhs);
+    private:
+        sf::FloatRect _clickBound;
+        bool _selected;
+        void setSelected(bool selection);
     };
 }
 #endif

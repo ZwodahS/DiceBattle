@@ -1,6 +1,6 @@
 " This file stores the rules for the game/server.
 " This value stores the hp of the player.
-1
+50
 " The following is the dice information.
 " Each number corresponds to the face that is in that die.
 " Each die must have 6 face, and must have 6 dice

@@ -31,11 +31,11 @@
 class iAnimatable
 {
     public:
-        virtual void setPosition(sf::Vector2f position);
-        virtual void setAlpha(float alpha);
-        virtual void move(sf::Vector2f move);
-        virtual void setColor(sf::Color color);
-        virtual sf::Vector2f getPosition();
-        virtual void draw(sf::RenderWindow& window, const sf::Time& delta);
+        virtual void setPosition(sf::Vector2f position) = 0;
+        virtual void setAlpha(float alpha) = 0;
+        virtual void move(sf::Vector2f move) = 0;
+        virtual void setColor(sf::Color color) = 0;
+        virtual sf::Vector2f getPosition() = 0;
+        virtual void draw(sf::RenderWindow& window, const sf::Time& delta) = 0;
 };
 #endif

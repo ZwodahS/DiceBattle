@@ -18,7 +18,7 @@ public:
     static const sf::Vector2f startButtonPosition;
     static const sf::Vector2f nameOffset;
     static const sf::Vector2f buttonTextOffset;
-
+    static const sf::Vector2f waitingForServerOffset;
     static const sf::Vector2f vsTextPosition;
 
     static const int MAX_NAME_SIZE = 12;
@@ -72,6 +72,7 @@ private:
     sf::Text name1Text;
     sf::Text name2Text;
     sf::Text startText;
+    sf::Text waitingForServerText;
     // text that will not change but need to be displayed.
     std::vector<sf::Text> fixedTexts;
     
@@ -87,5 +88,8 @@ private:
 
     void removePlayer(PlayerObj player);
     void updatePlayer(PlayerObj player);
+
+    bool _connected;
+    float _rejoinTimer;
 };
 #endif

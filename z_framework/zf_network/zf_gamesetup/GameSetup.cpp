@@ -151,10 +151,19 @@ namespace zf
             player.uniqueId = connection.name;
             player.name = name;
             player.role = "";
-            gamesetup_addPlayer(player);
-            sendJoinGameSuccessMessage(connection, player);
-            sendPlayerJoinMessage(player);
-            listener_playerJoined(player);
+            // make sure that this idiot isnot already joined
+            Player* playerPtr = getPlayer(player.uniqueId);
+            if(playerPtr != 0)
+            {
+                // do nothing
+            }
+            else
+            {
+                gamesetup_addPlayer(player);
+                sendJoinGameSuccessMessage(connection, player);
+                sendPlayerJoinMessage(player);
+                listener_playerJoined(player);
+            }
         }
     }
     

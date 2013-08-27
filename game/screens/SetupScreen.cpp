@@ -6,9 +6,11 @@ const sf::Vector2f SetupScreen::nameOffset = sf::Vector2f(10,0);
 const sf::Vector2f SetupScreen::startButtonPosition = sf::Vector2f(270, 400);
 const sf::Vector2f SetupScreen::buttonTextOffset = sf::Vector2f(20,0);
 const sf::Vector2f SetupScreen::vsTextPosition = sf::Vector2f(300, 200);
+const sf::Vector2f SetupScreen::waitingForServerOffset = sf::Vector2f(300,250);
 SetupScreen::SetupScreen(Game& game, GameType::eGameType st, zf::GameSetup* setup)
     :Screen(game), setupType(st), name1Text("Player1", game.assets.gameScreenAssets.abilityFont, 20), name2Text("Player2", game.assets.gameScreenAssets.abilityFont, 20)
-    , currentSelection(Name1), startText("Start", game.assets.gameScreenAssets.abilityFont, 20), _gameSetup(setup)
+    , currentSelection(Name1), startText("Start", game.assets.gameScreenAssets.abilityFont, 20), _gameSetup(setup), _connected(false), _rejoinTimer(0)
+    , waitingForServerText("Waiting for server ...", game.assets.gameScreenAssets.abilityFont, 20)
 {
     if(st == GameType::Local)
     {
@@ -31,6 +33,7 @@ SetupScreen::SetupScreen(Game& game, GameType::eGameType st, zf::GameSetup* setu
         player2.uniqueId = "";
         player2.name = "";
         player2.role = "2";
+        _connected = true;
     }    
     else 
     {
@@ -80,6 +83,8 @@ SetupScreen::SetupScreen(Game& game, GameType::eGameType st, zf::GameSetup* setu
     fixedTexts.push_back(tmp);
 
     setCurrentSelection(Name1);
+    waitingForServerText.setPosition(waitingForServerOffset);
+
 }
 
 SetupScreen::~SetupScreen()
@@ -166,10 +171,24 @@ void SetupScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
         startButton.draw(window, delta);
     }
     window.draw(startText);
+    if(!_connected)
+    {
+        window.draw(waitingForServerText);
+    }
 }
 
 void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
 {
+    if(!_connected)
+    {
+        _rejoinTimer -= delta.asSeconds();
+        if(_rejoinTimer <= 0)
+        {
+            _gameSetup->joinServer();
+            _rejoinTimer = 5;
+        }
+        return;
+    }
     // handles input
     if(_game.isFocused && screenState == Screen::Active)
     {
@@ -296,6 +315,7 @@ void SetupScreen::gameStarts()
 }
 void SetupScreen::joinSuccess(std::string name, std::string role)
 {
+    _connected = true;
 }
 void SetupScreen::playerJoined(std::string uniqueId, std::string name, std::string role)
 {

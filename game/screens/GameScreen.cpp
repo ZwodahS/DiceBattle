@@ -317,7 +317,7 @@ void GameScreen::animate_abilityUsed(Ability& ability)
     if(hasAbilitySprite(ability))
     {
         AbilitySprite as = getAndRemoveAbilitySprite(ability);
-        as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[0] - 40);
+        as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[0] - 10);
         sf::Vector2f tmpPos = as.getPosition();
         // the final position of this is always less than the current position relative to top left.
         // Since the move speed needs to be positive, speed = current - final
@@ -328,7 +328,9 @@ void GameScreen::animate_abilityUsed(Ability& ability)
     {
         AbilitySprite as = makeAbilitySprite(ability);
         as.setPosition(sf::Vector2f(Ability_X, AbilityOffScreen_Y[0]));
-        as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[0] - 40);
+        as.finalPosition = sf::Vector2f(Ability_X, Ability_Y[0] - 10);
+        sf::Vector2f tmpPos = as.getPosition();
+        as.moveSpeed = tmpPos - as.finalPosition;
         tmp.push_back(as);
     }
     int i = 0;

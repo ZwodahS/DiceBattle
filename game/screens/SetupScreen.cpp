@@ -168,7 +168,7 @@ void SetupScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
     }
 }
 
-void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
+void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     if(!_connected)
     {
@@ -181,7 +181,7 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta)
         return;
     }
     // handles input
-    if(_game.isFocused && screenState == Screen::Active)
+    if(handleInput && screenState == Screen::Active)
     {
         zf::Mouse& mouse = _game.mouse;
         sf::Vector2i mousePos = mouse.getPosition(window);

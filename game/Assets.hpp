@@ -49,6 +49,7 @@ struct MainScreenAssets
     TextureRegion localButton;
     TextureRegion joinButton;
     TextureRegion hostButton;
+    TextureRegion helpButton;
 };
 
 struct SetupScreenAssets
@@ -74,6 +75,8 @@ struct GameScreenAssets
     TextureRegion backToSetupButton;
     TextureRegion backToSetupButtonSelected;
     TextureRegion lockIcon;
+    TextureRegion rulesButton;
+    TextureRegion rulesButtonSelected;
     sf::Font abilityFont;
     SpriteSheet spriteSheet;
 };
@@ -105,5 +108,13 @@ struct Assets
     sf::Texture placeholderTexture;
     sf::Sprite getSprite(DieFace::eDieFace);
     sf::Sprite getSprite(AbilityType::eAbilityType);
+
+    TextureRegion previousButton;
+    TextureRegion previousButtonSelected;
+    TextureRegion nextButton;
+    TextureRegion nextButtonSelected;
+    TextureRegion closeButton;
+    TextureRegion closeButtonSelected;
+
 };
 #endif

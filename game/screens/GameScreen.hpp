@@ -30,6 +30,7 @@ public:
     static const sf::FloatRect BackToSetupButtonSize;
     static const sf::Vector2f RollButtonPosition;
     static const sf::Vector2f DoneButtonPosition;
+    static const sf::Vector2f RulesButtonPosition;
     static const sf::Vector2f BackToSetupButtonPosition;
     static const sf::Vector2f ResultDialogPosition;
     static const sf::Vector2f ResultTextPosition;
@@ -61,19 +62,19 @@ public:
 
     void textInput(char c);
     void draw(sf::RenderWindow& window, const sf::Time& delta);
-    void update(sf::RenderWindow& window, const sf::Time& delta);
-    void update_empty(sf::RenderWindow& window, const sf::Time& delta);
-    void update_animatingIn(sf::RenderWindow& window, const sf::Time& delta);
-    void update_gameReady(sf::RenderWindow& window, const sf::Time& delta);
-    void update_diceIn(sf::RenderWindow& window, const sf::Time& delta);
-    void update_diceNotRolled(sf::RenderWindow& window, const sf::Time& delta);
-    void update_diceRolling(sf::RenderWindow& window, const sf::Time& delta);
-    void update_diceRolled(sf::RenderWindow& window, const sf::Time& delta);
-    void update_animatingAbilityUsed(sf::RenderWindow& window, const sf::Time& delta);
-    void update_abilityUsed(sf::RenderWindow& window, const sf::Time& delta);
-    void update_animatingTurnEnds(sf::RenderWindow& window, const sf::Time& delta);
-    void update_gameEnding(sf::RenderWindow& window, const sf::Time& delta);
-    void update_gameEnd(sf::RenderWindow& window, const sf::Time& delta);
+    void update(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_empty(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_animatingIn(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_gameReady(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_diceIn(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_diceNotRolled(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_diceRolling(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_diceRolled(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_animatingAbilityUsed(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_abilityUsed(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_animatingTurnEnds(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_gameEnding(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
+    void update_gameEnd(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
 
     void update_setDice(std::vector<Die>& dice);
     void removeMessageUntilType(Message::MessageType type);    
@@ -278,6 +279,7 @@ private:
     ///// Buttons //////
     zf::Button rollButton;
     zf::Button doneButton;
+    zf::Button _rulesButton;
     ///// Dialog /////
     sf::Sprite resultDialog;
     sf::Text resultText;

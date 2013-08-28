@@ -19,6 +19,8 @@ class Screen;
 class GameScreen;
 class MainScreen;
 class SetupScreen;
+class HelpScreen;
+class AbilityScreen;
 class Battle;
 class Game : public zf::ConnectionListener
 {
@@ -76,6 +78,9 @@ class Game : public zf::ConnectionListener
          */
         void backToSetup(GameType::eGameType gameType, PlayerRole::ePlayerRole myRole);
 
+        void toggleShowHelp();
+        void toggleShowAbilities(Rules& rules);
+
     private:
         void update(sf::Time& delta);
         void draw(sf::Time& delta);
@@ -87,6 +92,8 @@ class Game : public zf::ConnectionListener
         MainScreen* _mainScreen;
         GameScreen* _gameScreen;        
         SetupScreen* _setupScreen;
+        HelpScreen* _helpScreen;
+        AbilityScreen* _abilityScreen;
         Battle* _currentBattle;
 
         // Use game object as the connection manager.
@@ -97,6 +104,8 @@ class Game : public zf::ConnectionListener
         zf::GameSetup* getNewGameSetup(bool isHosting);
 
         sf::Sprite background;
+        bool _showHelp;
+        bool _showAbilities;
 };
 
 

@@ -3,6 +3,8 @@
 #include "screens/SetupScreen.hpp"
 #include "screens/GameScreen.hpp"
 #include "screens/MainScreen.hpp"
+#include "screens/HelpScreen.hpp"
+#include "screens/AbilityScreen.hpp"
 #include "screens/Screen.hpp"
 #include "screens/GameScreenViewer.hpp"
 #include "logic/GeneralUpdater.hpp"
@@ -15,13 +17,15 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #define CLEAR_COLOR sf::Color(20,20,20,255)
-#define GAME_TITLE "Game Name"
+#define GAME_TITLE "Dice Battle"
 #define GAME_WIDTH 640
 #define GAME_HEIGHT 480
 Game::Game()
     :width(GAME_WIDTH), height(GAME_HEIGHT), title(GAME_TITLE) 
     , window(sf::VideoMode(width,height),title),mouse(), _currentScreen(0), _nextScreen(0), _currentBattle(0)
     , _mainScreen(0), _gameScreen(0), _setupScreen(0), _battlePacketLayer(connection), _gameSetup(0), isFocused(true)
+    , _helpScreen(0), _showHelp(false)
+    , _abilityScreen(0), _showAbilities(false)
 {
     window.setFramerateLimit(50);
     loadAssets();
@@ -33,6 +37,10 @@ Game::Game()
 
 Game::~Game()
 {
+    if(_helpScreen != 0)
+    {
+        delete _helpScreen;
+    }
 }
 
 void Game::run()
@@ -99,6 +107,14 @@ void Game::run()
 
 void Game::update(sf::Time& delta)
 {
+    if(_showHelp && _helpScreen != 0)
+    {
+        _helpScreen->update(window, delta, isFocused);
+    }
+    if(_showAbilities && _abilityScreen != 0)
+    {
+        _abilityScreen->update(window, delta, isFocused);
+    }
     if(_waitingReplyTimeout >= 0)
     {
         _waitingReplyTimeout -= delta.asSeconds();
@@ -113,7 +129,7 @@ void Game::update(sf::Time& delta)
     }
     if(_currentScreen != 0)
     {
-        _currentScreen->update(window, delta);
+        _currentScreen->update(window, delta, isFocused && !_showHelp && !_showAbilities);
     }
     if(_currentScreen != 0 && _currentScreen->screenState == Screen::Exited)
     {
@@ -157,7 +173,15 @@ void Game::draw(sf::Time& delta)
     window.clear(CLEAR_COLOR);
     // always draw background
     window.draw(background);
-    if(_currentScreen != 0)
+    if(_showHelp && _helpScreen != 0)
+    {
+        _helpScreen->draw(window, delta);
+    }
+    else if(_showAbilities && _abilityScreen != 0)
+    {
+        _abilityScreen->draw(window,delta);
+    }
+    else if(_currentScreen != 0)
     {
         _currentScreen->draw(window,delta);   
     }
@@ -366,4 +390,29 @@ zf::GameSetup* Game::getNewGameSetup(bool isHosting)
     _gameSetup = new zf::GameSetup(connection.verifiedName, connection, GAMESETUP_HEADER, isHosting);
     connection.addDownStream(*_gameSetup);
     return _gameSetup;
+}
+
+void Game::toggleShowHelp()
+{
+    _showHelp = !_showHelp;
+    if(_showHelp && _helpScreen == 0)
+    {
+        _helpScreen = new HelpScreen(*this);
+    }
+}
+
+void Game::toggleShowAbilities(Rules& rule)
+{
+    _showAbilities = !_showAbilities;
+    if(_showAbilities && _abilityScreen == 0)
+    {
+        if(_abilityScreen == 0)
+        {
+            _abilityScreen = new AbilityScreen(*this, rule);
+        }
+        else
+        {
+            _abilityScreen->setRule(rule);
+        }
+    }
 }

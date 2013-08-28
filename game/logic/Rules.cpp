@@ -64,6 +64,11 @@ sf::Int32 Rules::getStartingHp() const
 {
     return _startingHp;
 }
+
+sf::Int32 Rules::abilityCount() const
+{
+    return _abilities.size();
+}
 const std::vector<Die>& Rules::getDice() const
 {
     return _dice;

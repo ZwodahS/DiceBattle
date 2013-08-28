@@ -54,6 +54,12 @@ sf::Vector2i zf::Mouse::getPosition(sf::Window &window)
     return sf::Mouse::getPosition(window);
 }
 
+sf::Vector2f zf::Mouse::getPositionF(sf::Window& window)
+{
+    sf::Vector2i pos = getPosition(window);
+    return sf::Vector2f(pos.x, pos.y);
+}
+
 sf::Vector2f zf::Mouse::getWorldPosition(sf::RenderWindow &window)
 {
     return window.mapPixelToCoords(getPosition(window));

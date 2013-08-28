@@ -34,6 +34,19 @@ void Game::loadAssets()
     image.loadFromFile("data/graphics/background.png");
     assets.background = assets.masterS1.createRegion(image,0,0);
 
+    image.loadFromFile("data/graphics/helpscreen/nextpage.png");
+    assets.nextButton = assets.masterS1.createRegion(image, 970, 0);
+    assets.nextButtonSelected = assets.nextButton;
+    assets.nextButtonSelected.defaultColor = sf::Color(255,255,170,255);
+    image.loadFromFile("data/graphics/helpscreen/previouspage.png");
+    assets.previousButton = assets.masterS1.createRegion(image, 995, 0);
+    assets.previousButtonSelected = assets.previousButton;
+    assets.previousButtonSelected.defaultColor = sf::Color(255,255,170,255);
+    image.loadFromFile("data/graphics/helpscreen/close.png");
+    assets.closeButton = assets.masterS1.createRegion(image, 1020, 0);
+    assets.closeButtonSelected = assets.closeButton;
+    assets.closeButtonSelected.defaultColor = sf::Color(255,255,170,255); 
+
     assets.icons.spriteSheet = assets.masterS1.createSubSheet(sf::Vector2i(0,480), sf::IntRect(0,0,34,34), 0, 20);
     
     image.loadFromFile("data/graphics/gamescreen/icons/sword.png");
@@ -90,6 +103,12 @@ void Game::loadAssets()
     image.loadFromFile("data/graphics/gamescreen/lock.png");
     assets.gameScreenAssets.lockIcon = assets.masterS1.createRegion(image,640,60); 
 
+    image.loadFromFile("data/graphics/gamescreen/rulesButton.png");
+    assets.gameScreenAssets.rulesButton = assets.masterS1.createRegion(image,970, 30);
+    assets.gameScreenAssets.rulesButtonSelected = assets.gameScreenAssets.rulesButton;
+    assets.gameScreenAssets.rulesButtonSelected.defaultColor = sf::Color(255,255,170,255);
+
+
     ////////////////// Setup Screen ///////////////
     image.loadFromFile("data/graphics/setupscreen/namebox.png");
     assets.setupScreenAssets.nameBox = assets.masterS1.createRegion(image, 640, 430);
@@ -105,7 +124,9 @@ void Game::loadAssets()
     assets.mainScreenAssets.hostButton = assets.masterS1.createRegion(image, 200, 654);
     image.loadFromFile("data/graphics/mainscreen/bigLocalButton.png");
     assets.mainScreenAssets.localButton = assets.masterS1.createRegion(image, 400, 654);
-    
+    image.loadFromFile("data/graphics/mainscreen/bigHelpButton.png");
+    assets.mainScreenAssets.helpButton = assets.masterS1.createRegion(image,600,654);
+
     image.loadFromFile("data/graphics/mainscreen/dialog.png");
     assets.mainScreenAssets.dialog.background = assets.masterS1.createRegion(image, 640, 200);
     image.loadFromFile("data/graphics/mainscreen/ipbox.png");

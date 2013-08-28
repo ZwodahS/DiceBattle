@@ -23,7 +23,7 @@ void GameScreen::removeMessageUntilType(Message::MessageType type)
     }
 }
 
-void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     _animator.update(window,delta);
     // if screen is not active, do nothing
@@ -43,57 +43,63 @@ void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta)
     sf::Vector2i mousePosition = mouse.getPosition(window);
     if(_currentState == Empty)
     {
-        update_empty(window,delta);
+        update_empty(window,delta,handleInput);
     }    
     else if(_currentState == AnimatingIn)
     {
-        update_animatingIn(window,delta);
+        update_animatingIn(window,delta,handleInput);
     }
     else if(_currentState == GameReady)
     {
-        update_gameReady(window,delta);
+        update_gameReady(window,delta,handleInput);
     }
     else if(_currentState == DiceIn)
     {
-        update_diceIn(window,delta);
+        update_diceIn(window,delta,handleInput);
     }
     else if(_currentState == DiceNotRolled)
     {
-        update_diceNotRolled(window,delta);
+        update_diceNotRolled(window,delta,handleInput);
     }
     else if(_currentState == DiceRolling)
     {
-        update_diceRolling(window,delta);
+        update_diceRolling(window,delta,handleInput);
     }
     else if(_currentState == DiceRolled)
     {
-        update_diceRolled(window,delta);
+        update_diceRolled(window,delta,handleInput);
     }
     else if(_currentState == AnimatingAbilityUsed)
     {
-        update_animatingAbilityUsed(window,delta);
+        update_animatingAbilityUsed(window,delta,handleInput);
     }
     else if(_currentState == AbilityUsed)
     {
-        update_abilityUsed(window,delta);
+        update_abilityUsed(window,delta,handleInput);
     }
     else if(_currentState == AnimatingTurnEnds)
     {
-        update_animatingTurnEnds(window,delta);
+        update_animatingTurnEnds(window,delta,handleInput);
     }
     else if(_currentState == GameEnding)
     {
-        update_gameEnding(window,delta);
+        update_gameEnding(window,delta,handleInput);
     }
     else if(_currentState == GameEnd)
     {
-        update_gameEnd(window,delta);
+        update_gameEnd(window,delta,handleInput);
     }
-    if(_game.isFocused)
+    if(handleInput)
     {
-        rollButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
-        doneButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
-        backToSetupButton.updateSelection(sf::Vector2f(mousePosition.x, mousePosition.y));
+        sf::Vector2f mousePosF = sf::Vector2f(mousePosition.x, mousePosition.y);
+        rollButton.updateSelection(mousePosF);
+        doneButton.updateSelection(mousePosF);
+        backToSetupButton.updateSelection(mousePosF);
+        _rulesButton.updateSelection(mousePosF);
+        if(mouse.left.thisPressed && _rulesButton.clickBound.contains(mousePosF))
+        {
+            _game.toggleShowAbilities(_battle.rules);
+        }
     }
     for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
     {
@@ -101,7 +107,7 @@ void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta)
     }
 }
 
-void GameScreen::update_empty(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_empty(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     DB_GameStartMessage* startGameMessage = 0;
     // remove all messages other than DB_GameStartMessage
@@ -128,7 +134,7 @@ void GameScreen::update_empty(sf::RenderWindow& window, const sf::Time& delta)
         delete startGameMessage;
     }
 }
-void GameScreen::update_animatingIn(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_animatingIn(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     _animationTimer1 -= delta.asSeconds();
     if(_animationTimer1 <= 0)
@@ -137,7 +143,7 @@ void GameScreen::update_animatingIn(sf::RenderWindow& window, const sf::Time& de
     }
 }
 
-void GameScreen::update_gameReady(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_gameReady(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     DB_ActiveTurnMessage* message = 0;
     removeMessageUntilType(Message::ActiveTurnMessage);
@@ -153,7 +159,7 @@ void GameScreen::update_gameReady(sf::RenderWindow& window, const sf::Time& delt
     }
 }
 
-void GameScreen::update_diceIn(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_diceIn(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     _animationTimer1 -= delta.asSeconds();
     if(_animationTimer1 <= 0)
@@ -162,7 +168,7 @@ void GameScreen::update_diceIn(sf::RenderWindow& window, const sf::Time& delta)
     }
 }
 
-void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     // check if this gamescreen role is the current role
     if(_role == _battle.currentPlayer || _role == PlayerRole::Both)
@@ -170,7 +176,7 @@ void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& 
         // if this screen is the active player, check for inputs
         zf::Mouse& mouse = _game.mouse;
         sf::Vector2i position = mouse.getPosition(window);
-        if(_game.isFocused && _game.mouse.left.thisReleased)
+        if(handleInput && _game.mouse.left.thisReleased)
         {
             if(rollButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
             {
@@ -206,7 +212,7 @@ void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& 
     }
 }
 
-void GameScreen::update_diceRolling(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_diceRolling(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     _animationTimer1 -= delta.asSeconds();
     if(_animationTimer1 <= 0)
@@ -222,7 +228,7 @@ void GameScreen::update_diceRolling(sf::RenderWindow& window, const sf::Time& de
         _animationTimer1 = 1;
     }
 }
-void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     if(_role == _battle.currentPlayer || _role == PlayerRole::Both)
     {
@@ -230,7 +236,7 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
         sf::Vector2i mousePos = mouse.getPosition(window);
         sf::Vector2f mousePosF(mousePos.x,mousePos.y);
         // find out if the player select any 
-        if(_game.isFocused && mouse.left.thisReleased)
+        if(handleInput && mouse.left.thisReleased)
         {
             DieSprite* clickedDieSprite = getDieSprite(mousePosF);
             if(clickedDieSprite != 0)
@@ -310,7 +316,7 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
         }
     }
 }
-void GameScreen::update_animatingAbilityUsed(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_animatingAbilityUsed(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     _animationTimer1 -= delta.asSeconds();
     if(_animationTimer1 <= 0)
@@ -323,13 +329,13 @@ void GameScreen::update_animatingAbilityUsed(sf::RenderWindow& window, const sf:
         delete message;
     } 
 }
-void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     if(_role == _battle.currentPlayer || _role == PlayerRole::Both)
     {
         zf::Mouse& mouse = _game.mouse;
         sf::Vector2i position = mouse.getPosition(window);
-        if(_game.isFocused && _game.mouse.left.thisReleased)
+        if(handleInput && _game.mouse.left.thisReleased)
         {
             // check roll button 
             if(rollButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
@@ -414,7 +420,7 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
         delete newDiceMessage;
     }
 }
-void GameScreen::update_animatingTurnEnds(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_animatingTurnEnds(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     if(_animationTimer1 > 0)
     {
@@ -464,19 +470,19 @@ void GameScreen::update_animatingTurnEnds(sf::RenderWindow& window, const sf::Ti
         }
     }
 }
-void GameScreen::update_gameEnding(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_gameEnding(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     // check if the back to setup button is pressed.
     zf::Mouse& mouse = _game.mouse;
     sf::Vector2i position = mouse.getPosition(window);
-    if(_game.isFocused && mouse.left.thisDown && backToSetupButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
+    if(handleInput && mouse.left.thisDown && backToSetupButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
     {
         _game.backToSetup(_gameType, _role);
         _currentState = GameEnd;
     }
     // if presss, then switch to game end state and call the game to exit this screen
 }
-void GameScreen::update_gameEnd(sf::RenderWindow& window, const sf::Time& delta)
+void GameScreen::update_gameEnd(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
 }
 

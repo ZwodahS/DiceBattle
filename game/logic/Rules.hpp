@@ -19,6 +19,7 @@ public:
     bool containsAbility(const Ability& ability) const;
     const std::vector<Die>& getDice() const;
     const std::vector<Ability>& getAbilities() const;
+    int abilityCount() const;
     std::vector<Ability> matchAbilities(std::vector<Die>& rolledDice, sf::Int32 c);
     std::vector<Ability> matchAbilities(std::vector<Die>& rolledDice, std::vector<Die>& selectedDice, sf::Int32 c);
     bool loadFromFile(std::string filename);

@@ -11,6 +11,7 @@ const sf::Vector2f MainScreen::ipAddrPosition = sf::Vector2f(150, 300);
 const sf::Vector2f MainScreen::localButtonPosition = sf::Vector2f(-33, 200);
 const sf::Vector2f MainScreen::hostButtonPosition = sf::Vector2f(-33, 270);
 const sf::Vector2f MainScreen::joinButtonPosition = sf::Vector2f(-33, 340);
+const sf::Vector2f MainScreen::helpButtonPosition = sf::Vector2f(-33, 410);
 const sf::Vector2f MainScreen::buttonTextOffset = sf::Vector2f(20,0);
 const sf::Vector2f MainScreen::vsTextPosition = sf::Vector2f(300, 200);
 
@@ -46,12 +47,13 @@ MainScreen::MainScreen(Game& game)
     , _joinButton(game.assets.mainScreenAssets.joinButton.createSprite(), sf::Vector2f(30,0), 0.2)
     , _hostButton(game.assets.mainScreenAssets.hostButton.createSprite(), sf::Vector2f(30,0), 0.2)
     , _localButton(game.assets.mainScreenAssets.localButton.createSprite(), sf::Vector2f(30,0), 0.2)
+    , _helpButton(game.assets.mainScreenAssets.helpButton.createSprite(), sf::Vector2f(30,0), 0.2)
 {
     // BUTTONS
     _joinButton.setPosition(joinButtonPosition + sf::Vector2f(-300,0));
     _hostButton.setPosition(hostButtonPosition + sf::Vector2f(-300,0));
     _localButton.setPosition(localButtonPosition + sf::Vector2f(-300, 0));
-
+    _helpButton.setPosition(helpButtonPosition + sf::Vector2f(-300,0));
     dialog_background = game.assets.mainScreenAssets.dialog.background.createSprite();
     dialog_nameBg = game.assets.mainScreenAssets.dialog.nameBg.createSprite();
     dialog_nameText.setColor(sf::Color(110,110,90));
@@ -73,6 +75,7 @@ void MainScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
     _localButton.draw(window, delta);
     _hostButton.draw(window, delta);
     _joinButton.draw(window, delta);
+    _helpButton.draw(window, delta);
     if(currentDialogState == NoDialog)
     {
     }
@@ -100,7 +103,7 @@ void MainScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
     }
 }
 
-void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
+void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     _animator.update(window, delta);
     if(screenState == Screen::Entering)
@@ -113,7 +116,7 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
     }
     else if(screenState == Screen::Active)
     {
-        if(_game.isFocused)
+        if(handleInput)
         {
             zf::Mouse& mouse = _game.mouse;
             sf::Vector2i mousePosi = mouse.getPosition(window);
@@ -123,6 +126,7 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                 _localButton.updateSelection(mousePosf, delta);
                 _hostButton.updateSelection(mousePosf, delta);
                 _joinButton.updateSelection(mousePosf, delta);
+                _helpButton.updateSelection(mousePosf, delta);
 
                 if(mouse.left.thisReleased)
                 {
@@ -137,6 +141,10 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta)
                     else if(_joinButton.bound.contains(mousePosf))
                     {
                         setDialogState(JoinDialog);
+                    }
+                    else if(_helpButton.bound.contains(mousePosf))
+                    {
+                        _game.toggleShowHelp();
                     }
                 }
             }
@@ -257,6 +265,7 @@ void MainScreen::screenEnter()
     _animator.moveReferenceTo(_localButton, localButtonPosition, 1.5);
     _animator.moveReferenceTo(_hostButton, hostButtonPosition, 1.5);
     _animator.moveReferenceTo(_joinButton, joinButtonPosition, 1.5);
+    _animator.moveReferenceTo(_helpButton, helpButtonPosition, 1.5);
     timer = 2;
 }
 
@@ -265,6 +274,7 @@ void MainScreen::screenExit()
     _animator.moveReference(_localButton, sf::Vector2f(-700,0), 1.5);
     _animator.moveReference(_hostButton, sf::Vector2f(-700,0), 1.5);
     _animator.moveReference(_joinButton, sf::Vector2f(-700,0), 1.5);
+    _animator.moveReference(_helpButton, sf::Vector2f(-700,0), 1.5);
     screenState = Screen::Exiting;
     timer = 1;
 }

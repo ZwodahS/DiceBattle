@@ -15,6 +15,7 @@ public:
     static const sf::Vector2f joinButtonPosition;
     static const sf::Vector2f hostButtonPosition;
     static const sf::Vector2f localButtonPosition;
+    static const sf::Vector2f helpButtonPosition;
     static const sf::Vector2f buttonTextOffset;
 
     static const sf::Vector2f vsTextPosition;
@@ -42,7 +43,7 @@ public:
     ~MainScreen();
     
     void draw(sf::RenderWindow& window, const sf::Time& delta);
-    void update(sf::RenderWindow& window, const sf::Time& delta);
+    void update(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
     void textInput(char c);
     void screenEnter();
     void screenExit();
@@ -60,6 +61,7 @@ private:
     zf::ShiftButton _joinButton;
     zf::ShiftButton _hostButton;
     zf::ShiftButton _localButton;
+    zf::ShiftButton _helpButton;
     SimpleAnimator _animator;
 
     // I have to pull this out as a class next time ...

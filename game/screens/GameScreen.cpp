@@ -21,6 +21,7 @@ const sf::FloatRect GameScreen::BackToSetupButtonSize = sf::FloatRect(0,0,100,30
 
 const sf::Vector2f GameScreen::RollButtonPosition = sf::Vector2f(135,150);
 const sf::Vector2f GameScreen::DoneButtonPosition = sf::Vector2f(405,150);
+const sf::Vector2f GameScreen::RulesButtonPosition = sf::Vector2f(20, 430);
 const sf::Vector2f GameScreen::BackToSetupButtonPosition = sf::Vector2f(270,250);
 const sf::Vector2f GameScreen::ResultDialogPosition = sf::Vector2f(170,200);
 const sf::Vector2f GameScreen::ResultTextPosition = sf::Vector2f(320, 210);
@@ -31,11 +32,13 @@ GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r, GameTyp
     :Screen(game), _battle(b), _role(r), _currentState(Empty), _currentPlayer(PlayerRole::PlayerOne)
     ,rollButton(game.assets.gameScreenAssets.rollButtonSelected.createSprite(), game.assets.gameScreenAssets.rollButton.createSprite(), RollButtonSize)
     ,doneButton(game.assets.gameScreenAssets.doneButtonSelected.createSprite(), game.assets.gameScreenAssets.doneButton.createSprite(), DoneButtonSize)
+    ,_rulesButton(game.assets.gameScreenAssets.rulesButtonSelected.createSprite(), game.assets.gameScreenAssets.rulesButton.createSprite(), sf::FloatRect(0, 0, 60, 40))
     ,backToSetupButton(game.assets.gameScreenAssets.backToSetupButtonSelected.createSprite(), game.assets.gameScreenAssets.backToSetupButton.createSprite(), BackToSetupButtonSize)
     ,_updater(r), _viewer(r, *this), resultText("Player1 Wins", game.assets.gameScreenAssets.abilityFont, 24), _gameType(gt)
 {
     rollButton.setPosition(RollButtonPosition);
     doneButton.setPosition(DoneButtonPosition);
+    _rulesButton.setPosition(RulesButtonPosition);
     backToSetupButton.setPosition(BackToSetupButtonPosition);
     resultText.setPosition(ResultTextPosition);
     resultText.setColor(sf::Color::Black);
@@ -84,6 +87,10 @@ void GameScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
         {
             rollButton.draw(window,delta);
         }
+    }
+    if(_currentState != Empty && _currentState != AnimatingIn && _currentState != GameEnding && _currentState != GameEnd)
+    {
+        _rulesButton.draw(window,delta);
     }
     if(_currentState == GameEnding)
     {
@@ -404,7 +411,7 @@ void GameScreen::freeBattle()
 
 void GameScreen::screenEnter()
 {
-    screenState = Active;
+    screenState = Screen::Active;
 }
 
 void GameScreen::screenExit()

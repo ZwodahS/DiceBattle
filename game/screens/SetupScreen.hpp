@@ -43,7 +43,7 @@ public:
     ~SetupScreen();
 
     void draw(sf::RenderWindow& window, const sf::Time& delta);
-    void update(sf::RenderWindow& window, const sf::Time& delta);
+    void update(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput);
     void textInput(char c);
 
     void screenEnter();

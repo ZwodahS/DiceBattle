@@ -34,7 +34,20 @@ void GameScreen::DieSprite::toggleLocked()
 
 void GameScreen::DieSprite::toggleSelection()
 {
-    this->selected = !this->selected;
+    setSelected(!selected);
+}
+
+void GameScreen::DieSprite::setSelected(bool selected)
+{
+    this->selected = selected;
+    if(selected)
+    {
+        zf::setAlpha(dieBorder, 255);
+    }
+    else
+    {
+        zf::setAlpha(dieBorder, 120);
+    }
 }
 
 void GameScreen::DieSprite::setDie(Die& d)
@@ -68,10 +81,6 @@ void GameScreen::DieSprite::draw(sf::RenderWindow& window, const sf::Time& delta
     }
     if(visible)
     {
-        if(selected)
-        {
-            window.draw(selectionBorder);
-        }
         window.draw(dieBorder);
         if(die.rolled)
         {

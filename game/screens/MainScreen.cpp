@@ -9,9 +9,9 @@ const sf::Vector2f MainScreen::nameOffset = sf::Vector2f(10,0);
 const sf::Vector2f MainScreen::ipAddrPosition = sf::Vector2f(150, 300);
 
 const sf::Vector2f MainScreen::localButtonPosition = sf::Vector2f(-33, 200);
-const sf::Vector2f MainScreen::hostButtonPosition = sf::Vector2f(-33, 270);
-const sf::Vector2f MainScreen::joinButtonPosition = sf::Vector2f(-33, 340);
-const sf::Vector2f MainScreen::helpButtonPosition = sf::Vector2f(-33, 410);
+const sf::Vector2f MainScreen::hostButtonPosition = sf::Vector2f(-33, 260);
+const sf::Vector2f MainScreen::joinButtonPosition = sf::Vector2f(-33, 320);
+const sf::Vector2f MainScreen::helpButtonPosition = sf::Vector2f(-33, 380);
 const sf::Vector2f MainScreen::buttonTextOffset = sf::Vector2f(20,0);
 const sf::Vector2f MainScreen::vsTextPosition = sf::Vector2f(300, 200);
 

@@ -126,6 +126,7 @@ private:
         void setDie(Die& die);
         void toggleLocked();
         void toggleSelection();
+        void setSelected(bool selected);
         void setEmpty(bool e);
         void setRandom(bool r);
         void setVisible(bool v);

@@ -298,6 +298,10 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
                 _currentState = AnimatingAbilityUsed;
                 _animationTimer1 = 2;
                 updateUnits();
+                for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+                {
+                    (*it).setSelected(true); 
+                }
                 break;
             }
             else if(messages.front()->type == Message::EndTurnMessage)
@@ -516,6 +520,7 @@ void GameScreen::update_processMessage(DB_DiceRolledResultMessage* message)
         if(ds != 0)
         {
             ds->setRandom(true);
+            ds->setSelected(false);
         } 
     }
     _currentState = DiceRolling;

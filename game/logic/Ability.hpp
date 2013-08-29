@@ -28,6 +28,7 @@ public:
      * If the dice given is not enough to use this ability, an empty list will be return.
      */
     std::vector<Die> matchDice(const std::vector<Die>& dice) const;
+    std::vector<Die> matchDice(const std::vector<Die>& priorityDice, const std::vector<Die>& nonPriorityDice) const;
     std::vector<sf::Int32> match(const std::vector<Die>& dice) const;
     
     sf::Int32 id;

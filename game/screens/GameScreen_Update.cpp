@@ -236,46 +236,63 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
         sf::Vector2i mousePos = mouse.getPosition(window);
         sf::Vector2f mousePosF(mousePos.x,mousePos.y);
         // find out if the player select any 
-        if(handleInput && mouse.left.thisReleased)
+        if(handleInput)
         {
-            DieSprite* clickedDieSprite = getDieSprite(mousePosF);
-            if(clickedDieSprite != 0)
+            if(mouse.left.thisReleased)
             {
-                clickedDieSprite->toggleSelection();
-                std::vector<Die> rolledDice = getCurrentDice();
-                std::vector<Die> selectedDice = getSelectedDice();
-                std::vector<Ability> matchedAbilities = _battle.rules.matchAbilities(rolledDice, selectedDice, AbilityDisplayed);
-                setMatchedAbilities(matchedAbilities);
-            }
-            else
-            {
-                // check if any of the ability has been clicked.
-                for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
+                DieSprite* clickedDieSprite = getDieSprite(mousePosF);
+                if(clickedDieSprite != 0)
                 {
-                    if((*it).clickBound.contains(mousePosF))
-                    {
-                        // Right now, I will just check a few things to decide how to send.
-                        std::vector<Die> selectedDice = getSelectedDice();
-                        Ability& ability = (*it).ability;
-                        // if the ability can be cast using the selectedDice, then send the minimum subset of selected 
-                        if(ability.canUseAbility(selectedDice))
-                        {
-                            std::vector<Die> matchedDice = ability.matchDice(selectedDice);
-                            _updater.pushMessage(new DB_SendUseAbilityCommand(ability, matchedDice));
-                        } 
-                        else
-                        {
-                            // if cannot , try to do a match using the ability function
-                            std::vector<Die> rolledDice = _battle.getDice();
-                            std::vector<Die> matchedDice = ability.matchDice(rolledDice);
-                            if(matchedDice.size() != 0) // shouldn't need this check but put it here anyway.
-                            {
-                                _updater.pushMessage(new DB_SendUseAbilityCommand(ability, matchedDice));
-                            }
-                        }
-                        break;
-                    } 
+                    clickedDieSprite->toggleSelection();
+                    std::vector<Die> rolledDice = getCurrentDice();
+                    std::vector<Die> selectedDice = getSelectedDice();
+                    std::vector<Ability> matchedAbilities = _battle.rules.matchAbilities(rolledDice, selectedDice, AbilityDisplayed);
+                    setMatchedAbilities(matchedAbilities);
                 }
+                else
+                {
+                    // check if any of the ability has been clicked.
+                    for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
+                    {
+                        if((*it).clickBound.contains(mousePosF))
+                        {
+                            // Right now, I will just check a few things to decide how to send.
+                            std::vector<Die> selectedDice = getSelectedDice();
+                            Ability& ability = (*it).ability;
+                            // if the ability can be cast using the selectedDice, then send the minimum subset of selected 
+                            if(ability.canUseAbility(selectedDice))
+                            {
+                                std::vector<Die> matchedDice = ability.matchDice(selectedDice);
+                                _updater.pushMessage(new DB_SendUseAbilityCommand(ability, matchedDice));
+                            } 
+                            else
+                            {
+                                // if cannot , try to do a match using the ability function
+                                std::vector<Die> rolledDice = _battle.getDice();
+                                std::vector<Die> matchedDice = ability.matchDice(rolledDice);
+                                if(matchedDice.size() != 0) // shouldn't need this check but put it here anyway.
+                                {
+                                    _updater.pushMessage(new DB_SendUseAbilityCommand(ability, matchedDice));
+                                }
+                            }
+                            break;
+                        } 
+                    }
+                }
+            }
+            bool found = false;
+            for(std::vector<AbilitySprite>::iterator it = _abilitySprites.begin() ; it != _abilitySprites.end() ; ++it)
+            {
+                if((*it).clickBound.contains(mousePosF))
+                {
+                    highlightAbility((*it).ability);
+                    found = true;
+                    break;
+                } 
+            }
+            if(!found)
+            {
+                highlightAbilityNone();
             }
         }
     }
@@ -520,8 +537,11 @@ void GameScreen::update_processMessage(DB_DiceRolledResultMessage* message)
         if(ds != 0)
         {
             ds->setRandom(true);
-            ds->setSelected(false);
         } 
+    }
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        (*it).setSelected(false);
     }
     _currentState = DiceRolling;
     _animationTimer1 = 1;
@@ -573,3 +593,4 @@ void GameScreen::update_setDice(std::vector<Die>& dice)
         _animator.moveReferenceTo(_diceSprites[i], sf::Vector2f(DieX, DieY[i]), 0.5);
     }
 }
+

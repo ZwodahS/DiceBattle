@@ -54,6 +54,54 @@ std::vector<Die> Ability::matchDice(const std::vector<Die>& dice) const
     }
 }
 
+std::vector<Die> Ability::matchDice(const std::vector<Die>& priorityDice, const std::vector<Die>& nonPriority) const
+{
+    std::vector<Die> outs;
+    std::vector<DieFace::eDieFace> tmpCosts = this->costs; // copy the cost
+    // iterate the priority first
+    for(std::vector<Die>::const_iterator it = priorityDice.begin() ; it != priorityDice.end() ; ++it)
+    {
+        for(int i = 0 ; i < tmpCosts.size() ; i++)
+        {
+            if(tmpCosts[i] == (*it).faces[(*it).currentFaceId])
+            {
+                outs.push_back((*it));
+                tmpCosts.erase(tmpCosts.begin() + i);
+                break;
+            }
+        }
+        if(tmpCosts.size() == 0)
+        {
+            break;
+        }
+    }
+    // iterate the dice given
+    for(std::vector<Die>::const_iterator it = nonPriority.begin() ; it != nonPriority.end() ; ++it)
+    {
+        for(int i = 0 ; i < tmpCosts.size() ; i++)
+        {
+            if(tmpCosts[i] == (*it).faces[(*it).currentFaceId])
+            {
+                outs.push_back((*it));
+                tmpCosts.erase(tmpCosts.begin() + i);
+                break;
+            }
+        }
+        if(tmpCosts.size() == 0)
+        {
+            break;
+        }
+    }
+    if(tmpCosts.size() != 0)
+    {
+        return std::vector<Die>();
+    }
+    else
+    {
+        return outs;
+    }
+}
+
 std::vector<sf::Int32> Ability::match(const std::vector<Die>& dice) const
 {
     std::vector<sf::Int32> outs;

@@ -114,7 +114,7 @@ private:
         Die die;
         std::vector<sf::Sprite> faces;
         sf::Sprite dieBorder;
-        sf::Sprite selectionBorder;
+        sf::Sprite frozenBorder;
         sf::Sprite lockIcon;
         sf::Int32 currentFaceId;
         float randomizerTimer;
@@ -122,11 +122,14 @@ private:
         bool random;
         bool visible;
         bool selected;
+        bool highlighted;
         bool locked;
         void setDie(Die& die);
         void toggleLocked();
         void toggleSelection();
         void setSelected(bool selected);
+        void setHighlighted(bool selected);
+        void updateColor();
         void setEmpty(bool e);
         void setRandom(bool r);
         void setVisible(bool v);
@@ -247,6 +250,10 @@ private:
      */
     std::vector<Die> getSelectedDice();
     /**
+     * Get the list of dice that is selected and the rest that is not selected and put it into the list that is pass in.
+     */
+    void getSelectedDiceAndRemainingDice(/* out */std::vector<Die>& selectedDice, /* out */ std::vector<Die>& nonSelectedDice);
+    /**
      * Get a list of dice that is currently in the screen.
      */
     std::vector<Die> getCurrentDice();
@@ -292,5 +299,10 @@ private:
 
     // exit timer
     float exitTimer;
+    
+    sf::Int32 _currentHighlightedAbility;
+    void highlightAbility(Ability ability);
+    void highlightAbilityNone();
+
 };
 #endif

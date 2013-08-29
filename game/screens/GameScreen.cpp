@@ -35,6 +35,7 @@ GameScreen::GameScreen(Game& game, Battle& b, PlayerRole::ePlayerRole r, GameTyp
     ,_rulesButton(game.assets.gameScreenAssets.rulesButtonSelected.createSprite(), game.assets.gameScreenAssets.rulesButton.createSprite(), sf::FloatRect(0, 0, 60, 40))
     ,backToSetupButton(game.assets.gameScreenAssets.backToSetupButtonSelected.createSprite(), game.assets.gameScreenAssets.backToSetupButton.createSprite(), BackToSetupButtonSize)
     ,_updater(r), _viewer(r, *this), resultText("Player1 Wins", game.assets.gameScreenAssets.abilityFont, 24), _gameType(gt)
+    ,_currentHighlightedAbility(-1)
 {
     rollButton.setPosition(RollButtonPosition);
     doneButton.setPosition(DoneButtonPosition);
@@ -429,5 +430,53 @@ void GameScreen::screenExit()
     {
         _abilitySprites[i].finalPosition = sf::Vector2f(Ability_X, AbilityOffScreen_Y[i]);
         _abilitySprites[i].fade = true;
+    }
+}
+
+void GameScreen::highlightAbility(Ability ability)
+{
+    if(_currentHighlightedAbility == ability.id)
+    {
+        return;
+    }
+    highlightAbilityNone();
+    _currentHighlightedAbility = ability.id;
+
+    std::vector<Die> selectedDice;
+    std::vector<Die> nonSelectedDice;
+    getSelectedDiceAndRemainingDice(selectedDice, nonSelectedDice);
+    std::vector<Die> matchedDice;
+    // if the ability can be cast using the selectedDice, then send the minimum subset of selected 
+    matchedDice = ability.matchDice(selectedDice, nonSelectedDice);
+    for(std::vector<Die>::iterator it = matchedDice.begin() ; it != matchedDice.end() ; ++it)
+    {
+        DieSprite* ds = getDieSprite((*it).id);
+        if(ds != 0)
+        {
+            ds->setHighlighted(true);
+        }
+    }
+}
+
+void GameScreen::highlightAbilityNone()
+{
+    _currentHighlightedAbility = -1;
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        (*it).setHighlighted(false); 
+    }    
+}
+void GameScreen::getSelectedDiceAndRemainingDice(/* out */std::vector<Die>& selectedDice, /* out */ std::vector<Die>& nonSelectedDice)
+{
+    for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
+    {
+        if((*it).selected)
+        {
+            selectedDice.push_back((*it).die);
+        } 
+        else
+        {
+            nonSelectedDice.push_back((*it).die);
+        }
     }
 }

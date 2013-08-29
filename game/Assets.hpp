@@ -66,7 +66,7 @@ struct GameScreenAssets
     //480 x 40
     TextureRegion abilityStrip;
     TextureRegion die;
-    TextureRegion dieSelectionBorder;
+    TextureRegion dieFrozenBorder;
     TextureRegion rollButton;
     TextureRegion rollButtonSelected;
     TextureRegion doneButton;

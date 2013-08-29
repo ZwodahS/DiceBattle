@@ -77,8 +77,8 @@ void Game::loadAssets()
     assets.icons.heal = assets.icons.spriteSheet.createRegion(image);
     image.loadFromFile("data/graphics/gamescreen/die.png");
     assets.gameScreenAssets.die = assets.masterS1.createRegion(image,640,0);
-    assets.gameScreenAssets.dieSelectionBorder = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,48,48));
-    assets.gameScreenAssets.dieSelectionBorder.defaultColor = sf::Color(230,40,50);
+    assets.gameScreenAssets.dieFrozenBorder = assets.placeHolder.spriteSheet.createRegion(sf::IntRect(0,0,48,48));
+    assets.gameScreenAssets.dieFrozenBorder.defaultColor = sf::Color(200,255,255,150);
 
     image.loadFromFile("data/graphics/gamescreen/abilitystrip.png");
     assets.gameScreenAssets.abilityStrip = assets.masterS1.createRegion(image,0, 514);

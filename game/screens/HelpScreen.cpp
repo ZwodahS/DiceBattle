@@ -64,8 +64,7 @@ void HelpScreen::draw(sf::RenderWindow& window, const sf::Time& delta)
 void HelpScreen::update(sf::RenderWindow& window, const sf::Time& delta, const bool& handleInput)
 {
     zf::Mouse& mouse = _game.mouse;
-    sf::Vector2i mousePos = mouse.getPosition(window);
-    sf::Vector2f mousePosF = sf::Vector2f(mousePos.x, mousePos.y);
+    sf::Vector2f mousePosF = mouse.getWorldPosition(window);
     _nextButton.updateSelection(mousePosF);
     _previousButton.updateSelection(mousePosF);
     _closeButton.updateSelection(mousePosF);

@@ -184,8 +184,7 @@ void SetupScreen::update(sf::RenderWindow& window, const sf::Time& delta, const 
     if(handleInput && screenState == Screen::Active)
     {
         zf::Mouse& mouse = _game.mouse;
-        sf::Vector2i mousePos = mouse.getPosition(window);
-        sf::Vector2f mousePosF = sf::Vector2f(mousePos.x,mousePos.y);
+        sf::Vector2f mousePosF = mouse.getWorldPosition(window);
         if(mouse.left.thisReleased)
         {
             if(setupType == GameType::Local)

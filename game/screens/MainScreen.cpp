@@ -119,8 +119,7 @@ void MainScreen::update(sf::RenderWindow& window, const sf::Time& delta, const b
         if(handleInput)
         {
             zf::Mouse& mouse = _game.mouse;
-            sf::Vector2i mousePosi = mouse.getPosition(window);
-            sf::Vector2f mousePosf = sf::Vector2f(mousePosi.x, mousePosi.y);
+            sf::Vector2f mousePosf = mouse.getWorldPosition(window);
             if(currentDialogState == NoDialog)
             {
                 _localButton.updateSelection(mousePosf, delta);

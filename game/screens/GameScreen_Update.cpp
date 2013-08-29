@@ -40,7 +40,7 @@ void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta, const b
         return;
     }
     zf::Mouse& mouse = _game.mouse;
-    sf::Vector2i mousePosition = mouse.getPosition(window);
+    sf::Vector2f mousePosition = mouse.getWorldPosition(window);
     if(_currentState == Empty)
     {
         update_empty(window,delta,handleInput);
@@ -91,12 +91,11 @@ void GameScreen::update(sf::RenderWindow& window, const sf::Time& delta, const b
     }
     if(handleInput)
     {
-        sf::Vector2f mousePosF = sf::Vector2f(mousePosition.x, mousePosition.y);
-        rollButton.updateSelection(mousePosF);
-        doneButton.updateSelection(mousePosF);
-        backToSetupButton.updateSelection(mousePosF);
-        _rulesButton.updateSelection(mousePosF);
-        if(mouse.left.thisPressed && _rulesButton.clickBound.contains(mousePosF))
+        rollButton.updateSelection(mousePosition);
+        doneButton.updateSelection(mousePosition);
+        backToSetupButton.updateSelection(mousePosition);
+        _rulesButton.updateSelection(mousePosition);
+        if(mouse.left.thisPressed && _rulesButton.clickBound.contains(mousePosition))
         {
             _game.toggleShowAbilities(_battle.rules);
         }
@@ -175,10 +174,10 @@ void GameScreen::update_diceNotRolled(sf::RenderWindow& window, const sf::Time& 
     {
         // if this screen is the active player, check for inputs
         zf::Mouse& mouse = _game.mouse;
-        sf::Vector2i position = mouse.getPosition(window);
+        sf::Vector2f position = mouse.getWorldPosition(window);
         if(handleInput && _game.mouse.left.thisReleased)
         {
-            if(rollButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
+            if(rollButton.clickBound.contains(position))
             {
                 std::vector<sf::Int32> diceRolled;
                 for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
@@ -233,8 +232,7 @@ void GameScreen::update_diceRolled(sf::RenderWindow& window, const sf::Time& del
     if(_role == _battle.currentPlayer || _role == PlayerRole::Both)
     {
         zf::Mouse& mouse = _game.mouse;
-        sf::Vector2i mousePos = mouse.getPosition(window);
-        sf::Vector2f mousePosF(mousePos.x,mousePos.y);
+        sf::Vector2f mousePosF = mouse.getWorldPosition(window);
         // find out if the player select any 
         if(handleInput)
         {
@@ -355,11 +353,11 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
     if(_role == _battle.currentPlayer || _role == PlayerRole::Both)
     {
         zf::Mouse& mouse = _game.mouse;
-        sf::Vector2i position = mouse.getPosition(window);
+        sf::Vector2f position = mouse.getWorldPosition(window);
         if(handleInput && _game.mouse.left.thisReleased)
         {
             // check roll button 
-            if(rollButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
+            if(rollButton.clickBound.contains(position))
             {
                 std::vector<sf::Int32> toRoll;
                 for(std::vector<DieSprite>::iterator it = _diceSprites.begin() ; it != _diceSprites.end() ; ++it)
@@ -371,13 +369,13 @@ void GameScreen::update_abilityUsed(sf::RenderWindow& window, const sf::Time& de
                 }
                 _updater.pushMessage(new DB_SendRollCommand(toRoll));
             }
-            else if(doneButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
+            else if(doneButton.clickBound.contains(position))
             {
                 _updater.pushMessage(new DB_SendDoneCommand());
             }
             else
             {
-                DieSprite* ds = getDieSprite(sf::Vector2f(position.x, position.y));
+                DieSprite* ds = getDieSprite(position);
                 if(ds != 0)
                 {
                     ds->toggleLocked();
@@ -495,8 +493,8 @@ void GameScreen::update_gameEnding(sf::RenderWindow& window, const sf::Time& del
 {
     // check if the back to setup button is pressed.
     zf::Mouse& mouse = _game.mouse;
-    sf::Vector2i position = mouse.getPosition(window);
-    if(handleInput && mouse.left.thisDown && backToSetupButton.clickBound.contains(sf::Vector2f(position.x, position.y)))
+    sf::Vector2f position = mouse.getWorldPosition(window);
+    if(handleInput && mouse.left.thisDown && backToSetupButton.clickBound.contains(position))
     {
         _game.backToSetup(_gameType, _role);
         _currentState = GameEnd;
